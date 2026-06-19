@@ -19,6 +19,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import { useIsMobile } from "@/hooks/use-mobile"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -600,6 +601,15 @@ export function DataTable({ data }: { data: Alert[] }) {
   )
 }
 
+function initials(name: string) {
+  return name
+    .split(" ")
+    .filter((w) => /[A-Za-z0-9]/.test(w[0] ?? ""))
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("")
+}
+
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
@@ -626,16 +636,25 @@ function AlertDetailDrawer({
       onOpenChange={onOpenChange}
       direction={isMobile ? "bottom" : "right"}
     >
-      <DrawerContent>
-        <DrawerHeader className="gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <SeverityBadge severity={item.severity} />
-            <StatusBadge status={item.status} />
-            <Badge variant="secondary" className="font-normal">
-              {item.relationship}
-            </Badge>
+      <DrawerContent className="sm:max-w-2xl">
+        <DrawerHeader className="gap-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="size-12 shrink-0">
+              <AvatarFallback className="bg-primary/10 text-sm font-semibold text-foreground">
+                {initials(item.client)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col gap-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <SeverityBadge severity={item.severity} />
+                <StatusBadge status={item.status} />
+                <Badge variant="secondary" className="font-normal">
+                  {item.relationship}
+                </Badge>
+              </div>
+              <DrawerTitle>{item.client}</DrawerTitle>
+            </div>
           </div>
-          <DrawerTitle>{item.client}</DrawerTitle>
           <DrawerDescription>
             {item.sector} · {item.jurisdiction}
           </DrawerDescription>
