@@ -3,7 +3,7 @@
     "id": 1,
     "client": "Helvetia Digital Trading AG",
     "sector": "Software / SaaS",
-    "jurisdiction": "DE → KY",
+    "jurisdiction": "Cayman Islands",
     "relationship": "Trading",
     "severity": "Critical",
     "originalRisk": "Low",
@@ -15,6 +15,12 @@
     "sources": 5,
     "detected": "2h ago",
     "status": "New",
+    "kyc": {
+      "onboarded": "Mar 2023",
+      "expectedModel": "B2B SaaS subscriptions (EUR)",
+      "expectedActivity": "Low-volume SEPA payroll and supplier payments",
+      "owners": "2 German-resident founders"
+    },
     "baseline": "Onboarded 2023 as a German B2B SaaS GmbH. Expected activity: low-volume EUR SEPA payroll and supplier payments. Risk rating: Low.",
     "observed": "Company website and press releases now describe a crypto proprietary trading desk. Legal form changed from GmbH to a Cayman entity. Inbound stablecoin flows began this month.",
     "reasoning": "The business model described in public sources is materially different from the onboarding profile. A SaaS-to-crypto pivot combined with an offshore re-domicile invalidates the original KYC assumptions and the transaction-monitoring thresholds set at onboarding.",
@@ -22,21 +28,46 @@
     "tier": "Deep",
     "action": "Update risk classification; trigger enhanced due diligence; re-verify beneficial ownership and source of funds.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "High", "reason": "Offshore re-domicile and crypto activity invalidate onboarding KYC." },
-      { "type": "Reputational Risk", "status": "Medium", "reason": "Pivot drawing public and press scrutiny." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "No active lending exposure on this relationship." }
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "Offshore re-domicile and crypto activity invalidate onboarding KYC."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Pivot drawing public and press scrutiny."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No active lending exposure on this relationship."
+      }
     ],
     "citations": [
-      { "source": "Reuters", "date": "2026-06-18", "headline": "Helvetia Digital launches crypto trading desk, relocates holding to Cayman" },
-      { "source": "Finews", "date": "2026-06-17", "headline": "German SaaS firm pivots to digital-asset proprietary trading" },
-      { "source": "Company blog", "date": "2026-06-16", "headline": "Our next chapter: building a 24/7 crypto trading operation" }
-    ]
+      {
+        "source": "Reuters",
+        "date": "2026-06-18",
+        "headline": "Helvetia Digital launches crypto trading desk, relocates holding to Cayman"
+      },
+      {
+        "source": "Finews",
+        "date": "2026-06-17",
+        "headline": "German SaaS firm pivots to digital-asset proprietary trading"
+      },
+      {
+        "source": "Company blog",
+        "date": "2026-06-16",
+        "headline": "Our next chapter: building a 24/7 crypto trading operation"
+      }
+    ],
+    "summary": "Helvetia was onboarded as a low-risk German SaaS business expected to run small EUR payroll and supplier flows. Public sources now show a full pivot to crypto proprietary trading plus an offshore re-domicile to the Cayman Islands, with stablecoin inflows that have no basis in the onboarding profile. Because the change is structural rather than a one-off event, corroborated across five sources, and directly contradicts the original business model, the score climbs into the high band — the onboarding baseline now explains almost none of the current activity."
   },
   {
     "id": 2,
     "client": "Nordwind Capital Partners",
     "sector": "Asset Management",
-    "jurisdiction": "CH",
+    "jurisdiction": "Switzerland",
     "relationship": "Custody",
     "severity": "Critical",
     "originalRisk": "Medium",
@@ -48,6 +79,12 @@
     "sources": 3,
     "detected": "5h ago",
     "status": "Escalated",
+    "kyc": {
+      "onboarded": "Jun 2021",
+      "expectedModel": "Discretionary asset management",
+      "expectedActivity": "Custody safekeeping; periodic rebalancing",
+      "owners": "2 Swiss-resident founders (>25% each)"
+    },
     "baseline": "Onboarded 2021. Beneficial ownership: two named Swiss-resident founders, each >25%. Risk rating: Medium.",
     "observed": "Updated commercial registry filing lists two additional beneficial owners via an intermediate holding company in a higher-risk jurisdiction.",
     "reasoning": "New beneficial owners materially change the ownership structure recorded at onboarding. The intermediate holding layer reduces transparency and requires full re-screening against sanctions and PEP lists before activity continues.",
@@ -55,20 +92,41 @@
     "tier": "LLM",
     "action": "Full ownership verification; re-screen all owners against sanctions/PEP lists; refresh KYC file.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "High", "reason": "New owners via opaque holding require sanctions/PEP re-screening." },
-      { "type": "Reputational Risk", "status": "Medium", "reason": "Ownership opacity raises counterparty questions." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Custody relationship only; no credit extended." }
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "New owners via opaque holding require sanctions/PEP re-screening."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Ownership opacity raises counterparty questions."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Custody relationship only; no credit extended."
+      }
     ],
     "citations": [
-      { "source": "ZEFIX Registry", "date": "2026-06-19", "headline": "Commercial registry update: beneficial ownership amendment" },
-      { "source": "OpenCorporates", "date": "2026-06-19", "headline": "New intermediate holding company linked to Nordwind Capital" }
-    ]
+      {
+        "source": "ZEFIX Registry",
+        "date": "2026-06-19",
+        "headline": "Commercial registry update: beneficial ownership amendment"
+      },
+      {
+        "source": "OpenCorporates",
+        "date": "2026-06-19",
+        "headline": "New intermediate holding company linked to Nordwind Capital"
+      }
+    ],
+    "summary": "Nordwind onboarded with a transparent two-owner Swiss structure on a custody relationship. A registry update introduces two further beneficial owners through an intermediate holding in a higher-risk jurisdiction, reducing ownership transparency. The score sits high because the new owners must be screened against sanctions and PEP lists before activity continues, and the opacity itself raises residual risk even before screening results return."
   },
   {
     "id": 3,
     "client": "Lighthouse Trade Finance Ltd",
     "sector": "Trade Finance",
-    "jurisdiction": "AE",
+    "jurisdiction": "United Arab Emirates",
     "relationship": "Payments",
     "severity": "Critical",
     "originalRisk": "Medium",
@@ -80,6 +138,12 @@
     "sources": 6,
     "detected": "1d ago",
     "status": "In Review",
+    "kyc": {
+      "onboarded": "Feb 2022",
+      "expectedModel": "Trade-finance settlement",
+      "expectedActivity": "Documentary credits; USD supplier settlement",
+      "owners": "Single corporate parent (UAE)"
+    },
     "baseline": "Onboarded 2022 for trade-finance settlement. Expected activity: documentary credits and supplier settlement in USD. Risk rating: Medium.",
     "observed": "Multiple outlets report the company is named in an active cross-border fraud probe involving falsified shipping documents.",
     "reasoning": "Corroborated adverse media across six independent outlets indicates elevated reputational and conduct risk. The allegations relate directly to the client's core trade-finance activity, raising the likelihood of exposure.",
@@ -87,21 +151,46 @@
     "tier": "Deep",
     "action": "Trigger enhanced due diligence; escalate to compliance review; consider transaction holds pending clarification.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "High", "reason": "Active fraud probe tied to the client's core activity." },
-      { "type": "Reputational Risk", "status": "High", "reason": "Corroborated adverse media across six outlets." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Settlement relationship only; no lending exposure." }
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "Active fraud probe tied to the client's core activity."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "High",
+        "reason": "Corroborated adverse media across six outlets."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Settlement relationship only; no lending exposure."
+      }
     ],
     "citations": [
-      { "source": "Bloomberg", "date": "2026-06-19", "headline": "Regulator opens fraud probe into Gulf trade-finance firms" },
-      { "source": "The National", "date": "2026-06-19", "headline": "Lighthouse Trade Finance named in document-fraud investigation" },
-      { "source": "Reuters", "date": "2026-06-18", "headline": "Cross-border shipping fraud widens to include finance intermediaries" }
-    ]
+      {
+        "source": "Bloomberg",
+        "date": "2026-06-19",
+        "headline": "Regulator opens fraud probe into Gulf trade-finance firms"
+      },
+      {
+        "source": "The National",
+        "date": "2026-06-19",
+        "headline": "Lighthouse Trade Finance named in document-fraud investigation"
+      },
+      {
+        "source": "Reuters",
+        "date": "2026-06-18",
+        "headline": "Cross-border shipping fraud widens to include finance intermediaries"
+      }
+    ],
+    "summary": "Lighthouse was a medium-risk trade-finance client settling documentary credits in USD. Six independent outlets now name it in an active cross-border fraud investigation involving falsified shipping documents, striking at its core activity. Strong corroboration and direct relevance push the score to the high band; what keeps it short of critical is that the investigation is ongoing rather than concluded."
   },
   {
     "id": 4,
     "client": "Aurelia Holdings SA",
     "sector": "Investment Holding",
-    "jurisdiction": "LU",
+    "jurisdiction": "Luxembourg",
     "relationship": "Payments",
     "severity": "High",
     "originalRisk": "Medium",
@@ -113,6 +202,12 @@
     "sources": 2,
     "detected": "1d ago",
     "status": "In Review",
+    "kyc": {
+      "onboarded": "Sep 2020",
+      "expectedModel": "Passive investment holding",
+      "expectedActivity": "Limited annual movement",
+      "owners": "Family trust (Luxembourg)"
+    },
     "baseline": "Onboarded 2020 as a passive investment holding company with limited annual movement. Risk rating: Medium.",
     "observed": "Several linked entities sharing the same registered address recorded sudden large inflows within days of each other after long inactivity.",
     "reasoning": "A pattern of multiple linked low-activity entities receiving sudden large flows is consistent with layering. The shared registered address increases the likelihood the entities are being used to obscure the origin of funds.",
@@ -120,20 +215,41 @@
     "tier": "LLM",
     "action": "Trigger AML investigation; map the entity network; validate source of funds for each inflow.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "High", "reason": "Linked-entity flow pattern consistent with layering." },
-      { "type": "Reputational Risk", "status": "Low", "reason": "No public adverse coverage at this stage." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "No credit facility on this relationship." }
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "Linked-entity flow pattern consistent with layering."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No public adverse coverage at this stage."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No credit facility on this relationship."
+      }
     ],
     "citations": [
-      { "source": "GLEIF LEI", "date": "2026-06-18", "headline": "Multiple LEIs registered to shared Luxembourg address" },
-      { "source": "Internal monitoring", "date": "2026-06-18", "headline": "Linked-entity inflow pattern flagged by rules engine" }
-    ]
+      {
+        "source": "GLEIF LEI",
+        "date": "2026-06-18",
+        "headline": "Multiple LEIs registered to shared Luxembourg address"
+      },
+      {
+        "source": "Internal monitoring",
+        "date": "2026-06-18",
+        "headline": "Linked-entity inflow pattern flagged by rules engine"
+      }
+    ],
+    "summary": "Aurelia onboarded as a passive holding company with minimal expected movement. Several linked entities at a shared address have suddenly received large inflows after long dormancy, a pattern consistent with layering. The score is high but not critical because corroboration is currently limited to two sources and the origin of the funds is still being established."
   },
   {
     "id": 5,
     "client": "Meridian Logistics GmbH",
     "sector": "Logistics",
-    "jurisdiction": "DE",
+    "jurisdiction": "Germany",
     "relationship": "Payments",
     "severity": "High",
     "originalRisk": "Low",
@@ -145,6 +261,12 @@
     "sources": 4,
     "detected": "2d ago",
     "status": "New",
+    "kyc": {
+      "onboarded": "Apr 2019",
+      "expectedModel": "Freight and logistics",
+      "expectedActivity": "Stable EUR supplier payments",
+      "owners": "Founder-managed (Germany)"
+    },
     "baseline": "Onboarded 2019. Largely dormant for the last 18 months with minimal activity. Risk rating: Low.",
     "observed": "Account activity jumped from near-zero to high daily volume with no corresponding public business announcement.",
     "reasoning": "A sudden break from prolonged dormancy without a supporting business rationale is a recognised suspicious-activation pattern and warrants validation of the renewed activity's legitimacy.",
@@ -152,20 +274,41 @@
     "tier": "LLM",
     "action": "Trigger AML review; validate business legitimacy; reassess transaction-monitoring thresholds.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "Medium", "reason": "Dormancy break without business rationale needs validation." },
-      { "type": "Reputational Risk", "status": "Low", "reason": "No adverse media identified." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Payments relationship only." }
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "Dormancy break without business rationale needs validation."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse media identified."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Payments relationship only."
+      }
     ],
     "citations": [
-      { "source": "Internal monitoring", "date": "2026-06-17", "headline": "Dormancy-break threshold exceeded" },
-      { "source": "Companies House", "date": "2026-06-16", "headline": "No recent filings to explain renewed activity" }
-    ]
+      {
+        "source": "Internal monitoring",
+        "date": "2026-06-17",
+        "headline": "Dormancy-break threshold exceeded"
+      },
+      {
+        "source": "Companies House",
+        "date": "2026-06-16",
+        "headline": "No recent filings to explain renewed activity"
+      }
+    ],
+    "summary": "Meridian was a low-risk logistics client, largely dormant for 18 months. Activity has jumped from near-zero to high daily volume with no public business reason. The dormancy break drives most of the increase; the score lands in the upper-medium band rather than high because there is no adverse media and the activity may yet have a legitimate explanation pending review."
   },
   {
     "id": 6,
     "client": "Saffron Ventures Inc",
     "sector": "Venture Capital",
-    "jurisdiction": "SG",
+    "jurisdiction": "Singapore",
     "relationship": "Lending",
     "severity": "High",
     "originalRisk": "Medium",
@@ -177,6 +320,12 @@
     "sources": 3,
     "detected": "2d ago",
     "status": "New",
+    "kyc": {
+      "onboarded": "Nov 2022",
+      "expectedModel": "Early-stage venture fund",
+      "expectedActivity": "Capital calls and modest drawdowns",
+      "owners": "GP and named LPs (Singapore)"
+    },
     "baseline": "Onboarded 2022 as an early-stage fund with modest committed capital. Risk rating: Medium.",
     "observed": "Announced a large new round and simultaneous expansion into three additional jurisdictions.",
     "reasoning": "A step-change in scale and geographic footprint shifts the expected activity profile well beyond the onboarding baseline, requiring updated monitoring thresholds and an activity-profile refresh.",
@@ -184,20 +333,41 @@
     "tier": "LLM",
     "action": "Reassess transaction-monitoring thresholds; update activity profile; confirm new operating jurisdictions.",
     "riskBreakdown": [
-      { "type": "Credit Risk", "status": "Medium", "reason": "Rapid scale-up changes exposure on the lending facility." },
-      { "type": "Compliance Risk", "status": "Medium", "reason": "New jurisdictions require updated screening coverage." },
-      { "type": "Reputational Risk", "status": "Low", "reason": "Coverage is positive growth news, not adverse." }
+      {
+        "type": "Credit Risk",
+        "status": "Medium",
+        "reason": "Rapid scale-up changes exposure on the lending facility."
+      },
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "New jurisdictions require updated screening coverage."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "Coverage is positive growth news, not adverse."
+      }
     ],
     "citations": [
-      { "source": "Crunchbase", "date": "2026-06-17", "headline": "Saffron Ventures closes oversubscribed round" },
-      { "source": "TechCrunch", "date": "2026-06-17", "headline": "Saffron expands into three new markets" }
-    ]
+      {
+        "source": "Crunchbase",
+        "date": "2026-06-17",
+        "headline": "Saffron Ventures closes oversubscribed round"
+      },
+      {
+        "source": "TechCrunch",
+        "date": "2026-06-17",
+        "headline": "Saffron expands into three new markets"
+      }
+    ],
+    "summary": "Saffron onboarded as a small early-stage fund on a lending relationship. A large new round and simultaneous expansion into three jurisdictions move its activity profile well beyond the onboarding baseline. The rise is driven by scale and credit exposure rather than misconduct — the coverage is positive growth news — so it enters the high band primarily through expanded exposure, not adverse signals."
   },
   {
     "id": 7,
     "client": "Blackford Commodities Ltd",
     "sector": "Commodities",
-    "jurisdiction": "GB",
+    "jurisdiction": "United Kingdom",
     "relationship": "Trading",
     "severity": "High",
     "originalRisk": "Medium",
@@ -209,6 +379,12 @@
     "sources": 2,
     "detected": "3d ago",
     "status": "Escalated",
+    "kyc": {
+      "onboarded": "May 2021",
+      "expectedModel": "Physical commodity trading",
+      "expectedActivity": "USD settlement with EU/UK trading houses",
+      "owners": "2 UK-resident directors"
+    },
     "baseline": "Onboarded 2021 for physical commodity settlement. Expected counterparties: EU and UK trading houses. Risk rating: Medium.",
     "observed": "A recurring counterparty was added to the EU consolidated sanctions list in the latest update.",
     "reasoning": "A direct counterparty match against an updated sanctions list is a high-severity compliance event. Continued settlement with the counterparty would create direct sanctions exposure.",
@@ -216,20 +392,41 @@
     "tier": "Rules",
     "action": "Freeze affected counterparty activity; escalate to sanctions team; file internal report.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "High", "reason": "Direct counterparty match on EU sanctions list." },
-      { "type": "Reputational Risk", "status": "Medium", "reason": "Sanctions exposure carries headline risk." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Trading settlement only; no credit line." }
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "Direct counterparty match on EU sanctions list."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Sanctions exposure carries headline risk."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Trading settlement only; no credit line."
+      }
     ],
     "citations": [
-      { "source": "EU Sanctions DB", "date": "2026-06-16", "headline": "Consolidated list update adds new designated entities" },
-      { "source": "OpenSanctions", "date": "2026-06-16", "headline": "Counterparty match confirmed against EU designation" }
-    ]
+      {
+        "source": "EU Sanctions DB",
+        "date": "2026-06-16",
+        "headline": "Consolidated list update adds new designated entities"
+      },
+      {
+        "source": "OpenSanctions",
+        "date": "2026-06-16",
+        "headline": "Counterparty match confirmed against EU designation"
+      }
+    ],
+    "summary": "Blackford settles physical commodities with EU and UK counterparties. A recurring counterparty has been added to the EU consolidated sanctions list, creating direct exposure if settlement continues. This high-confidence rules match contributes strongly to the score; it stays just below critical only because exposure can be contained by freezing the single counterparty."
   },
   {
     "id": 8,
     "client": "Pioneer Fintech Solutions",
     "sector": "Fintech",
-    "jurisdiction": "EE → AE",
+    "jurisdiction": "United Arab Emirates",
     "relationship": "Payments",
     "severity": "Medium",
     "originalRisk": "Medium",
@@ -241,6 +438,12 @@
     "sources": 2,
     "detected": "3d ago",
     "status": "In Review",
+    "kyc": {
+      "onboarded": "Jan 2023",
+      "expectedModel": "Payments technology",
+      "expectedActivity": "EU-regulated payment flows",
+      "owners": "Founder and VC investors (Estonia)"
+    },
     "baseline": "Onboarded 2023 with an Estonian legal seat under an EU regulatory regime. Risk rating: Medium.",
     "observed": "Registry filing shows the legal seat moved to a different jurisdiction with a lighter regulatory regime.",
     "reasoning": "A change of legal seat alters the applicable regulatory and supervisory framework and may change beneficial-ownership transparency, warranting a structural-risk re-check.",
@@ -248,20 +451,41 @@
     "tier": "LLM",
     "action": "Trigger enhanced due diligence; re-check beneficial ownership; update jurisdiction risk.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "Medium", "reason": "Lighter regulatory regime changes structural risk." },
-      { "type": "Reputational Risk", "status": "Low", "reason": "No adverse coverage tied to the move." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Payments relationship only." }
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "Lighter regulatory regime changes structural risk."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse coverage tied to the move."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Payments relationship only."
+      }
     ],
     "citations": [
-      { "source": "e-Business Register", "date": "2026-06-15", "headline": "Legal seat relocation recorded" },
-      { "source": "OpenCorporates", "date": "2026-06-15", "headline": "Registered address updated to new jurisdiction" }
-    ]
+      {
+        "source": "e-Business Register",
+        "date": "2026-06-15",
+        "headline": "Legal seat relocation recorded"
+      },
+      {
+        "source": "OpenCorporates",
+        "date": "2026-06-15",
+        "headline": "Registered address updated to new jurisdiction"
+      }
+    ],
+    "summary": "Pioneer onboarded with an Estonian seat under an EU regime. A relocation of its legal seat to a lighter-touch jurisdiction changes the supervisory framework and may affect ownership transparency. The score stays in the medium band — the move is structural and warrants re-checking, but there is no adverse media or financial-crime indicator attached."
   },
   {
     "id": 9,
     "client": "Cobalt Mining Corp",
     "sector": "Mining",
-    "jurisdiction": "ZA",
+    "jurisdiction": "South Africa",
     "relationship": "Lending",
     "severity": "Medium",
     "originalRisk": "Medium",
@@ -273,6 +497,12 @@
     "sources": 3,
     "detected": "4d ago",
     "status": "In Review",
+    "kyc": {
+      "onboarded": "Aug 2021",
+      "expectedModel": "Mineral extraction (project-financed)",
+      "expectedActivity": "Scheduled drawdowns and supplier payments",
+      "owners": "Listed parent (South Africa)"
+    },
     "baseline": "Onboarded 2021 for project financing. Expected activity: scheduled drawdowns and supplier payments. Risk rating: Medium.",
     "observed": "Regional outlets report a dispute over environmental permits, with limited corroboration from tier-1 sources.",
     "reasoning": "Adverse media is present but partially corroborated and relates to operational rather than financial-crime risk. Monitoring is warranted but the immediate financial-crime likelihood is moderate.",
@@ -280,20 +510,41 @@
     "tier": "LLM",
     "action": "Monitor coverage; await corroboration; review at next periodic cycle unless escalation occurs.",
     "riskBreakdown": [
-      { "type": "Credit Risk", "status": "Medium", "reason": "Permit dispute could affect project-finance repayment." },
-      { "type": "Reputational Risk", "status": "Medium", "reason": "Environmental coverage in regional press." },
-      { "type": "Compliance Risk", "status": "Low", "reason": "No financial-crime indicators identified." }
+      {
+        "type": "Credit Risk",
+        "status": "Medium",
+        "reason": "Permit dispute could affect project-finance repayment."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Environmental coverage in regional press."
+      },
+      {
+        "type": "Compliance Risk",
+        "status": "Low",
+        "reason": "No financial-crime indicators identified."
+      }
     ],
     "citations": [
-      { "source": "Regional press", "date": "2026-06-14", "headline": "Permit dispute reported at Cobalt Mining site" },
-      { "source": "GDELT", "date": "2026-06-14", "headline": "Local coverage of environmental compliance concern" }
-    ]
+      {
+        "source": "Regional press",
+        "date": "2026-06-14",
+        "headline": "Permit dispute reported at Cobalt Mining site"
+      },
+      {
+        "source": "GDELT",
+        "date": "2026-06-14",
+        "headline": "Local coverage of environmental compliance concern"
+      }
+    ],
+    "summary": "Cobalt is a project-financed mining client on a lending relationship. Regional outlets report an environmental permit dispute with limited tier-1 corroboration. The score holds in the medium band because the issue is operational and credit-relevant rather than financial-crime, and confidence is lower given the partial corroboration."
   },
   {
     "id": 10,
     "client": "Vantage Realty Group",
     "sector": "Real Estate",
-    "jurisdiction": "ES",
+    "jurisdiction": "Spain",
     "relationship": "Payments",
     "severity": "Medium",
     "originalRisk": "Medium",
@@ -305,6 +556,12 @@
     "sources": 1,
     "detected": "5d ago",
     "status": "New",
+    "kyc": {
+      "onboarded": "Mar 2020",
+      "expectedModel": "Property investment",
+      "expectedActivity": "Settlement on property transactions",
+      "owners": "2 named principals (Spain)"
+    },
     "baseline": "Onboarded 2020 under its original legal name for property-investment settlement. Risk rating: Medium.",
     "observed": "Registry filing shows a legal entity name change with no other recorded structural change.",
     "reasoning": "An entity name change on its own is low-to-moderate risk but requires a KYC refresh to confirm the change is administrative and not masking a deeper restructuring.",
@@ -312,19 +569,36 @@
     "tier": "Rules",
     "action": "Trigger KYC refresh; confirm identity continuity; re-evaluate risk category.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "Medium", "reason": "Name change needs KYC refresh to confirm continuity." },
-      { "type": "Reputational Risk", "status": "Low", "reason": "No adverse media tied to the change." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Payments relationship only." }
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "Name change needs KYC refresh to confirm continuity."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse media tied to the change."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Payments relationship only."
+      }
     ],
     "citations": [
-      { "source": "Registro Mercantil", "date": "2026-06-13", "headline": "Entity name change recorded in registry" }
-    ]
+      {
+        "source": "Registro Mercantil",
+        "date": "2026-06-13",
+        "headline": "Entity name change recorded in registry"
+      }
+    ],
+    "summary": "Vantage onboarded for property-investment settlement under its original legal name. A registry filing shows a name change with no other structural change. The score remains medium: a name change requires a KYC refresh to confirm continuity, but on its own carries limited risk and is supported by a single source."
   },
   {
     "id": 11,
     "client": "Atlas Freight Partners",
     "sector": "Shipping",
-    "jurisdiction": "GR",
+    "jurisdiction": "Greece",
     "relationship": "Payments",
     "severity": "Low",
     "originalRisk": "Low",
@@ -336,6 +610,12 @@
     "sources": 1,
     "detected": "6d ago",
     "status": "Cleared",
+    "kyc": {
+      "onboarded": "Jul 2019",
+      "expectedModel": "Shipping and freight",
+      "expectedActivity": "Predictable USD freight settlement",
+      "owners": "Family-owned (Greece)"
+    },
     "baseline": "Onboarded 2019 for freight settlement. Stable, predictable USD activity. Risk rating: Low.",
     "observed": "One cross-border transfer exceeded the usual range; subsequently explained by a documented bulk fuel purchase.",
     "reasoning": "A single outlier transaction was flagged by the rules engine but is supported by documentation consistent with the client's business, reducing the likelihood of genuine concern.",
@@ -343,19 +623,36 @@
     "tier": "Rules",
     "action": "No further action; documentation reviewed and retained for audit.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "Low", "reason": "Outlier transfer explained by documented purchase." },
-      { "type": "Reputational Risk", "status": "Low", "reason": "No adverse coverage." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Payments relationship only." }
+      {
+        "type": "Compliance Risk",
+        "status": "Low",
+        "reason": "Outlier transfer explained by documented purchase."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse coverage."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Payments relationship only."
+      }
     ],
     "citations": [
-      { "source": "Internal monitoring", "date": "2026-06-12", "headline": "Outlier transfer auto-flagged and cleared after review" }
-    ]
+      {
+        "source": "Internal monitoring",
+        "date": "2026-06-12",
+        "headline": "Outlier transfer auto-flagged and cleared after review"
+      }
+    ],
+    "summary": "Atlas is a stable, low-risk freight client. A single transfer above its usual range was auto-flagged, then explained by a documented bulk fuel purchase consistent with its business. With the outlier resolved and no adverse media, the score stays firmly in the low band and the alert is cleared."
   },
   {
     "id": 12,
     "client": "Selene Biotech AG",
     "sector": "Biotechnology",
-    "jurisdiction": "CH",
+    "jurisdiction": "Switzerland",
     "relationship": "Payments",
     "severity": "Low",
     "originalRisk": "Low",
@@ -367,6 +664,12 @@
     "sources": 1,
     "detected": "6d ago",
     "status": "Cleared",
+    "kyc": {
+      "onboarded": "Oct 2022",
+      "expectedModel": "Research-stage biotech",
+      "expectedActivity": "Grant inflows and lab supplier payments",
+      "owners": "Founders and research grants (Switzerland)"
+    },
     "baseline": "Onboarded 2022 as a research-stage biotech. Expected grant inflows and lab supplier payments. Risk rating: Low.",
     "observed": "Website monitoring detected a minor wording change on a product page with no change to business activity.",
     "reasoning": "The detected website change is cosmetic and does not indicate a change in business activity. No re-analysis beyond the automated comparison is required.",
@@ -374,12 +677,29 @@
     "tier": "Rules",
     "action": "No further action; baseline website snapshot updated.",
     "riskBreakdown": [
-      { "type": "Compliance Risk", "status": "Low", "reason": "Cosmetic website change; no activity shift." },
-      { "type": "Reputational Risk", "status": "Low", "reason": "No adverse coverage." },
-      { "type": "Credit Risk", "status": "Not Applicable", "reason": "Payments relationship only." }
+      {
+        "type": "Compliance Risk",
+        "status": "Low",
+        "reason": "Cosmetic website change; no activity shift."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse coverage."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "Payments relationship only."
+      }
     ],
     "citations": [
-      { "source": "Wayback Machine", "date": "2026-06-12", "headline": "Minor content diff detected on product page" }
-    ]
+      {
+        "source": "Wayback Machine",
+        "date": "2026-06-12",
+        "headline": "Minor content diff detected on product page"
+      }
+    ],
+    "summary": "Selene is a research-stage biotech with predictable grant and supplier flows. Website monitoring detected a cosmetic wording change with no shift in business activity. The score is low and unchanged in substance; the baseline snapshot was simply updated and no further action is required."
   }
 ]

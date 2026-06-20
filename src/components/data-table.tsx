@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { EscalateDialog } from "@/components/escalate-dialog"
 import {
   Drawer,
   DrawerClose,
@@ -63,7 +64,16 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { CircleCheckIcon, EllipsisVerticalIcon, Columns3Icon, ChevronDownIcon, ChevronsLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon, ArrowUpIcon, ArrowRightIcon } from "lucide-react"
+import Link from "next/link"
+import { EllipsisVerticalIcon, Columns3Icon, ChevronDownIcon, ChevronsLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from "lucide-react"
+
+import {
+  initials,
+  RiskDrift,
+  RiskStatusBadge,
+  SeverityBadge,
+  StatusBadge,
+} from "@/components/risk-badges"
 
 export const schema = z.object({
   id: z.number(),
@@ -111,88 +121,6 @@ const STATUS_BY_TAB: Record<string, string> = {
   "in-review": "In Review",
   escalated: "Escalated",
   cleared: "Cleared",
-}
-
-function SeverityBadge({ severity }: { severity: string }) {
-  if (severity === "Critical") {
-    return <Badge variant="destructive">Critical</Badge>
-  }
-  if (severity === "High") {
-    return (
-      <Badge variant="outline" className="border-amber-600/40 text-amber-600 dark:text-amber-500">
-        High
-      </Badge>
-    )
-  }
-  if (severity === "Medium") {
-    return <Badge variant="secondary">Medium</Badge>
-  }
-  return (
-    <Badge variant="outline" className="text-muted-foreground">
-      Low
-    </Badge>
-  )
-}
-
-function StatusBadge({ status }: { status: string }) {
-  if (status === "Escalated") {
-    return (
-      <Badge variant="outline" className="border-amber-600/40 text-amber-600 dark:text-amber-500">
-        Escalated
-      </Badge>
-    )
-  }
-  if (status === "In Review") {
-    return <Badge variant="secondary">In Review</Badge>
-  }
-  if (status === "Cleared") {
-    return (
-      <Badge variant="outline" className="text-muted-foreground">
-        <CircleCheckIcon className="fill-green-500 dark:fill-green-400" />
-        Cleared
-      </Badge>
-    )
-  }
-  return <Badge variant="outline">New</Badge>
-}
-
-const RISK_RATING_CLASS: Record<string, string> = {
-  High: "text-red-600 dark:text-red-500",
-  Medium: "text-amber-600 dark:text-amber-500",
-  Low: "text-muted-foreground",
-}
-
-function RiskRating({ rating }: { rating: string }) {
-  return (
-    <span className={`font-medium ${RISK_RATING_CLASS[rating] ?? ""}`}>{rating}</span>
-  )
-}
-
-function RiskDrift({ from, to }: { from: string; to: string }) {
-  const escalated = from !== to
-  return (
-    <div className="flex items-center gap-1.5 text-sm whitespace-nowrap">
-      <span className="text-muted-foreground">{from}</span>
-      <ArrowRightIcon className="size-3 text-muted-foreground" />
-      <RiskRating rating={to} />
-      {escalated && <ArrowUpIcon className="size-3 text-red-600 dark:text-red-500" />}
-    </div>
-  )
-}
-
-const RISK_STATUS_CLASS: Record<string, string> = {
-  High: "border-red-600/40 text-red-600 dark:text-red-500",
-  Medium: "border-amber-600/40 text-amber-600 dark:text-amber-500",
-  Low: "text-muted-foreground",
-  "Not Applicable": "text-muted-foreground/70 border-dashed",
-}
-
-function RiskStatusBadge({ status }: { status: string }) {
-  return (
-    <Badge variant="outline" className={RISK_STATUS_CLASS[status] ?? ""}>
-      {status}
-    </Badge>
-  )
 }
 
 const columns: ColumnDef<Alert>[] = [
@@ -601,15 +529,6 @@ export function DataTable({ data }: { data: Alert[] }) {
   )
 }
 
-function initials(name: string) {
-  return name
-    .split(" ")
-    .filter((w) => /[A-Za-z0-9]/.test(w[0] ?? ""))
-    .slice(0, 2)
-    .map((w) => w[0].toUpperCase())
-    .join("")
-}
-
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
@@ -743,16 +662,15 @@ function AlertDetailDrawer({
           </DetailRow>
         </div>
         <DrawerFooter>
-          <Button onClick={() => toast.success(`Escalated ${item.client} to compliance`)}>
-            Escalate to compliance
+          <Button render={<Link href={`/clients/${item.id}`} />}>
+            View full profile
           </Button>
           <div className="grid grid-cols-2 gap-2">
-            <Button
-              variant="outline"
-              onClick={() => toast(`Marked ${item.client} in review`)}
-            >
-              Mark in review
-            </Button>
+            <EscalateDialog
+              client={item.client}
+              defaultAction={item.action}
+              trigger={<Button variant="outline" className="w-full">Escalate</Button>}
+            />
             <Button
               variant="outline"
               onClick={() => toast(`Dismissed alert for ${item.client}`)}
