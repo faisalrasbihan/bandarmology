@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { toSignal } from "../helpers";
 import type { FetchQuery, Signal } from "../types";
 
 const BASE_URL = "https://api.opensanctions.org/search/default";
@@ -40,19 +40,14 @@ export async function fetchOpenSanctions(query: FetchQuery): Promise<Signal[]> {
   const data = (await res.json()) as { results?: OpenSanctionsResult[] };
   const fetchedAt = new Date().toISOString();
 
-  return (data.results ?? []).map((r): Signal => ({
-    id: randomUUID(),
-    entityHint: query.companyName,
-    source: "open_sanctions",
-    title: `${r.caption} — ${r.schema}${r.datasets?.length ? ` (${r.datasets.join(", ")})` : ""}`,
-    url: `https://www.opensanctions.org/entities/${r.id}/`,
-    publishedAt: r.last_seen ?? null,
-    fetchedAt,
-    tags: {
-      sectors: query.sectors ?? [],
-      countries: r.countries ?? query.countries ?? [],
-      keywords: r.topics ?? [],
-    },
-    raw: r as unknown as Record<string, unknown>,
-  }));
+  return (data.results ?? []).map((r): Signal =>
+    toSignal(query, "open_sanctions", {
+      title: `${r.caption} — ${r.schema}${r.datasets?.length ? ` (${r.datasets.join(", ")})` : ""}`,
+      url: `https://www.opensanctions.org/entities/${r.id}/`,
+      publishedAt: r.last_seen ?? null,
+      fetchedAt,
+      tags: { countries: r.countries, keywords: r.topics ?? [] },
+      raw: r as unknown as Record<string, unknown>,
+    })
+  );
 }

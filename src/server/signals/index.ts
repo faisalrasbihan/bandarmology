@@ -60,5 +60,5 @@ export async function ingestSignals(
 }
 
 export { fetchGdelt, fetchGoogleNewsRss, fetchOpenSanctions, fetchNewsApi, fetchMediastack };
-export { getStoredSignals } from "./store";
+export { getStoredSignals, getSignalsByIds } from "./store";
 export * from "./types";

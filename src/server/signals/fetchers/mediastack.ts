@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { buildKeywordList, toSignal } from "../helpers";
 import type { FetchQuery, Signal } from "../types";
 
 const BASE_URL = "http://api.mediastack.com/v1/news";
@@ -27,7 +27,7 @@ export async function fetchMediastack(query: FetchQuery): Promise<Signal[]> {
 
   const params = new URLSearchParams({
     access_key: apiKey,
-    keywords: buildSearchTerm(query),
+    keywords: buildKeywordList(query),
     languages: "en",
     sort: "published_desc",
     limit: String(Math.min(query.maxResults ?? 25, 100)),
@@ -44,25 +44,15 @@ export async function fetchMediastack(query: FetchQuery): Promise<Signal[]> {
   const data = (await res.json()) as { data?: MediastackArticle[] };
   const fetchedAt = new Date().toISOString();
 
-  return (data.data ?? []).map((a): Signal => ({
-    id: randomUUID(),
-    entityHint: query.companyName,
-    source: "mediastack",
-    title: a.title,
-    snippet: a.description,
-    url: a.url,
-    publishedAt: a.published_at ?? null,
-    fetchedAt,
-    tags: {
-      sectors: query.sectors ?? [],
-      countries: a.country ? [a.country] : query.countries ?? [],
-      keywords: [],
-    },
-    raw: a as unknown as Record<string, unknown>,
-  }));
-}
-
-function buildSearchTerm(query: FetchQuery): string {
-  const terms = [query.companyName, ...(query.aliases ?? [])];
-  return terms.join(",");
+  return (data.data ?? []).map((a): Signal =>
+    toSignal(query, "mediastack", {
+      title: a.title,
+      snippet: a.description,
+      url: a.url,
+      publishedAt: a.published_at ?? null,
+      fetchedAt,
+      tags: { countries: a.country ? [a.country] : undefined },
+      raw: a as unknown as Record<string, unknown>,
+    })
+  );
 }

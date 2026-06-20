@@ -14,11 +14,12 @@ join step that's logged and auditable.
 - **Layer 1 — Public** (`src/server/signals/`): news, sanctions/watchlists, corporate
   registries, domain/website changes, funding announcements. Non-sensitive, primary focus
   of the build.
-- **Layer 2 — Simulated internal** (not yet built): a hand-authored KYC baseline for one
-  real company, as if AMINA had onboarded them — expected business model, jurisdiction,
-  ownership, expected transaction volume/pattern, risk rating — plus a synthetic AML
-  transaction feed with a few injected anomalies (structuring, sudden cross-border spike,
-  dormancy break).
+- **Layer 2 — Simulated internal** (`src/server/baseline/`): hand-authored KYC baselines, as
+  if AMINA had onboarded these entities — expected business model, sectors, jurisdiction,
+  ownership, expected transaction volume range, risk rating, onboarding date. Stored in a
+  separate `kyc_baselines` table, never merged with the Layer 1 `signals` store; the only join
+  is the explicit, logged Stage 3 step. (A synthetic AML transaction feed with injected
+  anomalies — structuring, cross-border spike, dormancy break — remains a future extension.)
 
 ## Pipeline (staged by cost)
 
@@ -31,7 +32,7 @@ Ingestion → Stage 1: cheap filter → Stage 2: LLM classify → Stage 3: deep 
 | 0. Ingestion | Pull raw items from each public source, normalize into `Signal` | API calls only, no LLM | **Built** — `src/server/signals/` |
 | 1. Cheap filter | Rule/keyword match + lexical overlap against the risk taxonomy; dedupe (done at ingestion); tag-based routing (see below) | ~free | **Built** — `src/server/filter/` |
 | 2. LLM classify | Cheap/fast model (Haiku 4.5) on items that survive Stage 1; structured output: `flag_type, confidence, citations[], rationale, recommended_action` | Low | **Built** — `src/server/classify/` |
-| 3. Deep analysis | Stronger model (e.g. Sonnet), escalated cases only; diffs Stage 2 extractions against the Layer 2 baseline to detect drift; produces case narrative | Higher, but rare | Not built |
+| 3. Deep analysis | Stronger model (Sonnet 4.6), escalated cases only; diffs the flagged signal against the Layer 2 KYC baseline to detect drift; produces case narrative | Higher, but rare | **Built** — `src/server/classify/stage3.ts` |
 
 Every LLM call is logged with token counts so the system can report cost per 1,000 alerts
 and the % of volume resolved at each stage without an LLM call — this is what's judged
@@ -99,8 +100,18 @@ flowchart TD
     GENROUTE --> CLIENT2
 
     CLIENT3[Analyst] -->|"PATCH /api/alerts/:id"| PATCHROUTE["src/app/api/alerts/[id]/route.ts"]
-    PATCHROUTE --> SETSTATUS["classify/store.ts\nsetAlertStatus(): only caller\nallowed to change status"]
+    PATCHROUTE --> SETSTATUS["classify/store.ts\nsetAlertStatus(): only caller\nallowed to change status\n+ writes audit row"]
     SETSTATUS --> MEM4
+    SETSTATUS --> MEM5[("Postgres\nalert_decisions")]
+
+    CLIENT4[Analyst] -->|"POST /api/alerts/:id/analyze"| ANALYZE["src/app/api/alerts/[id]/analyze/route.ts"]
+    ANALYZE --> S3MOD["classify/index.ts\nrunStage3(): explicit Layer1×Layer2 join"]
+    MEM4 -.->|alert + signal| S3MOD
+    BASE[("Postgres\nkyc_baselines\n(Layer 2, separate store)")] -.->|baseline| S3MOD
+    S3MOD -->|"one call"| LLM3["classify/stage3.ts\nSonnet 4.6, forced tool call,\nZod validation, retry once"]
+    LLM3 --> LOGMOD
+    S3MOD -->|"drift finding"| MEM6[("Postgres\ndrift_findings")]
+    ANALYZE --> CLIENT4
 ```
 
 ### Schema graph
@@ -112,10 +123,12 @@ erDiagram
     Signal ||--o{ SignalTags : "has"
     Signal ||--o{ FetchError : "or fails as (per source)"
     Signal ||--o| Alert : "cited by"
-    Signal ||--o| Stage1Classification : "scored by"
-    Stage1Classification }o--o{ RiskCategory : "matches against"
+    Signal ||--o| SignalTriage : "scored by"
+    SignalTriage }o--o{ RiskCategory : "matches against"
     Alert ||--o{ LlmCallLog : "logged via"
-    KycBaseline ||--o{ Alert : "diffed against (planned)"
+    Alert ||--o{ AlertDecision : "audited by"
+    Alert ||--o{ DriftFinding : "deep-analyzed into"
+    KycBaseline ||--o{ DriftFinding : "diffed against (Stage 3 join)"
 
     FetchQuery {
         string companyName
@@ -151,7 +164,7 @@ erDiagram
         string description
         string[] keywords
     }
-    Stage1Classification {
+    SignalTriage {
         string signalId
         boolean passed
         string topCategoryId
@@ -194,6 +207,29 @@ erDiagram
         number costUsd
         boolean success
         string error
+        string createdAt
+    }
+    AlertDecision {
+        string id
+        string alertId
+        string fromStatus
+        string toStatus
+        string actor
+        string note
+        string createdAt
+    }
+    DriftFinding {
+        string id
+        string alertId
+        string entityHint
+        boolean driftDetected
+        string driftType
+        string severity
+        number confidence
+        json comparison "per-dimension"
+        string narrative
+        string recommendedAction
+        object tokenUsage
         string createdAt
     }
 ```
@@ -276,15 +312,23 @@ LlmCallLog {
   id, stage: "stage2" | "stage3", model, signalId,
   inputTokens, outputTokens, costUsd, success, error, createdAt
 }
-```
 
-Planned, not yet built:
+AlertDecision {        // append-only audit of human status changes
+  id, alertId, fromStatus, toStatus, actor, note?, createdAt
+}
 
-```ts
+// Layer 2 — separate store (src/server/baseline/), joined to Layer 1 only in Stage 3
 KycBaseline {
   entityId, companyName, expectedSectors[], expectedCountries[],
   expectedBusinessModel, expectedTxVolumeRange, ownershipStructure[],
   riskRating, onboardedAt
+}
+
+DriftFinding {         // Stage 3 output, per analyzed alert
+  id, alertId, entityHint, driftDetected, driftType, severity, confidence,
+  comparison: { dimension, expected, observed, changed }[],
+  narrative, recommendedAction, citationSignalIds: SignalId[],
+  modelUsed, tokenUsage, createdAt
 }
 ```
 
@@ -349,8 +393,10 @@ Reference docs: [DOC 2.0 API query syntax](https://blog.gdeltproject.org/gdelt-d
 
 ## Guardrails
 
-- **Data separation:** Layer 1 and Layer 2 never share a store; a join is an explicit,
-  logged step. (Layer 2 not yet built.)
+- **Data separation (implemented):** Layer 1 (`src/server/signals/`, `signals` table) and
+  Layer 2 (`src/server/baseline/`, `kyc_baselines` table) are separate modules and stores.
+  They meet only in `classify/stage3.ts`, which explicitly fetches the alert/signal and the
+  baseline and combines them in one prompt — a single, logged join (via `llm_calls`).
 - **Grounding (implemented):** every `Alert.citations` entry must reference a real `Signal.id`
   that was actually ingested — `classify/stage2.ts` checks this against the signal actually
   given to the model, not the model's claim, and rejects/retries on a bad citation.
@@ -361,23 +407,31 @@ Reference docs: [DOC 2.0 API query syntax](https://blog.gdeltproject.org/gdelt-d
   `setAlertStatus()` is the only function that can change it, called solely from the
   human-initiated `PATCH /api/alerts/:id` route. No automated action is taken directly off a
   model output.
+- **Entity grounding (implemented):** Stage 2 also judges `concernsEntity` — whether the
+  signal is actually about the searched entity vs. a same-name company / person / passing
+  mention — and `runStage2` suppresses the alert when it isn't, guarding against acting on
+  the wrong entity (the entityHint is only a search hint, not a verified match).
 - **RBAC stub:** analyst vs. compliance-officer roles gating who can change alert status. Not
-  yet built — `PATCH /api/alerts/:id` currently accepts any caller.
+  yet built — `PATCH /api/alerts/:id` records the acting `actor` but doesn't enforce a role.
 - **Audit log (implemented):** every LLM call (model, tokens, cost, success/failure) is
-  logged via `logLlmCall()` into `llm_calls`, regardless of outcome. Human decisions
-  (status changes) are not yet separately timestamped beyond the `alerts` row's own update —
-  a dedicated decision log is a next step if a full audit trail is needed.
+  logged via `logLlmCall()` into `llm_calls`, regardless of outcome. Every human status change
+  writes an append-only `alert_decisions` row (actor, from→to, note, timestamp) in the same
+  transaction as the update, so status and audit trail can't disagree.
 
 ## Current implementation
 
-Layer 1 / Stage 0 ingestion, Stage 1 cheap filter, and Stage 2 LLM classify all exist today;
-Stage 3 deep analysis and Layer 2 (KYC baseline/drift) do not:
+The full pipeline (Stage 0 → 1 → 2 → 3) and both data layers exist today:
 
-- `src/server/db.ts` — Postgres connection pool (`getPool()`), reads `DATABASE_URL`
+- `src/server/db.ts` — Postgres connection pool (`getPool()`, reads `DATABASE_URL`) and
+  `defineSchema(ddl)`, which applies each store's DDL once, lazily, on first request (no
+  migration framework); stores call this instead of repeating the promise-caching dance
+- `src/server/anthropic.ts` — Anthropic client singleton + per-model token-cost helpers
 - `src/server/signals/types.ts` — `Signal`, `SignalTags`, `FetchQuery`, `FetchError`
 - `src/server/signals/fetchers/{googleNewsRss,gdelt,openSanctions,newsapi,mediastack}.ts`
-- `src/server/signals/store.ts` — Postgres-backed dedupe store (schema in `schema.sql`,
-  applied automatically on first request); `upsertSignals()` keys on a unique index on
+- `src/server/signals/helpers.ts` — `buildSearchTerm`/`buildKeywordList`/`toSignal`, shared by
+  the fetchers so the query syntax and normalized `Signal` shape live in one place
+- `src/server/signals/store.ts` — Postgres-backed dedupe store (embedded DDL is the single
+  source of truth, applied automatically on first request); `upsertSignals()` keys on a unique index on
   normalized URL with a fuzzy normalized-title+day fallback to catch the same story
   reported by different sources under different URLs
 - `src/server/signals/index.ts` — `fetchAllSignals()` runs all fetchers concurrently via
@@ -394,19 +448,34 @@ Stage 3 deep analysis and Layer 2 (KYC baseline/drift) do not:
   `{ survived, filtered }` Stage 1 summary
 - `src/app/api/signals/store/route.ts` — `GET /api/signals/store?entityHint=...&stage1=survived|filtered`,
   lists everything accumulated in the store so far, annotated with Stage 1 results
-- `src/server/classify/types.ts` — `Stage2OutputSchema` (Zod), `Alert`, `LlmCallLog` types
-- `src/server/classify/stage2.ts` — `classifySignalWithLlm()`, the Anthropic SDK call
-  (Haiku 4.5, forced tool call, Zod + citation validation, retry once on violation)
-- `src/server/classify/store.ts` — persists `alerts` and `llm_calls`; `createAlert()` always
-  writes `status: 'proposed'`; `setAlertStatus()` is the only status-change path;
-  `getCostSummary()` aggregates spend for the cost-per-1000-alerts metric
-- `src/server/classify/index.ts` — `runStage2()`: finds Stage-1 survivors without an alert,
-  classifies each, logs every call, creates an `Alert` only on valid output
-- `src/app/api/alerts/generate/route.ts` — `POST /api/alerts/generate?entityHint=...&limit=...`,
-  the only LLM-calling endpoint, triggered explicitly
-- `src/app/api/alerts/route.ts` — `GET /api/alerts?entityHint=...&status=...`
-- `src/app/api/alerts/[id]/route.ts` — `PATCH /api/alerts/:id` `{ status }`, the
-  human-in-the-loop status-change endpoint
-- `src/app/api/cost-summary/route.ts` — `GET /api/cost-summary`, aggregate LLM spend
+- `src/server/filter/store.ts` also exports `getTriageStats()` — Stage-1 volume resolved
+  vs. passed, for the cost-efficiency metric
+- `src/server/classify/types.ts` — `Stage2OutputSchema`/`Stage3OutputSchema` (Zod), `Alert`,
+  `DriftFinding`, `AlertDecision`, `LlmCallLog` types
+- `src/server/classify/stage2.ts` — `classifySignalWithLlm()` (Haiku 4.5, forced tool call,
+  Zod + citation validation, `concernsEntity` guard, corroboration in prompt, retry once);
+  exports `buildStage2Request`/`validateStage2` shared with the batch path
+- `src/server/classify/stage3.ts` — `analyzeDrift()` (Sonnet 4.6), the Layer 1 × Layer 2 diff
+- `src/server/classify/batch.ts` — `submitStage2Batch()`/`collectStage2Batch()`, the opt-in
+  Message Batches path (50% cheaper, async)
+- `src/server/classify/citations.ts` — `resolveCitations()`, expands Signal.ids to title+url
+- `src/server/classify/store.ts` — persists `alerts`, `llm_calls`, `alert_decisions`,
+  `drift_findings`; `createAlert()` always writes `status: 'proposed'`; `setAlertStatus()` is
+  the only status-change path and writes an audit row in the same transaction; `getCostSummary()`
+  aggregates spend + triage breakdown
+- `src/server/classify/index.ts` — `runStage2()` (classify survivors, suppress wrong-entity,
+  log every call) and `runStage3()` (the explicit baseline join)
+- `src/server/baseline/{types,store,seed,index}.ts` — Layer 2 KYC baselines in a separate
+  `kyc_baselines` store; `getBaselineByCompany()` is the Stage 3 join key
+- `src/app/api/alerts/generate/route.ts` — `POST …?entityHint=…&limit=…[&mode=batch]`, the
+  only LLM-calling endpoint, triggered explicitly
+- `src/app/api/alerts/batch/[id]/collect/route.ts` — `POST`, collect a Stage 2 batch
+- `src/app/api/alerts/route.ts` — `GET /api/alerts?entityHint=…&status=…`
+- `src/app/api/alerts/[id]/route.ts` — `GET` (full detail: citations, drift, decisions),
+  `PATCH` (human-in-the-loop status change, requires `actor`, writes audit row)
+- `src/app/api/alerts/[id]/analyze/route.ts` — `POST`, runs Stage 3 drift analysis
+- `src/app/api/baselines/route.ts` + `baselines/seed/route.ts` — list / seed KYC baselines
+- `src/app/api/cost-summary/route.ts` — `GET`, spend + cost-per-1000-alerts + % resolved without LLM
+- `src/app/alerts/page.tsx` + `src/components/alerts-view.tsx` — the alerts console UI
 
 See README.md for setup, and the "Next steps" list there for what's still to build.

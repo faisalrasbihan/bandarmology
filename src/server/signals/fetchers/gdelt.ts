@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { buildSearchTerm, toSignal } from "../helpers";
 import type { FetchQuery, Signal } from "../types";
 
 const BASE_URL = "https://api.gdeltproject.org/api/v2/doc/doc";
@@ -19,12 +19,8 @@ interface GdeltArticle {
  * transient error, not a code bug.
  */
 export async function fetchGdelt(query: FetchQuery): Promise<Signal[]> {
-  const terms = [query.companyName, ...(query.aliases ?? [])];
-  const quoted = terms.map((t) => (t.includes(" ") ? `"${t}"` : t));
-  const searchTerm = quoted.length > 1 ? `(${quoted.join(" OR ")})` : quoted[0];
-
   const params = new URLSearchParams({
-    query: searchTerm,
+    query: buildSearchTerm(query),
     mode: "ArtList",
     format: "json",
     maxrecords: String(Math.min(query.maxResults ?? 25, 250)),
@@ -47,21 +43,16 @@ export async function fetchGdelt(query: FetchQuery): Promise<Signal[]> {
   }
 
   const fetchedAt = new Date().toISOString();
-  return (data.articles ?? []).map((a): Signal => ({
-    id: randomUUID(),
-    entityHint: query.companyName,
-    source: "gdelt",
-    title: a.title,
-    url: a.url,
-    publishedAt: parseGdeltDate(a.seendate),
-    fetchedAt,
-    tags: {
-      sectors: query.sectors ?? [],
-      countries: a.sourcecountry ? [a.sourcecountry] : query.countries ?? [],
-      keywords: [],
-    },
-    raw: a as unknown as Record<string, unknown>,
-  }));
+  return (data.articles ?? []).map((a): Signal =>
+    toSignal(query, "gdelt", {
+      title: a.title,
+      url: a.url,
+      publishedAt: parseGdeltDate(a.seendate),
+      fetchedAt,
+      tags: { countries: a.sourcecountry ? [a.sourcecountry] : undefined },
+      raw: a as unknown as Record<string, unknown>,
+    })
+  );
 }
 
 function parseGdeltDate(seendate: string): string | null {

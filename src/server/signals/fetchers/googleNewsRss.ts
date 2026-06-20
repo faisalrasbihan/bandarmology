@@ -1,5 +1,5 @@
-import { randomUUID } from "crypto";
 import { XMLParser } from "fast-xml-parser";
+import { buildSearchTerm, toSignal } from "../helpers";
 import type { FetchQuery, Signal } from "../types";
 
 const BASE_URL = "https://news.google.com/rss/search";
@@ -38,29 +38,15 @@ export async function fetchGoogleNewsRss(query: FetchQuery): Promise<Signal[]> {
 
   return items.slice(0, max).map((item): Signal => {
     const pubDate = typeof item.pubDate === "string" ? item.pubDate : undefined;
-    return {
-      id: randomUUID(),
-      entityHint: query.companyName,
-      source: "google_news_rss",
+    return toSignal(query, "google_news_rss", {
       title: stripHtml(String(item.title ?? "")).trim(),
       snippet: item.description ? stripHtml(String(item.description)).trim() : undefined,
       url: String(item.link ?? "").trim(),
       publishedAt: pubDate ? safeIsoDate(pubDate) : null,
       fetchedAt,
-      tags: {
-        sectors: query.sectors ?? [],
-        countries: query.countries ?? [],
-        keywords: [],
-      },
       raw: item as Record<string, unknown>,
-    };
+    });
   });
-}
-
-function buildSearchTerm(query: FetchQuery): string {
-  const terms = [query.companyName, ...(query.aliases ?? [])];
-  const quoted = terms.map((t) => (t.includes(" ") ? `"${t}"` : t));
-  return quoted.length > 1 ? `(${quoted.join(" OR ")})` : quoted[0];
 }
 
 function toArray<T>(value: T | T[] | undefined): T[] {

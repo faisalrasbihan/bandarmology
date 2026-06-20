@@ -1,9 +1,7 @@
-import { getPool } from "../db";
+import { defineSchema, getPool } from "../db";
 import type { Stage1Classification } from "./stage1";
 
-let schemaReady: Promise<void> | null = null;
-
-const SCHEMA_DDL = `
+const ensureSchema = defineSchema(`
   ALTER TABLE IF EXISTS stage1_classifications RENAME TO signal_triage;
   ALTER INDEX IF EXISTS stage1_passed_idx RENAME TO signal_triage_passed_idx;
   CREATE TABLE IF NOT EXISTS signal_triage (
@@ -16,20 +14,7 @@ const SCHEMA_DDL = `
     classified_at TIMESTAMPTZ NOT NULL
   );
   CREATE INDEX IF NOT EXISTS signal_triage_passed_idx ON signal_triage (passed);
-`;
-
-function ensureSchema(): Promise<void> {
-  if (!schemaReady) {
-    schemaReady = getPool()
-      .query(SCHEMA_DDL)
-      .then(() => undefined)
-      .catch((err) => {
-        schemaReady = null;
-        throw err;
-      });
-  }
-  return schemaReady;
-}
+`);
 
 export async function recordStage1Classification(
   signalId: string,
@@ -64,6 +49,17 @@ interface ClassificationRow {
   passed: boolean;
   matches: Stage1Classification["matches"];
   classified_at: string;
+}
+
+/** Volume resolved by the free Stage 1 filter vs. passed through to the paid LLM stage. */
+export async function getTriageStats(): Promise<{ triaged: number; passed: number; filtered: number }> {
+  await ensureSchema();
+  const { rows } = await getPool().query<{ triaged: string; passed: string }>(
+    `SELECT count(*) AS triaged, count(*) FILTER (WHERE passed) AS passed FROM signal_triage`
+  );
+  const triaged = Number(rows[0].triaged);
+  const passed = Number(rows[0].passed);
+  return { triaged, passed, filtered: triaged - passed };
 }
 
 export async function getStage1Classifications(
