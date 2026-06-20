@@ -5,6 +5,27 @@ declare global {
 }
 
 /**
+ * Percent-encodes the password in a `postgres(ql)://user:pass@host/db` URL if it
+ * contains characters that break WHATWG URL parsing (e.g. `?`, `#`, ` `). `pg`
+ * parses the connection string with `new URL()`, which throws on an unescaped
+ * `?` in the password — a common foot-gun for generated DB passwords (the
+ * Supabase pooler password used here contains `??`). We only touch the password
+ * segment, leaving the rest of the URL untouched, and only when it's actually
+ * needed (a string that already parses is returned verbatim).
+ */
+function normalizeConnectionString(raw: string): string {
+  try {
+    new URL(raw);
+    return raw;
+  } catch {
+    const m = raw.match(/^(postgres(?:ql)?:\/\/)([^:@/]+):([^@]*)@(.+)$/);
+    if (!m) return raw;
+    const [, scheme, user, password, rest] = m;
+    return `${scheme}${user}:${encodeURIComponent(password)}@${rest}`;
+  }
+}
+
+/**
  * Singleton pool, cached on `global` so Next.js dev-mode module reloads don't
  * open a new connection pool on every hot reload.
  */
@@ -16,7 +37,9 @@ export function getPool(): Pool {
     );
   }
   if (!global.__aminaPgPool) {
-    global.__aminaPgPool = new Pool({ connectionString: process.env.DATABASE_URL });
+    global.__aminaPgPool = new Pool({
+      connectionString: normalizeConnectionString(process.env.DATABASE_URL),
+    });
   }
   return global.__aminaPgPool;
 }
