@@ -13,8 +13,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 import { RiskDriftChart } from "@/components/risk-drift-chart"
 import { EscalateDialog } from "@/components/escalate-dialog"
+import { exposureAtRisk, formatMoney } from "@/lib/format"
 import {
   initials,
   RiskDrift,
@@ -29,6 +36,8 @@ export interface ClientRecord {
   sector: string
   jurisdiction: string
   relationship: string
+  flagged: boolean
+  exposureUsd: number
   severity: string
   originalRisk: string
   currentRisk: string
@@ -54,6 +63,13 @@ export interface ClientRecord {
   summary: string
   riskBreakdown: { type: string; status: string; reason: string }[]
   citations: { source: string; date: string; headline: string }[]
+  watchlist?: boolean
+  watchlistMeta?: {
+    reason: string
+    addedBy: string
+    addedOn: string
+    reviewBy: string
+  }
 }
 
 // Decompose the risk score into weighted, additive contributors that sum to
@@ -118,6 +134,7 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
         <Button
           variant="ghost"
           size="sm"
+          nativeButton={false}
           className="text-muted-foreground"
           render={<Link href="/" />}
         >
@@ -148,29 +165,43 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <EscalateDialog
-            client={client.client}
-            defaultAction={client.action}
-            trigger={<Button variant="outline">Escalate</Button>}
-          />
-          <Button>Trigger Re-KYC</Button>
+        <div className="flex flex-col items-start gap-3 sm:items-end">
+          <div className="flex flex-col sm:items-end">
+            <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              Exposure
+            </span>
+            <span className="text-xl font-semibold tabular-nums">
+              {formatMoney(client.exposureUsd)}
+            </span>
+            <span className="text-xs text-muted-foreground tabular-nums">
+              {formatMoney(exposureAtRisk(client.exposureUsd, client.riskScore))} at risk
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <EscalateDialog
+              client={client.client}
+              defaultAction={client.action}
+              trigger={<Button variant="outline">Escalate</Button>}
+            />
+            <Button>Trigger Re-KYC</Button>
+          </div>
         </div>
       </div>
 
       {/* Risk trend + assessment */}
       <div className="grid grid-cols-1 gap-4 @4xl/main:grid-cols-3">
-        <Card className="@4xl/main:col-span-2">
+        <Card className="h-full @4xl/main:col-span-2 @4xl/main:h-[340px]">
           <CardHeader>
             <CardTitle>Risk Score Trend</CardTitle>
             <CardDescription>
               12-month drift against the onboarding baseline
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-1 flex-col">
             <RiskDriftChart
               originalRisk={client.originalRisk}
               currentScore={client.riskScore}
+              showSignal={client.originalRisk !== client.currentRisk}
             />
           </CardContent>
           <CardFooter className="gap-2 border-t pt-4 text-sm">
@@ -181,55 +212,60 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
           </CardFooter>
         </Card>
 
-        <Card>
+        <Card className="h-full @4xl/main:h-[340px]">
           <CardHeader>
             <CardTitle>Risk Summary</CardTitle>
             <CardDescription>How this reads as {client.riskScore}/100</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4 text-sm">
-            <p className="max-h-40 overflow-y-auto pr-1 leading-relaxed text-muted-foreground">
+          <Tabs
+            defaultValue="narrative"
+            className="flex min-h-0 flex-1 flex-col gap-3 px-(--card-spacing)"
+          >
+            <TabsList className="w-full">
+              <TabsTrigger value="narrative" className="flex-1">
+                Narrative
+              </TabsTrigger>
+              <TabsTrigger value="contributors" className="flex-1">
+                Score
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent
+              value="narrative"
+              className="min-h-0 flex-1 overflow-y-auto pr-1 text-sm leading-relaxed text-muted-foreground"
+            >
               {client.summary}
-            </p>
-
-            <Separator />
-
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                  Score contributors
-                </span>
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  total {client.riskScore}/100
-                </span>
+            </TabsContent>
+            <TabsContent
+              value="contributors"
+              className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 text-sm"
+            >
+              <div className="flex flex-col gap-2.5">
+                {scoreFactors(client).map((f) => (
+                  <div key={f.label} className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span>{f.label}</span>
+                      <span className="tabular-nums text-muted-foreground">+{f.points}</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-chart-1"
+                        style={{ width: `${(f.points / client.riskScore) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-              {scoreFactors(client).map((f) => (
-                <div key={f.label} className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span>{f.label}</span>
-                    <span className="tabular-nums text-muted-foreground">+{f.points}</span>
-                  </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-chart-1"
-                      style={{ width: `${(f.points / client.riskScore) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-              <span>Confidence {Math.round(client.confidence * 100)}%</span>
-              <span>Tier {client.tier}</span>
-              <span>{client.sources} sources</span>
-            </div>
-          </CardContent>
-          <CardFooter className="flex-col items-start gap-1 border-t pt-4">
-            <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              Recommended action
-            </span>
-            <p className="text-sm">{client.action}</p>
-          </CardFooter>
+              <div className="flex items-center justify-between border-t pt-2 text-xs font-medium">
+                <span>Total score</span>
+                <span className="tabular-nums">{client.riskScore}/100</span>
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                <span>Confidence {Math.round(client.confidence * 100)}%</span>
+                <span>Tier {client.tier}</span>
+                <span>{client.sources} sources</span>
+              </div>
+            </TabsContent>
+          </Tabs>
         </Card>
       </div>
 

@@ -31,7 +31,7 @@ const chartConfig = {
 
 const chartData = PRIORITY_ORDER.map((priority) => ({
   priority,
-  count: data.filter((d) => d.severity === priority).length,
+  count: data.filter((d) => d.flagged && d.severity === priority).length,
   fill: `var(--color-${priority})`,
 }))
 

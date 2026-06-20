@@ -1,10 +1,12 @@
 import { AppShell } from "@/components/app-shell"
-import { AlertsView } from "@/components/alerts-view"
+import { AlertsFeed } from "@/components/alerts-feed"
+import { buildAlertFeed } from "@/lib/alert-feed"
 
 export default function AlertsPage() {
+  const { events, pipeline } = buildAlertFeed()
   return (
-    <AppShell title="Risk Alerts">
-      <AlertsView />
+    <AppShell title="Alerts">
+      <AlertsFeed events={events} pipeline={pipeline} />
     </AppShell>
   )
 }
