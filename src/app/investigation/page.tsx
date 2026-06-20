@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { initials, RiskDrift, SeverityBadge } from "@/components/risk-badges"
+import { RiskPipeline } from "@/components/risk-pipeline"
 import { type ClientRecord } from "@/components/client-profile"
 import { ChevronRightIcon } from "lucide-react"
 
@@ -19,6 +20,9 @@ export default function InvestigationIndexPage() {
 
   return (
     <AppShell title="Investigations">
+      <div className="flex flex-col gap-4 py-4 md:py-6">
+        <RiskPipeline current="investigation" />
+      </div>
       <div className="flex flex-col gap-4 p-4 md:p-6">
         <p className="text-muted-foreground text-sm">
           Combined internal bank transactions and known public-ledger activity for clients whose
