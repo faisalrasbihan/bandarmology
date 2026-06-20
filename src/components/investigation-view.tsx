@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import {
   ArrowDownLeftIcon,
@@ -64,7 +64,7 @@ interface TimelineEvent {
   highRisk: boolean
 }
 
-interface InvestigationData {
+export interface InvestigationData {
   entityName: string
   hasActivity: boolean
   severity: "low" | "medium" | "high" | "critical" | null
@@ -112,13 +112,21 @@ export function InvestigationView({
   clientId,
   entityName,
   severityHint,
+  initialData,
 }: {
   clientId: number
   entityName: string
   severityHint?: string
+  /**
+   * The investigation view snapshotted into src/app/investigations.json at
+   * build time. When present, the page renders entirely from this static data
+   * and never calls the live API — so it works in any deployment without a DB.
+   * The live fetch below is only a dev fallback for entities not in the snapshot.
+   */
+  initialData?: InvestigationData
 }) {
-  const [view, setView] = useState<InvestigationData | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [view, setView] = useState<InvestigationData | null>(initialData ?? null)
+  const [loading, setLoading] = useState(!initialData)
   const [error, setError] = useState<string | null>(null)
   const [narrating, setNarrating] = useState(false)
   const [narrateError, setNarrateError] = useState<string | null>(null)
@@ -127,6 +135,17 @@ export function InvestigationView({
   // Human-in-the-loop: findings stay "proposed" until the analyst acts here.
   // The decision is recorded in the Audit Log and reflected locally.
   const [statusOverrides, setStatusOverrides] = useState<Record<string, AmlStatus>>({})
+  const router = useRouter()
+
+  // Seamless "Back": return to wherever the analyst came from (usually the
+  // Investigations list), falling back to that list on a direct deep-link.
+  function goBack() {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back()
+    } else {
+      router.push("/investigation")
+    }
+  }
 
   function actOnFinding(
     finding: InvestigationFinding,
@@ -155,21 +174,27 @@ export function InvestigationView({
   const load = useCallback(async () => {
     try {
       const res = await fetch(`/api/investigation/${encodeURIComponent(entityName)}`)
+      if (!res.ok) {
+        setError("Live investigation data is unavailable for this client.")
+        return
+      }
       const data = await res.json()
       setView(data)
       setError(null)
     } catch {
-      setError("Failed to load investigation. Is the dev server and database running?")
+      setError("Live investigation data is unavailable for this client.")
     } finally {
       setLoading(false)
     }
   }, [entityName])
 
   useEffect(() => {
+    // Static snapshot already supplied — no live call needed (works without a DB).
+    if (initialData) return
     // load() only setStates after `await`, so there's no cascading render.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void load()
-  }, [load])
+  }, [load, initialData])
 
   async function generateSummary() {
     setNarrating(true)
@@ -205,12 +230,11 @@ export function InvestigationView({
         <Button
           variant="ghost"
           size="sm"
-          nativeButton={false}
           className="text-muted-foreground"
-          render={<Link href={`/clients/${clientId}`} />}
+          onClick={goBack}
         >
           <ArrowLeftIcon data-icon="inline-start" />
-          Back to client profile
+          Back
         </Button>
       </div>
 
