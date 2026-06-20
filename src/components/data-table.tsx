@@ -45,6 +45,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { exposureAtRisk, formatMoney } from "@/lib/format"
+import { logAudit } from "@/lib/audit-log"
 import {
   Select,
   SelectContent,
@@ -273,20 +274,53 @@ const columns: ColumnDef<Alert>[] = [
           <span className="sr-only">Open menu</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-44">
-          <DropdownMenuItem onClick={() => toast.success(`Escalated ${row.original.client}`)}>
+          <DropdownMenuItem
+            onClick={() => {
+              logAudit({
+                action: "Escalated",
+                entity: row.original.client,
+                clientId: row.original.id,
+                severity: row.original.severity,
+                detail: row.original.signal,
+                source: "Risk dashboard",
+              })
+              toast.success(`Escalated ${row.original.client}`)
+            }}
+          >
             Escalate
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => toast.success(`Added ${row.original.client} to watchlist`)}
+            onClick={() => {
+              logAudit({
+                action: "Added to watchlist",
+                entity: row.original.client,
+                clientId: row.original.id,
+                severity: row.original.severity,
+                detail: row.original.signal,
+                source: "Risk dashboard",
+              })
+              toast.success(`Added ${row.original.client} to watchlist`)
+            }}
           >
             Put on watchlist
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            variant="destructive"
-            onClick={() => toast(`Dismissed alert for ${row.original.client}`)}
+            onClick={() => {
+              logAudit({
+                action: "Acknowledged",
+                entity: row.original.client,
+                clientId: row.original.id,
+                severity: row.original.severity,
+                detail: row.original.signal,
+                source: "Risk dashboard",
+              })
+              toast.success(`Acknowledged risk for ${row.original.client}`, {
+                description: "Moved to the Audit Log.",
+              })
+            }}
           >
-            Dismiss
+            Acknowledge
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -503,6 +537,16 @@ export function DataTable({ data }: { data: Alert[] }) {
               size="sm"
               variant="outline"
               onClick={() => {
+                table.getFilteredSelectedRowModel().rows.forEach((r) =>
+                  logAudit({
+                    action: "Escalated",
+                    entity: r.original.client,
+                    clientId: r.original.id,
+                    severity: r.original.severity,
+                    detail: r.original.signal,
+                    source: "Risk dashboard (bulk)",
+                  })
+                )
                 toast.success(`Escalated ${selectedCount} alert(s)`)
                 table.resetRowSelection()
               }}
@@ -513,6 +557,16 @@ export function DataTable({ data }: { data: Alert[] }) {
               size="sm"
               variant="outline"
               onClick={() => {
+                table.getFilteredSelectedRowModel().rows.forEach((r) =>
+                  logAudit({
+                    action: "Added to watchlist",
+                    entity: r.original.client,
+                    clientId: r.original.id,
+                    severity: r.original.severity,
+                    detail: r.original.signal,
+                    source: "Risk dashboard (bulk)",
+                  })
+                )
                 toast.success(`Added ${selectedCount} client(s) to watchlist`)
                 table.resetRowSelection()
               }}
@@ -523,11 +577,23 @@ export function DataTable({ data }: { data: Alert[] }) {
               size="sm"
               variant="outline"
               onClick={() => {
-                toast(`Dismissed ${selectedCount} alert(s)`)
+                table.getFilteredSelectedRowModel().rows.forEach((r) =>
+                  logAudit({
+                    action: "Acknowledged",
+                    entity: r.original.client,
+                    clientId: r.original.id,
+                    severity: r.original.severity,
+                    detail: r.original.signal,
+                    source: "Risk dashboard (bulk)",
+                  })
+                )
+                toast.success(`Acknowledged ${selectedCount} alert(s)`, {
+                  description: "Moved to the Audit Log.",
+                })
                 table.resetRowSelection()
               }}
             >
-              Dismiss
+              Acknowledge
             </Button>
             <Button
               size="sm"
@@ -828,20 +894,47 @@ function AlertDetailDrawer({
           <div className="grid grid-cols-3 gap-2">
             <EscalateDialog
               client={item.client}
+              clientId={item.id}
+              severity={item.severity}
               defaultAction={item.action}
+              source="Risk dashboard"
+              onEscalated={() => onOpenChange(false)}
               trigger={<Button variant="outline" className="w-full">Escalate</Button>}
             />
             <Button
               variant="outline"
-              onClick={() => toast.success(`Added ${item.client} to watchlist`)}
+              onClick={() => {
+                logAudit({
+                  action: "Added to watchlist",
+                  entity: item.client,
+                  clientId: item.id,
+                  severity: item.severity,
+                  detail: item.signal,
+                  source: "Risk dashboard",
+                })
+                toast.success(`Added ${item.client} to watchlist`)
+              }}
             >
               Watchlist
             </Button>
             <Button
               variant="outline"
-              onClick={() => toast(`Dismissed alert for ${item.client}`)}
+              onClick={() => {
+                logAudit({
+                  action: "Acknowledged",
+                  entity: item.client,
+                  clientId: item.id,
+                  severity: item.severity,
+                  detail: item.signal,
+                  source: "Risk dashboard",
+                })
+                toast.success(`Acknowledged risk for ${item.client}`, {
+                  description: "Moved to the Audit Log.",
+                })
+                onOpenChange(false)
+              }}
             >
-              Dismiss
+              Acknowledge
             </Button>
           </div>
           <DrawerClose asChild>

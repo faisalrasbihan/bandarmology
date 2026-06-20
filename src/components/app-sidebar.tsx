@@ -50,7 +50,7 @@ const data = {
     },
     {
       title: "Audit Log",
-      url: "#",
+      url: "/audit-log",
       icon: <ScrollTextIcon />,
     },
   ],
@@ -76,7 +76,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<a href="#" />}
+              render={<a href="/" />}
             >
               <img src="/bandar2.svg" alt="Bandarmology" className="size-5!" />
               <span className="text-base font-semibold">Bandarmology</span>

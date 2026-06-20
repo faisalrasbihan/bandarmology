@@ -1,18 +1,15 @@
 import { AppShell } from "@/components/app-shell"
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { PriorityDonut } from "@/components/priority-donut"
-import { FlaggedAlerts } from "@/components/flagged-alerts"
-import { SectionCards } from "@/components/section-cards"
-import { type Alert } from "@/components/data-table"
-
-import data from "./data.json"
+import { RiskFunnel } from "@/components/risk-funnel"
+import { IncomingRisk } from "@/components/incoming-risk"
 
 export default function Page() {
   return (
     <AppShell title="Risk Dashboard">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <SectionCards />
-        <FlaggedAlerts data={(data as Alert[]).filter((c) => c.flagged)} />
+        <RiskFunnel />
+        <IncomingRisk />
         <div
           id="risk-trend"
           className="grid scroll-mt-20 grid-cols-1 gap-4 px-4 lg:px-6 @4xl/main:grid-cols-3"

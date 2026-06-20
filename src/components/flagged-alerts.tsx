@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { AlertCard } from "@/components/alert-card"
 import { DataTable, type Alert } from "@/components/data-table"
+import { useResolvedClientIds } from "@/lib/audit-log"
 
 // How many tiles the card view shows before deferring to the Clients page.
 const MAX_CARDS = 10
@@ -16,6 +17,9 @@ type ViewMode = "cards" | "table"
 
 export function FlaggedAlerts({ data }: { data: Alert[] }) {
   const [view, setView] = React.useState<ViewMode>("cards")
+  // Clients an analyst has already acknowledged/escalated leave the worklist
+  // (they live on in the Audit Log instead).
+  const resolved = useResolvedClientIds()
 
   // Dashboard surfaces only the clients that need attention now:
   // Critical + High, highest risk score first. The full list (incl.
@@ -23,9 +27,13 @@ export function FlaggedAlerts({ data }: { data: Alert[] }) {
   const highPriority = React.useMemo(
     () =>
       data
-        .filter((d) => d.severity === "Critical" || d.severity === "High")
+        .filter(
+          (d) =>
+            !resolved.has(d.id) &&
+            (d.severity === "Critical" || d.severity === "High")
+        )
         .sort((a, b) => b.riskScore - a.riskScore),
-    [data]
+    [data, resolved]
   )
 
   const cards = highPriority.slice(0, MAX_CARDS)

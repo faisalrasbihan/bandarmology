@@ -103,7 +103,7 @@ export function ClientsTable({
       <div className="grid grid-cols-3 gap-3 sm:max-w-md">
         <Stat label="Total clients" value={clients.length} />
         <Stat label="Flagged" value={clients.filter((c) => c.flagged).length} />
-        <Stat label="Monitored" value={clients.filter((c) => !c.flagged).length} />
+        <Stat label="No active flag" value={clients.filter((c) => !c.flagged).length} />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -152,7 +152,7 @@ export function ClientsTable({
             <SelectGroup>
               <SelectItem value="all">All clients</SelectItem>
               <SelectItem value="flagged">Flagged</SelectItem>
-              <SelectItem value="monitored">Monitored</SelectItem>
+              <SelectItem value="monitored">No active flag</SelectItem>
               <SelectItem value="watchlist">On watchlist</SelectItem>
               <SelectItem value="re-kyc">Re-KYC required</SelectItem>
             </SelectGroup>

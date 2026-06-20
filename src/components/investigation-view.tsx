@@ -2,10 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
+import { toast } from "sonner"
 import {
   ArrowDownLeftIcon,
   ArrowLeftIcon,
   ArrowUpRightIcon,
+  CheckCircle2Icon,
+  ShieldAlertIcon,
   SparklesIcon,
 } from "lucide-react"
 
@@ -21,6 +24,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { formatMoney } from "@/lib/format"
 import { SeverityBadge } from "@/components/risk-badges"
+import { logAudit } from "@/lib/audit-log"
 
 type Plane = "internal" | "onchain"
 type AmlStatus = "proposed" | "confirmed" | "escalated" | "dismissed"
@@ -120,6 +124,33 @@ export function InvestigationView({
   const [narrateError, setNarrateError] = useState<string | null>(null)
   const [timelineExpanded, setTimelineExpanded] = useState(false)
   const [ledgerExpanded, setLedgerExpanded] = useState(false)
+  // Human-in-the-loop: findings stay "proposed" until the analyst acts here.
+  // The decision is recorded in the Audit Log and reflected locally.
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, AmlStatus>>({})
+
+  function actOnFinding(
+    finding: InvestigationFinding,
+    decision: "Escalated" | "Acknowledged"
+  ) {
+    setStatusOverrides((prev) => ({
+      ...prev,
+      [finding.id]: decision === "Escalated" ? "escalated" : "dismissed",
+    }))
+    logAudit({
+      action: decision,
+      entity: entityName,
+      clientId,
+      severity: finding.severity,
+      detail: `${finding.label} — ${finding.rationale}`,
+      source: "Investigation",
+    })
+    toast.success(
+      decision === "Escalated"
+        ? `Escalated: ${finding.label}`
+        : `Acknowledged: ${finding.label}`,
+      { description: "Recorded in the Audit Log." }
+    )
+  }
 
   const load = useCallback(async () => {
     try {
@@ -268,22 +299,53 @@ export function InvestigationView({
                   No AML findings fired. Activity below is shown for context only.
                 </p>
               )}
-              {view.findings.map((f) => (
-                <div key={f.id} className="flex flex-col gap-2 rounded-lg border p-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-medium">{f.label}</span>
-                    <SeverityBadge severity={cap(f.severity)} />
-                    <Badge variant={STATUS_VARIANT[f.status]}>{f.status}</Badge>
-                    <span className="text-muted-foreground ml-auto text-xs tabular-nums">
-                      confidence {(f.confidence * 100).toFixed(0)}% · {f.evidenceCount} evidence tx
-                    </span>
+              {view.findings.map((f) => {
+                const status = statusOverrides[f.id] ?? f.status
+                const acted = status !== "proposed"
+                return (
+                  <div key={f.id} className="flex flex-col gap-2 rounded-lg border p-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-medium">{f.label}</span>
+                      <SeverityBadge severity={cap(f.severity)} />
+                      <Badge variant={STATUS_VARIANT[status]}>{status}</Badge>
+                      <span className="text-muted-foreground ml-auto text-xs tabular-nums">
+                        confidence {(f.confidence * 100).toFixed(0)}% · {f.evidenceCount} evidence tx
+                      </span>
+                    </div>
+                    <p className="text-sm">{f.rationale}</p>
+                    <p className="text-muted-foreground text-xs">
+                      <span className="font-medium">Recommended:</span> {f.recommendedAction}
+                    </p>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 border-t pt-2">
+                      {acted ? (
+                        <span className="text-muted-foreground text-xs">
+                          You {status === "escalated" ? "escalated" : "acknowledged"} this finding —
+                          see the Audit Log.
+                        </span>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => actOnFinding(f, "Escalated")}
+                          >
+                            <ShieldAlertIcon data-icon="inline-start" />
+                            Escalate
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => actOnFinding(f, "Acknowledged")}
+                          >
+                            <CheckCircle2Icon data-icon="inline-start" />
+                            Acknowledge
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-sm">{f.rationale}</p>
-                  <p className="text-muted-foreground text-xs">
-                    <span className="font-medium">Recommended:</span> {f.recommendedAction}
-                  </p>
-                </div>
-              ))}
+                )
+              })}
             </CardContent>
           </Card>
 

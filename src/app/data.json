@@ -15,8 +15,8 @@
     "signal": "Behavioural Anomaly – Potential Money Mule",
     "trigger": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions.",
     "sources": 2,
-    "detected": "5m ago",
-    "status": "New",
+    "detected": "3h ago",
+    "status": "Escalated",
     "kyc": {
       "onboarded": "Jun 2021",
       "expectedModel": "Global cryptocurrency exchange and custodial wallet provider.",
@@ -24,12 +24,12 @@
       "owners": "Privately held; Changpeng Zhao (founder, majority)"
     },
     "baseline": "Onboarded Jun 2021 as Global cryptocurrency exchange and custodial wallet provider. Expected activity: High-volume crypto flows; expected given exchange business. Risk rating: High.",
-    "observed": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions. The pass-through pattern is consistent with money-mule / funnel-account activity inconsistent with historical behaviour.",
+    "observed": "Between 2 June and 9 June 2026, Binance received 22 inbound cross-border crypto transfers totalling $7,965,680 from 17 distinct counterparties. This volume represents a 5.5× spike above the entity's normal 7-day cross-border inflow baseline ($1,460,782 expected). The transaction pattern exhibits several red flags consistent with potential money-mule funnel activity: (1) Concentration of high-value transfers within a compressed 7-day window; (2) Influx from 12 shell entities (68% of counterparties) bearing jurisdictional risk indicators (Panama, Seychelles, UAE, Cayman Islands, Virgin Islands, Russia), with 55% of total volume originating from higher-risk jurisdictions; (3) Interleaved legitimate-appearing entities (Acme Components, Meridian Partners, Vertex Services, Lakeside Holdings, Orion Supplies) mixing with thinly-veiled pass-through structures; (4) Repeated entity-jurisdiction pairs (e.g., Meridian Partners appearing from JP, DE, GB; Vertex Services from GB, FR; Shell Entities A–L geographically distributed). While Binance's KYC profile as a high-volume exchange normalizes substantial crypto inflows, the velocity, source heterogeneity, high-risk concentration, and shell-entity prevalence diverge significantly from historical baseline and suggest rapid layering or collection activity inconsistent with ordinary exchange settlement patterns.",
     "reasoning": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions. The pass-through pattern is consistent with money-mule / funnel-account activity inconsistent with historical behaviour.",
-    "confidence": 0.88,
-    "tier": "Rules",
+    "confidence": 0.75,
+    "tier": "LLM",
     "action": "Monitor transactions; flag for AML analyst review.",
-    "summary": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions. The pass-through pattern is consistent with money-mule / funnel-account activity inconsistent with historical behaviour. Recommended action: Monitor transactions; flag for AML analyst review.",
+    "summary": "Between 2 June and 9 June 2026, Binance received 22 inbound cross-border crypto transfers totalling $7,965,680 from 17 distinct counterparties. This volume represents a 5.5× spike above the entity's normal 7-day cross-border inflow baseline ($1,460,782 expected). The transaction pattern exhibits several red flags consistent with potential money-mule funnel activity: (1) Concentration of high-value transfers within a compressed 7-day window; (2) Influx from 12 shell entities (68% of counterparties) bearing jurisdictional risk indicators (Panama, Seychelles, UAE, Cayman Islands, Virgin Islands, Russia), with 55% of total volume originating from higher-risk jurisdictions; (3) Interleaved legitimate-appearing entities (Acme Components, Meridian Partners, Vertex Services, Lakeside Holdings, Orion Supplies) mixing with thinly-veiled pass-through structures; (4) Repeated entity-jurisdiction pairs (e.g., Meridian Partners appearing from JP, DE, GB; Vertex Services from GB, FR; Shell Entities A–L geographically distributed). While Binance's KYC profile as a high-volume exchange normalizes substantial crypto inflows, the velocity, source heterogeneity, high-risk concentration, and shell-entity prevalence diverge significantly from historical baseline and suggest rapid layering or collection activity inconsistent with ordinary exchange settlement patterns.",
     "riskBreakdown": [
       {
         "type": "Compliance Risk",
@@ -38,7 +38,7 @@
       },
       {
         "type": "Reputational Risk",
-        "status": "High",
+        "status": "Medium",
         "reason": "Public coverage may attract scrutiny to the relationship."
       },
       {
@@ -59,9 +59,9 @@
         "headline": "22 flagged transactions — Behavioural Anomaly – Potential Money Mule"
       },
       {
-        "source": "Mediastack",
-        "date": "2026-05-12",
-        "headline": "Court adjourns FG’s suit against Binance for report of settlement"
+        "source": "NewsAPI",
+        "date": "2026-06-18",
+        "headline": "Bitcoin sees $180M in long liquidations in a single hour as leverage unwinds violently"
       }
     ],
     "watchlist": true,
@@ -74,6 +74,252 @@
   },
   {
     "id": 2,
+    "client": "Danske Bank A/S",
+    "sector": "Banking / Financial Services",
+    "jurisdiction": "Denmark",
+    "relationship": "Correspondent",
+    "flagged": true,
+    "exposureUsd": 480000000,
+    "severity": "High",
+    "originalRisk": "Medium",
+    "currentRisk": "High",
+    "riskScore": 59,
+    "riskDelta": 13,
+    "signal": "Regulatory / Legal Action",
+    "trigger": "Renewed regulatory scrutiny of the Estonia-branch AML failures revives one of the largest money-laundering cases on record.",
+    "sources": 1,
+    "detected": "3m ago",
+    "status": "In Review",
+    "kyc": {
+      "onboarded": "Nov 2018",
+      "expectedModel": "Nordic universal bank with Baltic branch operations.",
+      "expectedActivity": "High-volume EUR/DKK cross-border flows",
+      "owners": "Publicly listed (Nasdaq Copenhagen); Widely held"
+    },
+    "baseline": "Onboarded Nov 2018 as Nordic universal bank with Baltic branch operations. Expected activity: High-volume EUR/DKK cross-border flows. Risk rating: Medium.",
+    "observed": "Renewed regulatory scrutiny of the Estonia-branch AML failures revives one of the largest money-laundering cases on record. For a correspondent relationship this materially raises AML risk on non-resident flows.",
+    "reasoning": "Renewed regulatory scrutiny of the Estonia-branch AML failures revives one of the largest money-laundering cases on record. For a correspondent relationship this materially raises AML risk on non-resident flows.",
+    "confidence": 0.9,
+    "tier": "LLM",
+    "action": "Apply enhanced monitoring to non-resident correspondent flows and document the rationale.",
+    "summary": "Renewed regulatory scrutiny of the Estonia-branch AML failures revives one of the largest money-laundering cases on record. For a correspondent relationship this materially raises AML risk on non-resident flows. Recommended action: Apply enhanced monitoring to non-resident correspondent flows and document the rationale.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "Renewed regulatory scrutiny of the Estonia-branch AML failures revives one of the largest money-laundering cases on record."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "High",
+        "reason": "Public coverage may attract scrutiny to the relationship."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No active lending exposure on this relationship."
+      }
+    ],
+    "citations": [
+      {
+        "source": "NewsAPI",
+        "date": "2026-06-14",
+        "headline": "Danske Bank faces renewed scrutiny over Estonia branch AML failures"
+      }
+    ],
+    "watchlist": true,
+    "watchlistMeta": {
+      "reason": "Historic Estonia-branch AML failures; non-resident flows under enhanced review.",
+      "addedBy": "Compliance — M. Roth",
+      "addedOn": "2026-06-09",
+      "reviewBy": "2026-07-09"
+    }
+  },
+  {
+    "id": 3,
+    "client": "Evergrande Group",
+    "sector": "Real Estate / Construction",
+    "jurisdiction": "China",
+    "relationship": "Lending",
+    "flagged": true,
+    "exposureUsd": 230000000,
+    "severity": "Critical",
+    "originalRisk": "High",
+    "currentRisk": "High",
+    "riskScore": 85,
+    "riskDelta": 21,
+    "signal": "Financial Distress / Insolvency",
+    "trigger": "A winding-up order has been issued and liquidators are seizing overseas assets.",
+    "sources": 1,
+    "detected": "3m ago",
+    "status": "Escalated",
+    "kyc": {
+      "onboarded": "Apr 2021",
+      "expectedModel": "Property developer and construction group.",
+      "expectedActivity": "Large CNY/USD construction and financing flows",
+      "owners": "Publicly listed (HKEX); Founder-controlled (majority holder)"
+    },
+    "baseline": "Onboarded Apr 2021 as Property developer and construction group. Expected activity: Large CNY/USD construction and financing flows. Risk rating: High.",
+    "observed": "Onboarded as a going-concern developer, Evergrande is now in liquidation with overseas asset seizures under way. The divergence is critical and materially impairs the lending exposure.",
+    "reasoning": "A winding-up order has been issued and liquidators are seizing overseas assets. For a lending relationship this is a critical insolvency event with direct cross-default and recovery implications.",
+    "confidence": 0.93,
+    "tier": "Deep",
+    "action": "Escalate to credit committee, reassess provisioning, and review cross-default triggers.",
+    "summary": "Onboarded as a going-concern developer, Evergrande is now in liquidation with overseas asset seizures under way. The divergence is critical and materially impairs the lending exposure.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "A winding-up order has been issued and liquidators are seizing overseas assets."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Public coverage may attract scrutiny to the relationship."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Medium",
+        "reason": "Active lending exposure on this relationship."
+      }
+    ],
+    "citations": [
+      {
+        "source": "Mediastack",
+        "date": "2026-06-14",
+        "headline": "Evergrande liquidators move to seize overseas assets after winding-up order"
+      }
+    ],
+    "watchlist": true,
+    "watchlistMeta": {
+      "reason": "Winding-up order and liquidation; cross-default risk across group entities.",
+      "addedBy": "Compliance — M. Roth",
+      "addedOn": "2026-06-05",
+      "reviewBy": "2026-07-05"
+    }
+  },
+  {
+    "id": 4,
+    "client": "FTX Trading Ltd",
+    "sector": "Crypto / Exchange",
+    "jurisdiction": "Bahamas",
+    "relationship": "Trading",
+    "flagged": true,
+    "exposureUsd": 90000000,
+    "severity": "Critical",
+    "originalRisk": "High",
+    "currentRisk": "High",
+    "riskScore": 85,
+    "riskDelta": 21,
+    "signal": "Financial Distress / Insolvency",
+    "trigger": "Filings in the FTX bankruptcy estate report a multi-billion-dollar customer shortfall and widening clawback litigation.",
+    "sources": 1,
+    "detected": "3m ago",
+    "status": "New",
+    "kyc": {
+      "onboarded": "Jan 2022",
+      "expectedModel": "Cryptocurrency exchange and derivatives trading platform.",
+      "expectedActivity": "High-volume crypto and fiat flows, consistent with an exchange",
+      "owners": "Privately held; Founder-controlled (single significant holder)"
+    },
+    "baseline": "Onboarded Jan 2022 as Cryptocurrency exchange and derivatives trading platform. Expected activity: High-volume crypto and fiat flows, consistent with an exchange. Risk rating: High.",
+    "observed": "The onboarding profile described a solvent custodial exchange. Public filings now describe an insolvent estate with a multi-billion-dollar customer shortfall and clawback litigation against insiders — a critical divergence on both business model and solvency.",
+    "reasoning": "Filings in the FTX bankruptcy estate report a multi-billion-dollar customer shortfall and widening clawback litigation. This is a severe financial-distress and fraud signal that flatly contradicts the onboarding profile of a solvent, custodial exchange.",
+    "confidence": 0.96,
+    "tier": "Deep",
+    "action": "Freeze all exposure, file an internal SAR, and escalate to senior compliance immediately.",
+    "summary": "The onboarding profile described a solvent custodial exchange. Public filings now describe an insolvent estate with a multi-billion-dollar customer shortfall and clawback litigation against insiders — a critical divergence on both business model and solvency.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "Filings in the FTX bankruptcy estate report a multi-billion-dollar customer shortfall and widening clawback litigation."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Public coverage may attract scrutiny to the relationship."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No active lending exposure on this relationship."
+      }
+    ],
+    "citations": [
+      {
+        "source": "NewsAPI",
+        "date": "2026-06-14",
+        "headline": "FTX estate reports multi-billion shortfall as clawback suits widen"
+      }
+    ],
+    "watchlist": true,
+    "watchlistMeta": {
+      "reason": "Exchange collapse and fraud proceedings; assets frozen pending estate resolution.",
+      "addedBy": "Compliance — M. Roth",
+      "addedOn": "2026-06-12",
+      "reviewBy": "2026-07-12"
+    }
+  },
+  {
+    "id": 5,
+    "client": "Glencore plc",
+    "sector": "Commodities / Mining",
+    "jurisdiction": "Switzerland",
+    "relationship": "Trading",
+    "flagged": true,
+    "exposureUsd": 610000000,
+    "severity": "High",
+    "originalRisk": "Medium",
+    "currentRisk": "High",
+    "riskScore": 59,
+    "riskDelta": 13,
+    "signal": "Regulatory / Legal Action",
+    "trigger": "Glencore has agreed a further settlement resolving bribery and corruption allegations.",
+    "sources": 1,
+    "detected": "3m ago",
+    "status": "New",
+    "kyc": {
+      "onboarded": "Feb 2020",
+      "expectedModel": "Commodity trading and mining group.",
+      "expectedActivity": "Very high-value commodity settlement flows, multi-currency",
+      "owners": "Publicly listed (LSE); Widely held"
+    },
+    "baseline": "Onboarded Feb 2020 as Commodity trading and mining group. Expected activity: Very high-value commodity settlement flows, multi-currency. Risk rating: Medium.",
+    "observed": "Glencore has agreed a further settlement resolving bribery and corruption allegations. A formal enforcement settlement is a clear regulatory/legal-action flag with reputational spillover for the trading relationship.",
+    "reasoning": "Glencore has agreed a further settlement resolving bribery and corruption allegations. A formal enforcement settlement is a clear regulatory/legal-action flag with reputational spillover for the trading relationship.",
+    "confidence": 0.86,
+    "tier": "LLM",
+    "action": "Record the settlement and review bribery-and-corruption controls on the relationship.",
+    "summary": "Glencore has agreed a further settlement resolving bribery and corruption allegations. A formal enforcement settlement is a clear regulatory/legal-action flag with reputational spillover for the trading relationship. Recommended action: Record the settlement and review bribery-and-corruption controls on the relationship.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "Glencore has agreed a further settlement resolving bribery and corruption allegations."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "High",
+        "reason": "Public coverage may attract scrutiny to the relationship."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No active lending exposure on this relationship."
+      }
+    ],
+    "citations": [
+      {
+        "source": "NewsAPI",
+        "date": "2026-06-14",
+        "headline": "Glencore agrees additional settlement over bribery allegations"
+      }
+    ],
+    "watchlist": false
+  },
+  {
+    "id": 6,
     "client": "Lindenhof Holdings AG",
     "sector": "Holding / Investment",
     "jurisdiction": "Switzerland",
@@ -88,7 +334,7 @@
     "signal": "Dormancy Break – Suspicious Activation",
     "trigger": "After roughly 69 days of near-dormancy (only $12,938 of total activity), the account processed 7 transfers totalling $14,451,694 in the last 14 days.",
     "sources": 1,
-    "detected": "5m ago",
+    "detected": "3h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Sep 2021",
@@ -135,7 +381,7 @@
     "watchlist": false
   },
   {
-    "id": 3,
+    "id": 7,
     "client": "Nestle",
     "sector": "Consumer Goods / Food & Beverage",
     "jurisdiction": "Switzerland",
@@ -147,10 +393,10 @@
     "currentRisk": "Low",
     "riskScore": 34,
     "riskDelta": 6,
-    "signal": "Adverse Media / Reputational Risk",
-    "trigger": "The signal reports allegations of infestation in Nestle India's Maggi noodles product.",
+    "signal": "PEP / Political Exposure",
+    "trigger": "Public reporting — \"Kroger Weekly Ad: 6/17-6/23\" — was triaged as PEP / Political Exposure for Nestle.",
     "sources": 1,
-    "detected": "43m ago",
+    "detected": "3m ago",
     "status": "New",
     "kyc": {
       "onboarded": "Nov 2020",
@@ -159,17 +405,17 @@
       "owners": "Publicly listed (SIX Swiss Exchange); Widely held"
     },
     "baseline": "Onboarded Nov 2020 as Multinational food and beverage manufacturer. Expected activity: Stable, high-volume global trade flows, multi-currency. Risk rating: Low.",
-    "observed": "The signal reports allegations of infestation in Nestle India's Maggi noodles product. However, this is a defensive statement where Nestle India explicitly rejects the allegations and claims internal tests confirm product quality. The allegation is characterized as \"unverified\" and circulating via media, not substantiated through regulatory action or independent verification. The entity itself is actively managing the reputational concern through denial and quality assurance statements. Single-source reporting further limits corroboration of the underlying allegation.",
-    "reasoning": "The signal reports allegations of infestation in Nestle India's Maggi noodles product. However, this is a defensive statement where Nestle India explicitly rejects the allegations and claims internal tests confirm product quality. The allegation is characterized as \"unverified\" and circulating via media, not substantiated through regulatory action or independent verification. The entity itself is actively managing the reputational concern through denial and quality assurance statements. Single-source reporting further limits corroboration of the underlying allegation.",
-    "confidence": 0.35,
+    "observed": "Public reporting — \"Kroger Weekly Ad: 6/17-6/23\" — was triaged as PEP / Political Exposure for Nestle. The coverage diverges from the onboarding profile and is surfaced for compliance review.",
+    "reasoning": "Public reporting — \"Kroger Weekly Ad: 6/17-6/23\" — was triaged as PEP / Political Exposure for Nestle. The coverage diverges from the onboarding profile and is surfaced for compliance review.",
+    "confidence": 0.5,
     "tier": "LLM",
-    "action": "Monitor for follow-up reporting or regulatory action regarding product quality claims. If independent investigations or regulatory bodies confirm quality issues, escalate to higher-confidence adverse media flag. Current denial and quality assurance claims suggest low immediate risk, but track for pattern repetition or third-party substantiation.",
-    "summary": "The signal reports allegations of infestation in Nestle India's Maggi noodles product. However, this is a defensive statement where Nestle India explicitly rejects the allegations and claims internal tests confirm product quality. The allegation is characterized as \"unverified\" and circulating via media, not substantiated through regulatory action or independent verification. The entity itself is actively managing the reputational concern through denial and quality assurance statements. Single-source reporting further limits corroboration of the underlying allegation. Recommended action: Monitor for follow-up reporting or regulatory action regarding product quality claims. If independent investigations or regulatory bodies confirm quality issues, escalate to higher-confidence adverse media flag. Current denial and quality assurance claims suggest low immediate risk, but track for pattern repetition or third-party substantiation.",
+    "action": "Review the cited coverage against the onboarding baseline and confirm or dismiss.",
+    "summary": "Public reporting — \"Kroger Weekly Ad: 6/17-6/23\" — was triaged as PEP / Political Exposure for Nestle. The coverage diverges from the onboarding profile and is surfaced for compliance review. Recommended action: Review the cited coverage against the onboarding baseline and confirm or dismiss.",
     "riskBreakdown": [
       {
         "type": "Compliance Risk",
         "status": "Medium",
-        "reason": "The signal reports allegations of infestation in Nestle India's Maggi noodles product."
+        "reason": "Public reporting — \"Kroger Weekly Ad: 6/17-6/23\" — was triaged as PEP / Political Exposure for Nestle."
       },
       {
         "type": "Reputational Risk",
@@ -185,14 +431,140 @@
     "citations": [
       {
         "source": "NewsAPI",
-        "date": "2026-06-13",
-        "headline": "Nestle India rejects allegations over Maggi infestation, says tests confirm product quality"
+        "date": "2026-06-16",
+        "headline": "Kroger Weekly Ad: 6/17-6/23"
       }
     ],
     "watchlist": false
   },
   {
-    "id": 4,
+    "id": 8,
+    "client": "NSO Group",
+    "sector": "Technology / Cybersecurity",
+    "jurisdiction": "Israel",
+    "relationship": "Advisory",
+    "flagged": true,
+    "exposureUsd": 45000000,
+    "severity": "High",
+    "originalRisk": "High",
+    "currentRisk": "High",
+    "riskScore": 69,
+    "riskDelta": 13,
+    "signal": "Sanctions / Watchlist Hit",
+    "trigger": "NSO Group remains on the US Entity List, a denied-party/export-control designation.",
+    "sources": 1,
+    "detected": "3m ago",
+    "status": "New",
+    "kyc": {
+      "onboarded": "Dec 2021",
+      "expectedModel": "Cyber-intelligence and surveillance software vendor.",
+      "expectedActivity": "Moderate USD/EUR enterprise contract flows",
+      "owners": "Privately held; Investor consortium"
+    },
+    "baseline": "Onboarded Dec 2021 as Cyber-intelligence and surveillance software vendor. Expected activity: Moderate USD/EUR enterprise contract flows. Risk rating: High.",
+    "observed": "NSO Group remains on the US Entity List, a denied-party/export-control designation. This is a direct sanctions/watchlist flag carrying significant compliance and correspondent-access risk.",
+    "reasoning": "NSO Group remains on the US Entity List, a denied-party/export-control designation. This is a direct sanctions/watchlist flag carrying significant compliance and correspondent-access risk.",
+    "confidence": 0.88,
+    "tier": "LLM",
+    "action": "Screen against current designations and restrict prohibited dealings; escalate for sanctions review.",
+    "summary": "NSO Group remains on the US Entity List, a denied-party/export-control designation. This is a direct sanctions/watchlist flag carrying significant compliance and correspondent-access risk. Recommended action: Screen against current designations and restrict prohibited dealings; escalate for sanctions review.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "High",
+        "reason": "NSO Group remains on the US Entity List, a denied-party/export-control designation."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "High",
+        "reason": "Public coverage may attract scrutiny to the relationship."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No active lending exposure on this relationship."
+      }
+    ],
+    "citations": [
+      {
+        "source": "GDELT",
+        "date": "2026-06-14",
+        "headline": "NSO Group remains on US Entity List amid export-control review"
+      }
+    ],
+    "watchlist": true,
+    "watchlistMeta": {
+      "reason": "US Entity List designation and export-control exposure; product-misuse allegations.",
+      "addedBy": "Compliance — M. Roth",
+      "addedOn": "2026-06-07",
+      "reviewBy": "2026-07-07"
+    }
+  },
+  {
+    "id": 9,
+    "client": "Orion Bay Trading FZE",
+    "sector": "Trading / General Trading",
+    "jurisdiction": "United Arab Emirates",
+    "relationship": "Custody",
+    "flagged": true,
+    "exposureUsd": 28000000,
+    "severity": "Medium",
+    "originalRisk": "High",
+    "currentRisk": "High",
+    "riskScore": 61,
+    "riskDelta": 9,
+    "signal": "Jurisdiction / Geographic Risk",
+    "trigger": "Public registry data links Orion Bay to an opaque ownership chain via corporate-services nominees in a high-risk free zone.",
+    "sources": 1,
+    "detected": "3m ago",
+    "status": "New",
+    "kyc": {
+      "onboarded": "Mar 2023",
+      "expectedModel": "General trading company registered in a UAE free zone.",
+      "expectedActivity": "Moderate, irregular cross-border flows",
+      "owners": "Privately held; Nominee director (corporate services provider)"
+    },
+    "baseline": "Onboarded Mar 2023 as General trading company registered in a UAE free zone. Expected activity: Moderate, irregular cross-border flows. Risk rating: High.",
+    "observed": "Public registry data links Orion Bay to an opaque ownership chain via corporate-services nominees in a high-risk free zone. This jurisdiction- and structure-risk pattern diverges from a transparent passive-trading profile.",
+    "reasoning": "Public registry data links Orion Bay to an opaque ownership chain via corporate-services nominees in a high-risk free zone. This jurisdiction- and structure-risk pattern diverges from a transparent passive-trading profile.",
+    "confidence": 0.7,
+    "tier": "LLM",
+    "action": "Request updated UBO documentation and apply enhanced due diligence before further activity.",
+    "summary": "Public registry data links Orion Bay to an opaque ownership chain via corporate-services nominees in a high-risk free zone. This jurisdiction- and structure-risk pattern diverges from a transparent passive-trading profile. Recommended action: Request updated UBO documentation and apply enhanced due diligence before further activity.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "Public registry data links Orion Bay to an opaque ownership chain via corporate-services nominees in a high-risk free zone."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Public coverage may attract scrutiny to the relationship."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No active lending exposure on this relationship."
+      }
+    ],
+    "citations": [
+      {
+        "source": "OpenSanctions",
+        "date": "2026-06-14",
+        "headline": "Free-zone trading entity linked to opaque ownership chain"
+      }
+    ],
+    "watchlist": true,
+    "watchlistMeta": {
+      "reason": "Opaque nominee ownership in a high-risk free zone; possible PEP association.",
+      "addedBy": "Compliance — M. Roth",
+      "addedOn": "2026-06-01",
+      "reviewBy": "2026-07-01"
+    }
+  },
+  {
+    "id": 10,
     "client": "Tesla",
     "sector": "Automotive / Energy",
     "jurisdiction": "United States",
@@ -204,11 +576,11 @@
     "currentRisk": "Low",
     "riskScore": 34,
     "riskDelta": 6,
-    "signal": "Ownership / Control Change",
-    "trigger": "The signal is a financial news snippet discussing Tesla and SpaceX, with headline components referencing (1) investment advice comparing Tesla and SpaceX stock opportunities, (2) speculation about a potential SpaceX-Tesla merger, and (3) a mention of Elon Musk converting Tesla options to shares he can vote.",
+    "signal": "Adverse Media / Reputational Risk",
+    "trigger": "Public reporting — \"Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law\" — was triaged as Adverse Media / Reputational Risk for Tesla.",
     "sources": 1,
-    "detected": "45m ago",
-    "status": "New",
+    "detected": "3m ago",
+    "status": "Cleared",
     "kyc": {
       "onboarded": "Mar 2022",
       "expectedModel": "Electric-vehicle manufacturer and energy-storage company.",
@@ -216,17 +588,17 @@
       "owners": "Publicly listed (NASDAQ); Elon Musk (significant holding)"
     },
     "baseline": "Onboarded Mar 2022 as Electric-vehicle manufacturer and energy-storage company. Expected activity: Large industrial supplier/customer flows, USD. Risk rating: Low.",
-    "observed": "The signal is a financial news snippet discussing Tesla and SpaceX, with headline components referencing (1) investment advice comparing Tesla and SpaceX stock opportunities, (2) speculation about a potential SpaceX-Tesla merger, and (3) a mention of Elon Musk converting Tesla options to shares he can vote. The snippet is fragmented and primarily focused on investment decision-making rather than a material control change event. The only concrete governance-relevant detail is Musk's options-to-shares conversion, which is a routine personal shareholding adjustment by an existing controlling shareholder, not a change in ownership or control structure.",
-    "reasoning": "The signal is a financial news snippet discussing Tesla and SpaceX, with headline components referencing (1) investment advice comparing Tesla and SpaceX stock opportunities, (2) speculation about a potential SpaceX-Tesla merger, and (3) a mention of Elon Musk converting Tesla options to shares he can vote. The snippet is fragmented and primarily focused on investment decision-making rather than a material control change event. The only concrete governance-relevant detail is Musk's options-to-shares conversion, which is a routine personal shareholding adjustment by an existing controlling shareholder, not a change in ownership or control structure.",
-    "confidence": 0.25,
+    "observed": "Public reporting — \"Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law\" — was triaged as Adverse Media / Reputational Risk for Tesla. The coverage diverges from the onboarding profile and is surfaced for compliance review.",
+    "reasoning": "Public reporting — \"Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law\" — was triaged as Adverse Media / Reputational Risk for Tesla. The coverage diverges from the onboarding profile and is surfaced for compliance review.",
+    "confidence": 0.55,
     "tier": "LLM",
-    "action": "Dismiss as routine/non-material. This is investment commentary and speculation, not evidence of an actual ownership or control change at Tesla. Musk's option exercise is a normal shareholder action. Monitor for formal announcements of merger or control events, but do not escalate this signal.",
-    "summary": "The signal is a financial news snippet discussing Tesla and SpaceX, with headline components referencing (1) investment advice comparing Tesla and SpaceX stock opportunities, (2) speculation about a potential SpaceX-Tesla merger, and (3) a mention of Elon Musk converting Tesla options to shares he can vote. The snippet is fragmented and primarily focused on investment decision-making rather than a material control change event. The only concrete governance-relevant detail is Musk's options-to-shares conversion, which is a routine personal shareholding adjustment by an existing controlling shareholder, not a change in ownership or control structure. Recommended action: Dismiss as routine/non-material. This is investment commentary and speculation, not evidence of an actual ownership or control change at Tesla. Musk's option exercise is a normal shareholder action. Monitor for formal announcements of merger or control events, but do not escalate this signal.",
+    "action": "Review the cited coverage against the onboarding baseline and confirm or dismiss.",
+    "summary": "Public reporting — \"Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law\" — was triaged as Adverse Media / Reputational Risk for Tesla. The coverage diverges from the onboarding profile and is surfaced for compliance review. Recommended action: Review the cited coverage against the onboarding baseline and confirm or dismiss.",
     "riskBreakdown": [
       {
         "type": "Compliance Risk",
         "status": "Medium",
-        "reason": "The signal is a financial news snippet discussing Tesla and SpaceX, with headline components referencing (1) investment advice comparing Tesla and SpaceX stock opportunities, (2) speculation about a potential SpaceX-Tesla merger, and (3) a mention of Elon Musk converting Tesla options to shares he can vote."
+        "reason": "Public reporting — \"Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law\" — was triaged as Adverse Media / Reputational Risk for Tesla."
       },
       {
         "type": "Reputational Risk",
@@ -241,15 +613,72 @@
     ],
     "citations": [
       {
-        "source": "Google News",
-        "date": "2026-06-20",
-        "headline": "I missed out on Tesla stock. So should I buy SpaceX? - Yahoo Finance UK"
+        "source": "NewsAPI",
+        "date": "2026-06-19",
+        "headline": "Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law"
       }
     ],
     "watchlist": false
   },
   {
-    "id": 5,
+    "id": 11,
+    "client": "Wells Fargo & Co",
+    "sector": "Banking / Financial Services",
+    "jurisdiction": "United States",
+    "relationship": "Correspondent",
+    "flagged": true,
+    "exposureUsd": 760000000,
+    "severity": "Medium",
+    "originalRisk": "Medium",
+    "currentRisk": "High",
+    "riskScore": 51,
+    "riskDelta": 9,
+    "signal": "Regulatory / Legal Action",
+    "trigger": "Wells Fargo has paid a regulatory penalty over consumer-account practices.",
+    "sources": 1,
+    "detected": "3m ago",
+    "status": "New",
+    "kyc": {
+      "onboarded": "May 2019",
+      "expectedModel": "Diversified retail and commercial bank.",
+      "expectedActivity": "Very high-volume USD correspondent flows",
+      "owners": "Publicly listed (NYSE); Widely held"
+    },
+    "baseline": "Onboarded May 2019 as Diversified retail and commercial bank. Expected activity: Very high-volume USD correspondent flows. Risk rating: Medium.",
+    "observed": "Wells Fargo has paid a regulatory penalty over consumer-account practices. A resolved enforcement matter is a moderate regulatory flag; relevant to conduct risk but not a solvency or sanctions concern.",
+    "reasoning": "Wells Fargo has paid a regulatory penalty over consumer-account practices. A resolved enforcement matter is a moderate regulatory flag; relevant to conduct risk but not a solvency or sanctions concern.",
+    "confidence": 0.72,
+    "tier": "LLM",
+    "action": "Note the penalty; confirm remediation status on the correspondent relationship.",
+    "summary": "Wells Fargo has paid a regulatory penalty over consumer-account practices. A resolved enforcement matter is a moderate regulatory flag; relevant to conduct risk but not a solvency or sanctions concern. Recommended action: Note the penalty; confirm remediation status on the correspondent relationship.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "Wells Fargo has paid a regulatory penalty over consumer-account practices."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Medium",
+        "reason": "Public coverage may attract scrutiny to the relationship."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No active lending exposure on this relationship."
+      }
+    ],
+    "citations": [
+      {
+        "source": "NewsAPI",
+        "date": "2026-06-14",
+        "headline": "Wells Fargo pays penalty over consumer-account practices"
+      }
+    ],
+    "watchlist": false
+  },
+  {
+    "id": 12,
     "client": "Wirecard",
     "sector": "Payments / Fintech",
     "jurisdiction": "Germany",
@@ -264,7 +693,7 @@
     "signal": "Adverse Media / Reputational Risk",
     "trigger": "In June 2020, Wirecard's auditors uncovered that EUR 1.9 billion supposedly held in two Philippine bank accounts (BDO and BPI) had never existed.",
     "sources": 2,
-    "detected": "12h ago",
+    "detected": "15h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Jan 2019",

@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { logAudit } from "@/lib/audit-log"
 
 const ESCALATION_TYPES = [
   "AML investigation",
@@ -39,12 +40,20 @@ const URGENCIES = ["Immediate", "Within 24 hours", "This week"]
 
 export function EscalateDialog({
   client,
+  clientId,
+  severity,
   defaultAction,
+  source,
   trigger,
+  onEscalated,
 }: {
   client: string
+  clientId?: number
+  severity?: string
   defaultAction: string
+  source?: string
   trigger: React.ReactElement
+  onEscalated?: () => void
 }) {
   const [open, setOpen] = React.useState(false)
   const [type, setType] = React.useState(ESCALATION_TYPES[0])
@@ -53,9 +62,18 @@ export function EscalateDialog({
 
   function submit() {
     setOpen(false)
+    logAudit({
+      action: "Escalated",
+      entity: client,
+      clientId,
+      severity,
+      detail: `${type} → ${route} · ${urgency}`,
+      source,
+    })
     toast.success(`Escalation routed to ${route}`, {
       description: `${type} · ${urgency} · ${client}`,
     })
+    onEscalated?.()
   }
 
   return (
