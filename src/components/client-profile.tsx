@@ -63,6 +63,13 @@ export interface ClientRecord {
   summary: string
   riskBreakdown: { type: string; status: string; reason: string }[]
   citations: { source: string; date: string; headline: string }[]
+  watchlist?: boolean
+  watchlistMeta?: {
+    reason: string
+    addedBy: string
+    addedOn: string
+    reviewBy: string
+  }
 }
 
 // Decompose the risk score into weighted, additive contributors that sum to

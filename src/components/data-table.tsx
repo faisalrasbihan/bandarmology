@@ -272,20 +272,21 @@ const columns: ColumnDef<Alert>[] = [
           <EllipsisVerticalIcon />
           <span className="sr-only">Open menu</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem onClick={() => toast.success(`Escalated ${row.original.client}`)}>
-            Escalate to compliance
+            Escalate
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => toast(`Marked ${row.original.client} in review`)}>
-            Mark in review
+          <DropdownMenuItem
+            onClick={() => toast.success(`Added ${row.original.client} to watchlist`)}
+          >
+            Put on watchlist
           </DropdownMenuItem>
-          <DropdownMenuItem>Assign analyst</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             variant="destructive"
             onClick={() => toast(`Dismissed alert for ${row.original.client}`)}
           >
-            Dismiss alert
+            Dismiss
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -512,11 +513,11 @@ export function DataTable({ data }: { data: Alert[] }) {
               size="sm"
               variant="outline"
               onClick={() => {
-                toast(`Marked ${selectedCount} alert(s) in review`)
+                toast.success(`Added ${selectedCount} client(s) to watchlist`)
                 table.resetRowSelection()
               }}
             >
-              Mark in review
+              Put on watchlist
             </Button>
             <Button
               size="sm"
@@ -824,12 +825,18 @@ function AlertDetailDrawer({
           <Button nativeButton={false} render={<Link href={`/clients/${item.id}`} />}>
             View full profile
           </Button>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <EscalateDialog
               client={item.client}
               defaultAction={item.action}
               trigger={<Button variant="outline" className="w-full">Escalate</Button>}
             />
+            <Button
+              variant="outline"
+              onClick={() => toast.success(`Added ${item.client} to watchlist`)}
+            >
+              Watchlist
+            </Button>
             <Button
               variant="outline"
               onClick={() => toast(`Dismissed alert for ${item.client}`)}

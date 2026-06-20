@@ -45,7 +45,7 @@ const data = {
     },
     {
       title: "Watchlists",
-      url: "#",
+      url: "/watchlist",
       icon: <ShieldAlertIcon />,
     },
     {
