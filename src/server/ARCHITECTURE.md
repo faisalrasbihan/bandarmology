@@ -30,7 +30,7 @@ Ingestion → Stage 1: cheap filter → Stage 2: LLM classify → Stage 3: deep 
 | --- | --- | --- | --- |
 | 0. Ingestion | Pull raw items from each public source, normalize into `Signal` | API calls only, no LLM | **Built** — `src/server/signals/` |
 | 1. Cheap filter | Rule/keyword match + lexical overlap against the risk taxonomy; dedupe (done at ingestion); tag-based routing (see below) | ~free | **Built** — `src/server/filter/` |
-| 2. LLM classify | Cheap/fast model (e.g. Haiku) on items that survive Stage 1; structured output: `flag_type, confidence, citations[], rationale, recommended_action` | Low | Not built |
+| 2. LLM classify | Cheap/fast model (Haiku 4.5) on items that survive Stage 1; structured output: `flag_type, confidence, citations[], rationale, recommended_action` | Low | **Built** — `src/server/classify/` |
 | 3. Deep analysis | Stronger model (e.g. Sonnet), escalated cases only; diffs Stage 2 extractions against the Layer 2 baseline to detect drift; produces case narrative | Higher, but rare | Not built |
 
 Every LLM call is logged with token counts so the system can report cost per 1,000 alerts
@@ -52,7 +52,7 @@ flowchart LR
     GN & GD & OS & NA & MS -->|"Promise.allSettled"| ING["Stage 0: Ingestion\nnormalize → Signal"]
     ING --> STORE[("Signal store\ndedupe + persist")]
     STORE --> S1["Stage 1: Cheap filter\nkeyword + lexical overlap\nvs. risk taxonomy"]
-    S1 -->|survives filter| S2["Stage 2: LLM classify\n(fast model, e.g. Haiku)\nflag_type, confidence,\ncitations[], rationale"]
+    S1 -->|survives filter| S2["Stage 2: LLM classify\n(Haiku 4.5, forced tool call)\nflag_type, confidence,\ncitations[], rationale"]
     S1 -->|filtered out| DROP[discarded, logged]
     S2 -->|escalated only| S3["Stage 3: Deep analysis\n(stronger model, e.g. Sonnet)\ndiff vs. Layer 2 baseline"]
     S2 -->|low confidence / no flag| DROP2[no alert created]
@@ -83,8 +83,24 @@ flowchart TD
     F1 & F2 & F3 & F4 & F5 -->|Signal\[\] or rejected| IDX
     IDX -->|"signals[], errors[]"| STOREMOD["store.ts\nupsertSignals(): dedupe by\nnormalized URL + fuzzy title/day"]
     STOREMOD --> MEM[("Postgres\nsignals table")]
+    IDX -->|"inserted signals"| STAGE1MOD["filter/index.ts\nrunStage1(): keyword + lexical\nscore vs. risk taxonomy"]
+    STAGE1MOD --> MEM2[("Postgres\nsignal_triage")]
     STOREMOD --> ROUTE
     ROUTE --> CLIENT
+
+    CLIENT2[Client request] --> GENROUTE["src/app/api/alerts/generate/route.ts"]
+    GENROUTE --> S2MOD["classify/index.ts\nrunStage2(): Stage-1 survivors\nwithout an alert"]
+    S2MOD -->|"one signal per call"| LLM["classify/stage2.ts\nAnthropic SDK, forced tool call,\nZod validation, retry once"]
+    LLM -->|"Stage2Output or null"| S2MOD
+    S2MOD -->|"every call, success or failure"| LOGMOD["classify/store.ts\nlogLlmCall()"]
+    LOGMOD --> MEM3[("Postgres\nllm_calls")]
+    S2MOD -->|"valid output only"| ALERTMOD["classify/store.ts\ncreateAlert(): always status='proposed'"]
+    ALERTMOD --> MEM4[("Postgres\nalerts")]
+    GENROUTE --> CLIENT2
+
+    CLIENT3[Analyst] -->|"PATCH /api/alerts/:id"| PATCHROUTE["src/app/api/alerts/[id]/route.ts"]
+    PATCHROUTE --> SETSTATUS["classify/store.ts\nsetAlertStatus(): only caller\nallowed to change status"]
+    SETSTATUS --> MEM4
 ```
 
 ### Schema graph
@@ -95,9 +111,10 @@ erDiagram
     Signal }o--|| SignalSource : "tagged with"
     Signal ||--o{ SignalTags : "has"
     Signal ||--o{ FetchError : "or fails as (per source)"
-    Signal }o--o{ Alert : "cited by (planned)"
+    Signal ||--o| Alert : "cited by"
     Signal ||--o| Stage1Classification : "scored by"
     Stage1Classification }o--o{ RiskCategory : "matches against"
+    Alert ||--o{ LlmCallLog : "logged via"
     KycBaseline ||--o{ Alert : "diffed against (planned)"
 
     FetchQuery {
@@ -155,7 +172,8 @@ erDiagram
     }
     Alert {
         string id
-        string entityId
+        string signalId
+        string entityHint
         string flagType
         number confidence
         string[] citations "Signal.id refs"
@@ -164,6 +182,18 @@ erDiagram
         string status "proposed|confirmed|escalated|dismissed"
         string modelUsed
         object tokenUsage
+        string createdAt
+    }
+    LlmCallLog {
+        string id
+        string stage "stage2|stage3"
+        string model
+        string signalId
+        number inputTokens
+        number outputTokens
+        number costUsd
+        boolean success
+        string error
         string createdAt
     }
 ```
@@ -189,11 +219,39 @@ Scoring (`stage1.ts`) is two free, non-LLM signals combined per category, then m
   (e.g. transformers.js) is a drop-in change — call sites only depend on the resulting score.
 
 A signal **passes** (is eligible for Stage 2) if its top category score is ≥0.3. Results are
-persisted per-signal in a separate `stage1_classifications` table (`filter/store.ts`) keyed
+persisted per-signal in a separate `signal_triage` table (`filter/store.ts`) keyed
 to `signals.id`, not merged into the Stage 0 `signals` table — keeps each stage's output
 independently auditable, consistent with the "every LLM flag must cite a real Signal.id"
-guardrail below (Stage 2, once built, can cite either the signal or its Stage 1 match as
-grounding). `GET /api/signals/store?stage1=survived|filtered` exposes the split.
+guardrail below. `GET /api/signals/store?stage1=survived|filtered` exposes the split.
+
+## Stage 2: LLM classify
+
+`src/server/classify/` runs Claude Haiku 4.5 over Stage-1-survivor signals that don't yet
+have an alert (`runStage2()` in `classify/index.ts`). One signal per call — this keeps
+grounding trivial to enforce (citations can only reference the one signal id given) rather
+than trusting the model's claimed sources. Triggered explicitly via
+`POST /api/alerts/generate`, never automatically on ingest, so every dollar spent is a
+deliberate action — Stage 1 already did the free triage.
+
+**Structured output, enforced, not requested.** The model must respond via a forced tool call
+(`tool_choice: {type: "tool", name: "submit_risk_assessment"}`) with `flagType` (taxonomy id),
+`confidence`, `citationSignalIds`, `rationale`, `recommendedAction`. The response is validated
+with Zod (`classify/types.ts`) and the citation ids are checked against the actual signal id
+given to the model — not trusted. On either failure, the call retries once with the validation
+error appended to the conversation; if the retry also fails, no `Alert` is created and the
+failure is still logged via `logLlmCall()` (`classify/store.ts`) — per the guardrail below,
+this is reject/retry, never silent acceptance of malformed output.
+
+**Every Alert is created with `status: "proposed"`** — `createAlert()` has no parameter to set
+any other status; the only function that can change it is `setAlertStatus()`, called solely
+from the human-initiated `PATCH /api/alerts/:id` route. Nothing in the ingestion or
+Stage 1/2 pipeline calls it. This is the human-in-the-loop guardrail in code, not just policy.
+
+**Every LLM call is logged**, success or failure, via `logLlmCall()` into a separate
+`llm_calls` table (model, signal id, input/output tokens, cost estimate, error if any) —
+`GET /api/cost-summary` aggregates this into the cost-per-1000-alerts metric the judging
+criteria call for. Token costs are computed from the pricing in `classify/stage2.ts`
+(Haiku 4.5: $1.00/1M input, $5.00/1M output as of this build — update if pricing changes).
 
 ## Data model
 
@@ -207,6 +265,17 @@ Stage1Classification {
   passed, topMatch: { categoryId, categoryLabel, score, matchedKeywords[] } | null,
   matches: RiskMatch[], classifiedAt
 }
+
+Alert {
+  id, signalId, entityHint, flagType, confidence, citations: SignalId[],
+  rationale, recommendedAction, status: "proposed" | "confirmed" | "escalated" | "dismissed",
+  modelUsed, tokenUsage: { inputTokens, outputTokens, costUsd }, createdAt
+}
+
+LlmCallLog {
+  id, stage: "stage2" | "stage3", model, signalId,
+  inputTokens, outputTokens, costUsd, success, error, createdAt
+}
 ```
 
 Planned, not yet built:
@@ -216,12 +285,6 @@ KycBaseline {
   entityId, companyName, expectedSectors[], expectedCountries[],
   expectedBusinessModel, expectedTxVolumeRange, ownershipStructure[],
   riskRating, onboardedAt
-}
-
-Alert {
-  id, entityId, flagType, confidence, citations: SignalId[],
-  rationale, recommendedAction, status: "proposed" | "confirmed" | "escalated" | "dismissed",
-  modelUsed, tokenUsage, createdAt
 }
 ```
 
@@ -287,21 +350,28 @@ Reference docs: [DOC 2.0 API query syntax](https://blog.gdeltproject.org/gdelt-d
 ## Guardrails
 
 - **Data separation:** Layer 1 and Layer 2 never share a store; a join is an explicit,
-  logged step.
-- **Grounding:** every `Alert.citations` entry must reference a real `Signal.id` that was
-  actually ingested — reject any LLM output that cites something not in that set.
-- **Schema enforcement:** Stage 2/3 outputs are validated against a strict schema; violation
-  → retry, not silent acceptance of malformed output.
-- **Human-in-the-loop:** alerts are created as `proposed`; only an explicit analyst action
-  moves them to `confirmed`/`escalated`/`dismissed`. No automated action is taken directly
-  off a model output.
-- **RBAC stub:** analyst vs. compliance-officer roles gating who can change alert status.
-- **Audit log:** every LLM call (model, tokens, cost) and every human decision, timestamped.
+  logged step. (Layer 2 not yet built.)
+- **Grounding (implemented):** every `Alert.citations` entry must reference a real `Signal.id`
+  that was actually ingested — `classify/stage2.ts` checks this against the signal actually
+  given to the model, not the model's claim, and rejects/retries on a bad citation.
+- **Schema enforcement (implemented):** Stage 2 output is validated with Zod
+  (`classify/types.ts`); violation → retry once, then give up without creating an `Alert` —
+  never silent acceptance of malformed output.
+- **Human-in-the-loop (implemented):** `createAlert()` always sets `status: "proposed"`;
+  `setAlertStatus()` is the only function that can change it, called solely from the
+  human-initiated `PATCH /api/alerts/:id` route. No automated action is taken directly off a
+  model output.
+- **RBAC stub:** analyst vs. compliance-officer roles gating who can change alert status. Not
+  yet built — `PATCH /api/alerts/:id` currently accepts any caller.
+- **Audit log (implemented):** every LLM call (model, tokens, cost, success/failure) is
+  logged via `logLlmCall()` into `llm_calls`, regardless of outcome. Human decisions
+  (status changes) are not yet separately timestamped beyond the `alerts` row's own update —
+  a dedicated decision log is a next step if a full audit trail is needed.
 
 ## Current implementation
 
-Layer 1 / Stage 0 ingestion and Stage 1 cheap filter both exist today; Stage 2/3 (any LLM
-call) do not:
+Layer 1 / Stage 0 ingestion, Stage 1 cheap filter, and Stage 2 LLM classify all exist today;
+Stage 3 deep analysis and Layer 2 (KYC baseline/drift) do not:
 
 - `src/server/db.ts` — Postgres connection pool (`getPool()`), reads `DATABASE_URL`
 - `src/server/signals/types.ts` — `Signal`, `SignalTags`, `FetchQuery`, `FetchError`
@@ -316,7 +386,7 @@ call) do not:
 - `src/server/filter/taxonomy.ts` — the 11-category risk taxonomy
 - `src/server/filter/stage1.ts` — `classifySignal()`, the keyword + lexical-overlap scorer
 - `src/server/filter/store.ts` — persists each signal's classification to
-  `stage1_classifications`, keyed to `signals.id`
+  `signal_triage`, keyed to `signals.id`
 - `src/server/filter/index.ts` — `runStage1()` (classify + persist a batch),
   `attachStage1Classifications()` (join classifications onto already-stored signals)
 - `src/app/api/signals/route.ts` — `GET /api/signals?company=...&sectors=...&countries=...`,
@@ -324,5 +394,19 @@ call) do not:
   `{ survived, filtered }` Stage 1 summary
 - `src/app/api/signals/store/route.ts` — `GET /api/signals/store?entityHint=...&stage1=survived|filtered`,
   lists everything accumulated in the store so far, annotated with Stage 1 results
+- `src/server/classify/types.ts` — `Stage2OutputSchema` (Zod), `Alert`, `LlmCallLog` types
+- `src/server/classify/stage2.ts` — `classifySignalWithLlm()`, the Anthropic SDK call
+  (Haiku 4.5, forced tool call, Zod + citation validation, retry once on violation)
+- `src/server/classify/store.ts` — persists `alerts` and `llm_calls`; `createAlert()` always
+  writes `status: 'proposed'`; `setAlertStatus()` is the only status-change path;
+  `getCostSummary()` aggregates spend for the cost-per-1000-alerts metric
+- `src/server/classify/index.ts` — `runStage2()`: finds Stage-1 survivors without an alert,
+  classifies each, logs every call, creates an `Alert` only on valid output
+- `src/app/api/alerts/generate/route.ts` — `POST /api/alerts/generate?entityHint=...&limit=...`,
+  the only LLM-calling endpoint, triggered explicitly
+- `src/app/api/alerts/route.ts` — `GET /api/alerts?entityHint=...&status=...`
+- `src/app/api/alerts/[id]/route.ts` — `PATCH /api/alerts/:id` `{ status }`, the
+  human-in-the-loop status-change endpoint
+- `src/app/api/cost-summary/route.ts` — `GET /api/cost-summary`, aggregate LLM spend
 
 See README.md for setup, and the "Next steps" list there for what's still to build.

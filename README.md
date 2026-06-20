@@ -9,9 +9,10 @@ and [CLAUDE.md](./CLAUDE.md) for instructions Claude Code follows when working i
 
 ## Status
 
-This repo currently implements **Layer 1, Stage 0 (ingestion) and Stage 1 (cheap filter)**,
-plus a shadcn/ui-based frontend shell. No LLM call exists yet (Stage 2/3, drift detection,
-wired-up UI) — see `src/server/ARCHITECTURE.md` for the planned pipeline.
+This repo currently implements **Layer 1, Stage 0 (ingestion), Stage 1 (cheap filter), and
+Stage 2 (LLM classify)**, plus a shadcn/ui-based frontend shell. Stage 3 (deep analysis),
+Layer 2 (simulated KYC baseline/drift), and wired-up UI don't exist yet — see
+`src/server/ARCHITECTURE.md` for the planned pipeline.
 
 ## Stack
 
@@ -58,6 +59,7 @@ Create `.env.local`:
 
 ```
 DATABASE_URL=postgres://postgres:postgres@localhost:5433/amina_risk_profiling   # required, see Database above
+ANTHROPIC_API_KEY=your_key_here       # required for Stage 2 (LLM classify) — see https://console.anthropic.com/
 OPENSANCTIONS_API_KEY=your_key_here   # optional, see table above
 NEWSAPI_API_KEY=your_key_here         # required for the newsapi source
 MEDIASTACK_API_KEY=your_key_here      # required for the mediastack source
@@ -137,9 +139,39 @@ exact keyword matches and lightweight lexical (token-overlap) similarity against
 category's description. No network calls, no LLM — this is the "free" triage step that runs
 on every signal before anything reaches Stage 2. See `src/server/ARCHITECTURE.md` § Stage 1:
 cheap filter for the scoring details and rationale. Results persist in a separate
-`stage1_classifications` table, joined back onto signals via `entityHint`/`id`, never merged
+`signal_triage` table, joined back onto signals via `entityHint`/`id`, never merged
 into the Stage 0 `signals` table — each pipeline stage's output stays independently
 auditable.
+
+### Stage 2 LLM classify
+
+```
+POST /api/alerts/generate?entityHint=<name>&limit=<n>
+```
+
+Classifies up to `limit` (default 10) Stage-1-survivor signals for `entityHint` that don't
+already have an alert, using Claude Haiku 4.5. **Triggered explicitly** — never run
+automatically by `/api/signals`, so every LLM call is a deliberate, attributable cost.
+Requires `ANTHROPIC_API_KEY`.
+
+```bash
+curl -X POST "http://localhost:3000/api/alerts/generate?entityHint=Wirecard&limit=5"
+```
+
+Each call forces a structured tool-call response (no free-text fallback), validates it with
+Zod, and checks that every cited signal id was actually given to the model — reject/retry
+once on any violation, never silent acceptance. Every Alert is created with
+`status: "proposed"`; nothing in the pipeline can set any other status.
+
+```
+GET  /api/alerts?entityHint=<name>&status=<proposed|confirmed|escalated|dismissed>
+PATCH /api/alerts/<id>   { "status": "confirmed" }
+GET  /api/cost-summary
+```
+
+`PATCH` is the only way an alert's status changes — an explicit, human-initiated call,
+matching the human-in-the-loop guardrail in `CLAUDE.md`. `/api/cost-summary` aggregates every
+logged LLM call (success or failure) into total spend and cost-per-1000-alerts.
 
 ## Project layout
 
@@ -163,14 +195,25 @@ src/server/
     stage1.ts                classifySignal() — keyword + lexical-overlap scorer
     store.ts                 recordStage1Classification()/getStage1Classifications() (Postgres)
     index.ts                 runStage1(), attachStage1Classifications()
+  classify/
+    types.ts                 Stage2OutputSchema (Zod), Alert, LlmCallLog types
+    stage2.ts                classifySignalWithLlm() — Anthropic SDK call, forced tool use,
+                              Zod + citation validation, retry once on violation
+    store.ts                 createAlert()/setAlertStatus()/getAlerts()/logLlmCall()/getCostSummary()
+    index.ts                 runStage2() — classify Stage-1 survivors, log every call, create alerts
 src/app/api/signals/route.ts         GET endpoint wrapping ingestSignals() (Stage 0 + Stage 1)
 src/app/api/signals/store/route.ts   GET endpoint wrapping getStoredSignals() + Stage 1 join
+src/app/api/alerts/route.ts          GET endpoint wrapping getAlerts()
+src/app/api/alerts/generate/route.ts POST endpoint wrapping runStage2() — the only LLM-calling route
+src/app/api/alerts/[id]/route.ts     PATCH endpoint wrapping setAlertStatus() — human-in-the-loop
+src/app/api/cost-summary/route.ts    GET endpoint wrapping getCostSummary()
 src/components/ui/             shadcn/ui frontend components
 ```
 
 ## Next steps (not yet built)
 
-1. Stage 2/3 LLM classification against the flag taxonomy, with structured output + citations
+1. Stage 3 deep analysis (escalated cases only) — diffs Stage 2 extractions against the Layer 2
+   baseline to detect drift, stronger model, case narrative
 2. Layer 2 simulated KYC baseline + drift diff logic
 3. Sector/country tag-based routing — see `src/server/ARCHITECTURE.md` § Entity Tagging & Routing
 4. UI: alert feed, entity timeline, explainability panel
@@ -180,3 +223,5 @@ src/components/ui/             shadcn/ui frontend components
 6. If Stage 1 recall proves too low on real data, swap the lexical-overlap scorer for a real
    local embedding model (e.g. transformers.js) — see `src/server/ARCHITECTURE.md` § Stage 1:
    cheap filter
+7. RBAC on `PATCH /api/alerts/:id` — currently accepts any caller; needs an analyst vs.
+   compliance-officer role check

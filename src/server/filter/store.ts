@@ -4,7 +4,9 @@ import type { Stage1Classification } from "./stage1";
 let schemaReady: Promise<void> | null = null;
 
 const SCHEMA_DDL = `
-  CREATE TABLE IF NOT EXISTS stage1_classifications (
+  ALTER TABLE IF EXISTS stage1_classifications RENAME TO signal_triage;
+  ALTER INDEX IF EXISTS stage1_passed_idx RENAME TO signal_triage_passed_idx;
+  CREATE TABLE IF NOT EXISTS signal_triage (
     signal_id UUID PRIMARY KEY REFERENCES signals(id) ON DELETE CASCADE,
     passed BOOLEAN NOT NULL,
     top_category_id TEXT,
@@ -13,7 +15,7 @@ const SCHEMA_DDL = `
     matches JSONB NOT NULL,
     classified_at TIMESTAMPTZ NOT NULL
   );
-  CREATE INDEX IF NOT EXISTS stage1_passed_idx ON stage1_classifications (passed);
+  CREATE INDEX IF NOT EXISTS signal_triage_passed_idx ON signal_triage (passed);
 `;
 
 function ensureSchema(): Promise<void> {
@@ -35,7 +37,7 @@ export async function recordStage1Classification(
 ): Promise<void> {
   await ensureSchema();
   await getPool().query(
-    `INSERT INTO stage1_classifications
+    `INSERT INTO signal_triage
        (signal_id, passed, top_category_id, top_category_label, top_score, matches, classified_at)
      VALUES ($1, $2, $3, $4, $5, $6, $7)
      ON CONFLICT (signal_id) DO UPDATE SET
@@ -70,7 +72,7 @@ export async function getStage1Classifications(
   await ensureSchema();
   if (signalIds.length === 0) return new Map();
   const { rows } = await getPool().query<ClassificationRow>(
-    `SELECT signal_id, passed, matches, classified_at FROM stage1_classifications WHERE signal_id = ANY($1)`,
+    `SELECT signal_id, passed, matches, classified_at FROM signal_triage WHERE signal_id = ANY($1)`,
     [signalIds]
   );
   const result = new Map<string, Stage1Classification>();
