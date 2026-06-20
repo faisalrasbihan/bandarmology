@@ -18,8 +18,12 @@ join step that's logged and auditable.
   if AMINA had onboarded these entities — expected business model, sectors, jurisdiction,
   ownership, expected transaction volume range, risk rating, onboarding date. Stored in a
   separate `kyc_baselines` table, never merged with the Layer 1 `signals` store; the only join
-  is the explicit, logged Stage 3 step. (A synthetic AML transaction feed with injected
-  anomalies — structuring, cross-border spike, dormancy break — remains a future extension.)
+  is the explicit, logged Stage 3 step. A synthetic AML transaction feed with injected
+  anomalies — structuring, cross-border money-mule spike, dormancy break — is also part of
+  Layer 2 (`src/server/aml/`, separate `aml_transactions`/`aml_findings` tables); it powers the
+  transaction-behavioural reference flags the news/KYC-drift pipeline cannot see (the evidence
+  is in transaction patterns, not the news). Detection runs entirely on Layer 2 data, so there
+  is no cross-layer leak.
 
 ## Pipeline (staged by cost)
 
@@ -391,12 +395,93 @@ Reference docs: [DOC 2.0 API query syntax](https://blog.gdeltproject.org/gdelt-d
 [GKG Codebook V2.1](http://data.gdeltproject.org/documentation/GDELT-Global_Knowledge_Graph_Codebook-V2.1.pdf)
 (theme taxonomy reference), [GKG theme code lookup list](https://blog.gdeltproject.org/new-november-2021-gkg-2-0-themes-lookup/).
 
+## Exposure graph & second-order propagation (Layer 1)
+
+`src/server/exposure/` makes the flat `SignalTags` into a normalized, typed
+**exposure graph**: one row per edge `(entityName, tagType, tagValue)` in
+`entity_exposures`, where `tagType ∈ sector | country | director | supplier |
+customer | subsidiary | regulator`. Every value is a *public* fact (registry /
+news / onboarding questionnaire), so the whole module is Layer 1.
+
+**Layer separation is enforced by the database, not convention.** The table has a
+`layer TEXT NOT NULL DEFAULT 'public' CHECK (layer = 'public')` constraint, and
+beneficial ownership / UBO is deliberately *not* a tag type — it stays sensitive
+Layer 2 data in `KycBaseline.ownershipStructure`. An internal edge physically
+cannot be written here.
+
+**Second-order propagation** (`propagate.ts`) is the payoff: a public signal can
+endanger a client it never names, by hitting one of the client's exposure edges
+(a shared director, supplier, …). Staged by cost like the rest of the pipeline:
+
+1. **Free pre-filter** — only edges whose `tagValue` literally appears in the
+   signal text (word-boundary match) become candidates; coarse `sector`/`country`
+   edges are excluded from propagation (`PROPAGATABLE_TAG_TYPES`) to avoid
+   over-matching at news volume. No LLM is spent on the long tail.
+2. **LLM materiality judgement** (Haiku 4.5, stage `exposure`) — decides whether
+   the mention is a genuine, material risk to the *client* (vs. a tangential
+   mention), with reasoning + confidence, grounded to the signal id. Runs through
+   the shared harness, so every call (incl. "not material" verdicts) is
+   token-logged. First-order coverage stays Stage 2's job — propagation skips
+   edges back to the signal's own entity.
+
+Each `exposure_alert` is created `status: 'proposed'`; `setExposureAlertStatus()`
+is the only status-change path and writes an `exposure_alert_decisions` audit row
+— the same human-in-the-loop guardrail as the news and AML sides. The citation
+chain is fully explainable: `Signal.id → exposure edge (tagValue, tagType) →
+client`. Demo hook: "Markus Braun" is seeded as a director of both Wirecard and
+the synthetic shell *Lindenhof Holdings AG*, so adverse media about Braun
+(ingested while monitoring Wirecard) raises an exposure alert on Lindenhof — a
+client with no public footprint, now flagged on two independent axes (this and
+the AML dormancy break).
+
+## Transaction investigation view
+
+AMINA is a crypto bank, so a concerning client's full picture spans two planes:
+its **internal** AMINA transactions (Layer 2, `aml_transactions`) and its
+**public on-chain** activity for known wallet addresses (Layer 1). These are
+*different layers* — public-ledger data must never be merged into the internal
+feed — so they live in separate stores: `src/server/onchain/` (own
+`onchain_transactions` table, entity→address bridge in `addresses.ts`). They meet
+only at the **read-only investigation display join** (`src/server/investigation/`),
+exactly like the dashboard join.
+
+The hard part is "everything on display without overwhelming," so
+`buildInvestigation()` returns a **progressive-disclosure** shape rather than a
+raw ledger: lead with the 1–3 `findings`; aggregate counterparty `flows` (sized
+by volume — the anomaly is a *shape*); expand only the `evidence` transactions; a
+merged internal+on-chain `timeline` defaulted to the anomaly window with evidence
+rows highlighted and the cap ordered so a flagged row is never dropped; and full
+`ledger` counts/totals for "show me everything" on demand. The synthetic on-chain
+feed injects anomalies in the *same window* as the internal AML flags (Binance →
+sanctioned-mixer inflow; Lindenhof → high-risk inflow in the dormancy window) so
+the public ledger visibly corroborates the internal finding. `narrate.ts`
+(Haiku 4.5, stage `investigate`) is an optional on-demand summary across both
+planes, grounded to the transaction ids shown and token-logged via the shared
+harness.
+
+## Shared LLM harness
+
+`src/server/llm/structured.ts` (`callStructuredLlm`) centralizes the CLAUDE.md
+non-negotiables so they're structural, not per-call discipline: forced tool call
+(structured output), one retry on schema/grounding failure then reject, and
+exactly one `llm_calls` row per invocation (success or failure) — there is no way
+to call the model from a feature without its cost being logged. The caller passes
+a `parse` callback that runs its Zod schema and checks citations against the real
+evidence set. New stages (`tag_extract`, `exposure`, `investigate`) are added to
+the `LlmStage` union, so their spend rolls into the cost-per-1000-alerts metric.
+(Stage 2/3 and AML narration predate this helper and already implement the same
+contract by hand.)
+
 ## Guardrails
 
 - **Data separation (implemented):** Layer 1 (`src/server/signals/`, `signals` table) and
   Layer 2 (`src/server/baseline/`, `kyc_baselines` table) are separate modules and stores.
   They meet only in `classify/stage3.ts`, which explicitly fetches the alert/signal and the
-  baseline and combines them in one prompt — a single, logged join (via `llm_calls`).
+  baseline and combines them in one prompt — a single, logged join (via `llm_calls`). The
+  exposure graph (`entity_exposures`) and public on-chain feed (`onchain_transactions`) are
+  additional **Layer 1** stores; `entity_exposures.layer` carries a `CHECK (layer = 'public')`
+  constraint so an internal edge cannot be written, and the public on-chain feed meets the
+  Layer 2 internal feed only at the read-only investigation join.
 - **Grounding (implemented):** every `Alert.citations` entry must reference a real `Signal.id`
   that was actually ingested — `classify/stage2.ts` checks this against the signal actually
   given to the model, not the model's claim, and rejects/retries on a bad citation.
@@ -495,5 +580,21 @@ The full pipeline (Stage 0 → 1 → 2 → 3) and both data layers exist today:
   importing JSON; the snapshot endpoint makes that JSON reflect real DB state on demand
 - `src/app/api/seed/route.ts` — `POST`, one-shot demo bootstrap: seed baselines + profiles,
   then ingest Layer 1 signals (incl. Crunchbase) per entity through Stage 1. No LLM calls
+- `src/server/aml/{types,store,feed,detect,narrate,index}.ts` — Layer 2 AML transaction
+  monitoring. `feed.ts` generates a deterministic synthetic transaction feed with injected
+  anomalies (Binance → money-mule cross-border spike, Wirecard → structuring, the synthetic
+  shell *Lindenhof Holdings AG* → dormancy break; Tesla/Nestle clean as false-positive
+  controls). `detect.ts` is the free, Stage-1-analog rule engine (the 3 behavioural flags),
+  each finding grounded in the exact transaction ids that triggered it. `narrate.ts` is the
+  optional Stage-2-analog Haiku narration (reasons over flagged tx + KYC baseline, citations
+  checked against the evidence set, token-logged via `logLlmCall(stage:'aml')`). Findings are
+  always created 'proposed'; `setFindingStatus()` is the only status-change path and writes an
+  `aml_finding_decisions` audit row — the same human-in-the-loop guardrail as the news side
+- `src/app/api/aml/{seed,detect}/route.ts`, `aml/findings/route.ts`,
+  `aml/findings/[id]/route.ts` (GET + human-in-the-loop PATCH), `aml/findings/[id]/narrate/route.ts`
+- The dashboard join (`src/server/dashboard/`) folds the top AML finding into each client's
+  record: it adds a "Behavioural / AML Risk" breakdown row and drives the headline severity/flag
+  when it outranks the news alert — so the transaction-behavioural flags surface in the
+  unchanged frontend (Lindenhof, with no public footprint, is flagged on AML evidence alone)
 
 See README.md for setup, and the "Next steps" list there for what's still to build.

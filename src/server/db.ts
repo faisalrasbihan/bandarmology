@@ -39,6 +39,9 @@ export function getPool(): Pool {
   if (!global.__aminaPgPool) {
     global.__aminaPgPool = new Pool({
       connectionString: normalizeConnectionString(process.env.DATABASE_URL),
+      // Stay under the Supabase session-pooler client limit (15). Our queries
+      // queue client-side rather than overflowing the shared pooler.
+      max: 8,
     });
   }
   return global.__aminaPgPool;

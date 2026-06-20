@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/tabs"
 import { RiskDriftChart } from "@/components/risk-drift-chart"
 import { EscalateDialog } from "@/components/escalate-dialog"
+import { ExposureTags } from "@/components/exposure-tags"
 import { exposureAtRisk, formatMoney } from "@/lib/format"
 import {
   initials,
@@ -178,6 +179,15 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            {client.flagged && (
+              <Button
+                variant="outline"
+                nativeButton={false}
+                render={<Link href={`/investigation/${client.id}`} />}
+              >
+                Open Investigation
+              </Button>
+            )}
             <EscalateDialog
               client={client.client}
               defaultAction={client.action}
@@ -311,6 +321,8 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
           </CardContent>
         </Card>
       </div>
+
+      <ExposureTags entityName={client.client} />
 
       {/* Risk breakdown */}
       <Card>

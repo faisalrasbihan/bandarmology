@@ -76,7 +76,15 @@ export async function upsertClientProfile(
   p: Omit<ClientProfile, "entityId"> & { entityId?: string }
 ): Promise<ClientProfile> {
   await ensureSchema();
-  const entityId = p.entityId ?? randomUUID();
+  // Idempotent by company name (see upsertBaseline for the same pattern).
+  let entityId = p.entityId;
+  if (!entityId) {
+    const { rows } = await getPool().query<{ entity_id: string }>(
+      `SELECT entity_id FROM client_profiles WHERE lower(company_name) = lower($1)`,
+      [p.companyName]
+    );
+    entityId = rows[0]?.entity_id ?? randomUUID();
+  }
   await getPool().query(
     `INSERT INTO client_profiles
        (entity_id, company_name, relationship, exposure_usd, display_sector,

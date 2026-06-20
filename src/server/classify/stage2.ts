@@ -127,9 +127,12 @@ export function buildStage2Request(
   };
 }
 
+export function extractToolUse(response: Anthropic.Message): Anthropic.ToolUseBlock | undefined {
+  return response.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
+}
+
 export function extractToolInput(response: Anthropic.Message): unknown {
-  const block = response.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
-  return block?.input;
+  return extractToolUse(response)?.input;
 }
 
 export function validateStage2(
@@ -166,17 +169,28 @@ export async function classifySignalWithLlm(signal: ClassifiedSignal): Promise<S
     const response = await client.messages.create({ ...base, messages });
     usage = sumUsage(usage, tokenUsageFor(STAGE2_MODEL, response.usage));
 
-    const raw = extractToolInput(response);
-    const result = validateStage2(raw, validSignalIds);
+    const block = extractToolUse(response);
+    const result = validateStage2(block?.input, validSignalIds);
     if ("output" in result) {
       return { output: result.output, tokenUsage: usage, error: null };
     }
 
     if (attempt === 0) {
       messages.push({ role: "assistant", content: response.content });
+      // Must resolve the open `tool_use` block with a `tool_result` before any new
+      // instruction, or the API rejects the next request and the retry never fires.
       messages.push({
         role: "user",
-        content: `Your previous response was invalid: ${result.error}. Call ${TOOL_NAME} again with a corrected response.`,
+        content: block
+          ? [
+              {
+                type: "tool_result",
+                tool_use_id: block.id,
+                content: `Invalid: ${result.error}. Call ${TOOL_NAME} again with a corrected response.`,
+                is_error: true,
+              },
+            ]
+          : `Your previous response was invalid: ${result.error}. Call ${TOOL_NAME} again with a corrected response.`,
       });
       continue;
     }
