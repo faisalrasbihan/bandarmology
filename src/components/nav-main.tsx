@@ -27,7 +27,7 @@ export function NavMain({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 tooltip={item.title}
-                render={item.url !== "#" ? <a href={item.url} /> : undefined}
+                render={item.url !== "#" ? <Link href={item.url} /> : undefined}
               >
                 {item.icon}
                 <span>{item.title}</span>

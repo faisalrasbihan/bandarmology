@@ -1,0 +1,3902 @@
+{
+  "Binance": {
+    "entityName": "Binance",
+    "hasActivity": true,
+    "severity": "high",
+    "window": {
+      "from": "2026-05-31T14:45:52.628Z",
+      "to": "2026-06-11T12:33:34.544Z",
+      "days": 11
+    },
+    "findings": [
+      {
+        "id": "6f8d483f-bf32-4379-9bb4-68eea75c94da",
+        "flagType": "money_mule",
+        "label": "Behavioural Anomaly – Potential Money Mule",
+        "severity": "high",
+        "confidence": 0.88,
+        "rationale": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions. The pass-through pattern is consistent with money-mule / funnel-account activity inconsistent with historical behaviour.",
+        "recommendedAction": "Monitor transactions; flag for AML analyst review.",
+        "narrative": "Between 2 June and 9 June 2026, Binance received 22 inbound cross-border crypto transfers totalling $7,965,680 from 17 distinct counterparties. This volume represents a 5.5× spike above the entity's normal 7-day cross-border inflow baseline ($1,460,782 expected). The transaction pattern exhibits several red flags consistent with potential money-mule funnel activity: (1) Concentration of high-value transfers within a compressed 7-day window; (2) Influx from 12 shell entities (68% of counterparties) bearing jurisdictional risk indicators (Panama, Seychelles, UAE, Cayman Islands, Virgin Islands, Russia), with 55% of total volume originating from higher-risk jurisdictions; (3) Interleaved legitimate-appearing entities (Acme Components, Meridian Partners, Vertex Services, Lakeside Holdings, Orion Supplies) mixing with thinly-veiled pass-through structures; (4) Repeated entity-jurisdiction pairs (e.g., Meridian Partners appearing from JP, DE, GB; Vertex Services from GB, FR; Shell Entities A–L geographically distributed). While Binance's KYC profile as a high-volume exchange normalizes substantial crypto inflows, the velocity, source heterogeneity, high-risk concentration, and shell-entity prevalence diverge significantly from historical baseline and suggest rapid layering or collection activity inconsistent with ordinary exchange settlement patterns.",
+        "status": "escalated",
+        "evidenceCount": 22,
+        "metrics": {
+          "windowDays": 7,
+          "transactions": 22,
+          "highRiskShare": 0.55,
+          "peakWindowUsd": 7965680,
+          "ratioVsNormal": 5.5,
+          "expectedWindowUsd": 1460782,
+          "distinctCounterparties": 17
+        }
+      }
+    ],
+    "flows": [
+      {
+        "plane": "onchain",
+        "label": "ethereum",
+        "direction": "mixed",
+        "totalUsd": 5509888,
+        "count": 45,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "AE",
+        "direction": "inbound",
+        "totalUsd": 2250951,
+        "count": 4,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "MT",
+        "direction": "mixed",
+        "totalUsd": 2215083,
+        "count": 29,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "VG",
+        "direction": "inbound",
+        "totalUsd": 1521709,
+        "count": 2,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "KY",
+        "direction": "inbound",
+        "totalUsd": 1250390,
+        "count": 2,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "RU",
+        "direction": "inbound",
+        "totalUsd": 941620,
+        "count": 2,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "SC",
+        "direction": "inbound",
+        "totalUsd": 855134,
+        "count": 1,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "DE",
+        "direction": "mixed",
+        "totalUsd": 756111,
+        "count": 11,
+        "highRisk": false
+      }
+    ],
+    "evidence": [
+      {
+        "plane": "internal",
+        "id": "49e94988-5e49-4589-a382-65944d057621",
+        "ts": "2026-06-09T12:33:34.544Z",
+        "direction": "inbound",
+        "amountUsd": 51111,
+        "counterparty": "Meridian Partners",
+        "detail": "GB · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "dbaf11dc-abd5-4bcb-bbc3-90525c3080d7",
+        "ts": "2026-06-09T06:34:28.552Z",
+        "direction": "inbound",
+        "amountUsd": 30289,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "bce4e611-d034-4573-aeb8-a6c279006b51",
+        "ts": "2026-06-08T06:12:28.097Z",
+        "direction": "inbound",
+        "amountUsd": 86969,
+        "counterparty": "Vertex Services",
+        "detail": "FR · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9af6e253-9b16-4a71-8cbf-c8429dc1a876",
+        "ts": "2026-06-06T20:01:58.489Z",
+        "direction": "inbound",
+        "amountUsd": 410116,
+        "counterparty": "Shell Entity H",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "a4ed3ca0-e82d-42af-bab8-93ea0bd3f012",
+        "ts": "2026-06-06T18:10:07.728Z",
+        "direction": "inbound",
+        "amountUsd": 495181,
+        "counterparty": "Shell Entity B",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "5bcc0093-b4f9-447d-82f0-3f8f4963408f",
+        "ts": "2026-06-06T09:57:25.247Z",
+        "direction": "inbound",
+        "amountUsd": 80212,
+        "counterparty": "Acme Components",
+        "detail": "JP · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "66aa598d-0ee3-45bf-a492-3bd3124f3b4f",
+        "ts": "2026-06-06T07:52:03.229Z",
+        "direction": "inbound",
+        "amountUsd": 66316,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c88e7bb6-8fdc-41c0-a1a8-320b17bf3cca",
+        "ts": "2026-06-06T07:49:43.248Z",
+        "direction": "inbound",
+        "amountUsd": 353350,
+        "counterparty": "Shell Entity G",
+        "detail": "KY · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "8da01aae-2590-442f-9375-50a0f3e9de9b",
+        "ts": "2026-06-06T01:32:12.327Z",
+        "direction": "inbound",
+        "amountUsd": 856521,
+        "counterparty": "Shell Entity L",
+        "detail": "VG · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "cd5106bc-ff2e-42a1-a628-cc25057f8fda",
+        "ts": "2026-06-05T17:54:00.182Z",
+        "direction": "inbound",
+        "amountUsd": 524093,
+        "counterparty": "Shell Entity F",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "20f2f86e-ab6e-45ed-b488-79d85dc8b340",
+        "ts": "2026-06-05T09:48:29.981Z",
+        "direction": "inbound",
+        "amountUsd": 362891,
+        "counterparty": "Shell Entity C",
+        "detail": "RU · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "025af4ed-e496-4967-b6f1-6b8c4c57ae18",
+        "ts": "2026-06-05T09:32:08.549Z",
+        "direction": "inbound",
+        "amountUsd": 578729,
+        "counterparty": "Shell Entity A",
+        "detail": "RU · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "f00ee0af-c4c6-48b2-8b58-9344900a626a",
+        "ts": "2026-06-05T06:23:59.088Z",
+        "direction": "inbound",
+        "amountUsd": 45558,
+        "counterparty": "Vertex Services",
+        "detail": "GB · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "aecf865b-5769-43d8-bcae-ffa76676cb20",
+        "ts": "2026-06-05T05:52:13.184Z",
+        "direction": "inbound",
+        "amountUsd": 110371,
+        "counterparty": "Meridian Partners",
+        "detail": "JP · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c0b1682f-7351-4d8e-b963-743c255d57b3",
+        "ts": "2026-06-04T23:40:12.609Z",
+        "direction": "inbound",
+        "amountUsd": 665188,
+        "counterparty": "Shell Entity E",
+        "detail": "VG · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "c7272381-b673-4768-9aba-ec4a56ba2610",
+        "ts": "2026-06-04T16:58:22.546Z",
+        "direction": "inbound",
+        "amountUsd": 49385,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "fed9b9ff-9b07-4ea6-9fa7-0c4a578973f5",
+        "ts": "2026-06-04T16:29:17.333Z",
+        "direction": "inbound",
+        "amountUsd": 74635,
+        "counterparty": "Orion Supplies",
+        "detail": "US · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "74e5efbf-67cf-49e4-9c3d-b3810ec755e7",
+        "ts": "2026-06-03T19:01:08.257Z",
+        "direction": "inbound",
+        "amountUsd": 44532,
+        "counterparty": "Acme Components",
+        "detail": "CH · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f0491ad3-8e6e-4dd7-8c86-3667fec6d49e",
+        "ts": "2026-06-03T14:10:01.520Z",
+        "direction": "inbound",
+        "amountUsd": 897040,
+        "counterparty": "Shell Entity D",
+        "detail": "KY · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "db74e50b-ba02-498d-844e-10704cd20c21",
+        "ts": "2026-06-03T07:02:51.472Z",
+        "direction": "inbound",
+        "amountUsd": 821561,
+        "counterparty": "Shell Entity J",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "8cee821d-eee9-4fe3-b9b2-81dded07e647",
+        "ts": "2026-06-02T18:48:44.859Z",
+        "direction": "inbound",
+        "amountUsd": 855134,
+        "counterparty": "Shell Entity K",
+        "detail": "SC · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "09773902-2659-4795-9f6f-ceddd80e2bb7",
+        "ts": "2026-06-02T14:45:52.628Z",
+        "direction": "inbound",
+        "amountUsd": 506498,
+        "counterparty": "Shell Entity I",
+        "detail": "PA · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      }
+    ],
+    "timeline": [
+      {
+        "plane": "internal",
+        "id": "e3fcd863-6c53-4d96-a9fc-3a7097ae4ac1",
+        "ts": "2026-06-11T10:52:51.160Z",
+        "direction": "outbound",
+        "amountUsd": 77848,
+        "counterparty": "Crestline Co",
+        "detail": "GB · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "3bc375a8-6a71-4689-83e1-5e115a5d1fa8",
+        "ts": "2026-06-11T01:49:23.572Z",
+        "direction": "inbound",
+        "amountUsd": 117149,
+        "counterparty": "Riverside Logistics",
+        "detail": "US · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a1a01052-2eab-4fe4-a28c-e3477ff57d3d",
+        "ts": "2026-06-10T20:06:13.207Z",
+        "direction": "inbound",
+        "amountUsd": 83367,
+        "counterparty": "Lakeside Holdings",
+        "detail": "JP · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8eef0fc5-f7be-48f6-92b8-fba270f9179b",
+        "ts": "2026-06-10T18:28:48.403Z",
+        "direction": "outbound",
+        "amountUsd": 81900,
+        "counterparty": "Orion Supplies",
+        "detail": "CH · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b831717c-14b8-4753-b595-d2c50a244f61",
+        "ts": "2026-06-10T14:43:09.345Z",
+        "direction": "outbound",
+        "amountUsd": 118382,
+        "counterparty": "Orion Supplies",
+        "detail": "SG · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "f0f0caaf-ca85-43d7-87e1-5933c12cfda4",
+        "ts": "2026-06-10T08:58:44.256Z",
+        "direction": "inbound",
+        "amountUsd": 77651,
+        "counterparty": "Coinbase (hot wallet)",
+        "detail": "ethereum · ETH",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "5be43e22-7fe6-48c7-884f-ee143f82732c",
+        "ts": "2026-06-10T06:00:18.418Z",
+        "direction": "outbound",
+        "amountUsd": 114268,
+        "counterparty": "Vertex Services",
+        "detail": "DE · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "ec78f8f3-6afd-44a5-87b1-2f431834dd01",
+        "ts": "2026-06-10T00:08:01.557Z",
+        "direction": "inbound",
+        "amountUsd": 81370,
+        "counterparty": "0x5d9d77a6…",
+        "detail": "ethereum · ETH",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "49e94988-5e49-4589-a382-65944d057621",
+        "ts": "2026-06-09T12:33:34.544Z",
+        "direction": "inbound",
+        "amountUsd": 51111,
+        "counterparty": "Meridian Partners",
+        "detail": "GB · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "dbaf11dc-abd5-4bcb-bbc3-90525c3080d7",
+        "ts": "2026-06-09T06:34:28.552Z",
+        "direction": "inbound",
+        "amountUsd": 30289,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b4976083-f110-4088-9576-47704d91045b",
+        "ts": "2026-06-09T03:39:28.019Z",
+        "direction": "outbound",
+        "amountUsd": 85416,
+        "counterparty": "Lakeside Holdings",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "baea729c-82d4-4b91-8c05-ecd2fd56d09c",
+        "ts": "2026-06-08T21:23:46.996Z",
+        "direction": "inbound",
+        "amountUsd": 102603,
+        "counterparty": "Lakeside Holdings",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "2493006c-bdce-4c20-8190-6bc0dc3c7b65",
+        "ts": "2026-06-08T15:41:43.218Z",
+        "direction": "outbound",
+        "amountUsd": 117190,
+        "counterparty": "Crestline Co",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "bce4e611-d034-4573-aeb8-a6c279006b51",
+        "ts": "2026-06-08T06:12:28.097Z",
+        "direction": "inbound",
+        "amountUsd": 86969,
+        "counterparty": "Vertex Services",
+        "detail": "FR · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ad77bfc9-3eae-4c44-8f26-2e6b25a6d818",
+        "ts": "2026-06-08T05:34:12.654Z",
+        "direction": "inbound",
+        "amountUsd": 113979,
+        "counterparty": "Crestline Co",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "13587a25-e0fc-4468-aeed-c06205e9103b",
+        "ts": "2026-06-07T15:15:12.061Z",
+        "direction": "outbound",
+        "amountUsd": 98701,
+        "counterparty": "Crestline Co",
+        "detail": "FR · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "cf844502-aa7e-4bbf-b501-0afe3ac9fa20",
+        "ts": "2026-06-07T12:47:40.213Z",
+        "direction": "outbound",
+        "amountUsd": 108669,
+        "counterparty": "Meridian Partners",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "956d7555-8536-4d24-be01-e87a9479e367",
+        "ts": "2026-06-07T05:02:12.224Z",
+        "direction": "inbound",
+        "amountUsd": 307182,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "273bf56b-6817-4d99-acd0-c099f1ad764e",
+        "ts": "2026-06-07T03:46:33.394Z",
+        "direction": "inbound",
+        "amountUsd": 83927,
+        "counterparty": "Acme Components",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "17c7e747-1f3a-49e5-9a99-5f87cff99bc2",
+        "ts": "2026-06-06T23:31:09.264Z",
+        "direction": "inbound",
+        "amountUsd": 88131,
+        "counterparty": "0xd3655a24…",
+        "detail": "ethereum · ETH",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "80d8449c-4eaa-4714-b2ee-fa69a455c876",
+        "ts": "2026-06-06T22:39:55.620Z",
+        "direction": "outbound",
+        "amountUsd": 79640,
+        "counterparty": "Kraken",
+        "detail": "ethereum · ETH",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "38b0b46c-812b-4113-954a-2d203a698cb0",
+        "ts": "2026-06-06T20:28:16.396Z",
+        "direction": "outbound",
+        "amountUsd": 80674,
+        "counterparty": "Kraken",
+        "detail": "ethereum · ETH",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9af6e253-9b16-4a71-8cbf-c8429dc1a876",
+        "ts": "2026-06-06T20:01:58.489Z",
+        "direction": "inbound",
+        "amountUsd": 410116,
+        "counterparty": "Shell Entity H",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "1b8af190-67b7-4ee0-9dcb-7eaa1140faca",
+        "ts": "2026-06-06T18:41:22.597Z",
+        "direction": "outbound",
+        "amountUsd": 103965,
+        "counterparty": "Crestline Co",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a4ed3ca0-e82d-42af-bab8-93ea0bd3f012",
+        "ts": "2026-06-06T18:10:07.728Z",
+        "direction": "inbound",
+        "amountUsd": 495181,
+        "counterparty": "Shell Entity B",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "5c93db8f-9d6a-4a89-a98e-653cdef486a5",
+        "ts": "2026-06-06T16:13:10.474Z",
+        "direction": "inbound",
+        "amountUsd": 80812,
+        "counterparty": "Uniswap router",
+        "detail": "ethereum · ETH",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "5bcc0093-b4f9-447d-82f0-3f8f4963408f",
+        "ts": "2026-06-06T09:57:25.247Z",
+        "direction": "inbound",
+        "amountUsd": 80212,
+        "counterparty": "Acme Components",
+        "detail": "JP · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "cf24e528-d3a8-4469-91cc-698df535fcf7",
+        "ts": "2026-06-06T08:00:13.500Z",
+        "direction": "inbound",
+        "amountUsd": 398188,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "66aa598d-0ee3-45bf-a492-3bd3124f3b4f",
+        "ts": "2026-06-06T07:52:03.229Z",
+        "direction": "inbound",
+        "amountUsd": 66316,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c88e7bb6-8fdc-41c0-a1a8-320b17bf3cca",
+        "ts": "2026-06-06T07:49:43.248Z",
+        "direction": "inbound",
+        "amountUsd": 353350,
+        "counterparty": "Shell Entity G",
+        "detail": "KY · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "ce5b2033-8f8e-4131-be21-bcd16c1787e5",
+        "ts": "2026-06-06T05:04:14.880Z",
+        "direction": "inbound",
+        "amountUsd": 394384,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "0ca89e2d-a71d-43b7-8d59-2d7a05e4e2f9",
+        "ts": "2026-06-06T04:53:53.602Z",
+        "direction": "inbound",
+        "amountUsd": 425261,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "8da01aae-2590-442f-9375-50a0f3e9de9b",
+        "ts": "2026-06-06T01:32:12.327Z",
+        "direction": "inbound",
+        "amountUsd": 856521,
+        "counterparty": "Shell Entity L",
+        "detail": "VG · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "771994e5-78fa-464b-a0fa-b9317423fff6",
+        "ts": "2026-06-05T18:38:55.925Z",
+        "direction": "outbound",
+        "amountUsd": 110948,
+        "counterparty": "Orion Supplies",
+        "detail": "DE · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "cd5106bc-ff2e-42a1-a628-cc25057f8fda",
+        "ts": "2026-06-05T17:54:00.182Z",
+        "direction": "inbound",
+        "amountUsd": 524093,
+        "counterparty": "Shell Entity F",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "618c3ea5-b0b7-45b1-a44f-d499075f511d",
+        "ts": "2026-06-05T16:05:39.807Z",
+        "direction": "inbound",
+        "amountUsd": 629977,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "20f2f86e-ab6e-45ed-b488-79d85dc8b340",
+        "ts": "2026-06-05T09:48:29.981Z",
+        "direction": "inbound",
+        "amountUsd": 362891,
+        "counterparty": "Shell Entity C",
+        "detail": "RU · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "025af4ed-e496-4967-b6f1-6b8c4c57ae18",
+        "ts": "2026-06-05T09:32:08.549Z",
+        "direction": "inbound",
+        "amountUsd": 578729,
+        "counterparty": "Shell Entity A",
+        "detail": "RU · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "f00ee0af-c4c6-48b2-8b58-9344900a626a",
+        "ts": "2026-06-05T06:23:59.088Z",
+        "direction": "inbound",
+        "amountUsd": 45558,
+        "counterparty": "Vertex Services",
+        "detail": "GB · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "aecf865b-5769-43d8-bcae-ffa76676cb20",
+        "ts": "2026-06-05T05:52:13.184Z",
+        "direction": "inbound",
+        "amountUsd": 110371,
+        "counterparty": "Meridian Partners",
+        "detail": "JP · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "d6448f0d-6c30-4402-a325-8361c13a8442",
+        "ts": "2026-06-05T00:03:21.480Z",
+        "direction": "inbound",
+        "amountUsd": 381246,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "c0b1682f-7351-4d8e-b963-743c255d57b3",
+        "ts": "2026-06-04T23:40:12.609Z",
+        "direction": "inbound",
+        "amountUsd": 665188,
+        "counterparty": "Shell Entity E",
+        "detail": "VG · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "c7272381-b673-4768-9aba-ec4a56ba2610",
+        "ts": "2026-06-04T16:58:22.546Z",
+        "direction": "inbound",
+        "amountUsd": 49385,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "fed9b9ff-9b07-4ea6-9fa7-0c4a578973f5",
+        "ts": "2026-06-04T16:29:17.333Z",
+        "direction": "inbound",
+        "amountUsd": 74635,
+        "counterparty": "Orion Supplies",
+        "detail": "US · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ffe70e2b-6066-4347-b603-57657b674ccc",
+        "ts": "2026-06-04T10:52:21.691Z",
+        "direction": "outbound",
+        "amountUsd": 91480,
+        "counterparty": "Orion Supplies",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "2fd28207-32c7-4de1-93f1-0abbeeb209a2",
+        "ts": "2026-06-04T03:14:20.971Z",
+        "direction": "outbound",
+        "amountUsd": 92501,
+        "counterparty": "Acme Components",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "74e5efbf-67cf-49e4-9c3d-b3810ec755e7",
+        "ts": "2026-06-03T19:01:08.257Z",
+        "direction": "inbound",
+        "amountUsd": 44532,
+        "counterparty": "Acme Components",
+        "detail": "CH · cross-border · crypto",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "1834ea02-daf5-4aba-9046-6aeb269adce6",
+        "ts": "2026-06-03T16:54:06.589Z",
+        "direction": "outbound",
+        "amountUsd": 115781,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f0491ad3-8e6e-4dd7-8c86-3667fec6d49e",
+        "ts": "2026-06-03T14:10:01.520Z",
+        "direction": "inbound",
+        "amountUsd": 897040,
+        "counterparty": "Shell Entity D",
+        "detail": "KY · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "ae4bfca5-2cef-4d40-9f3e-7012dc47fd7f",
+        "ts": "2026-06-03T11:19:27.535Z",
+        "direction": "outbound",
+        "amountUsd": 100035,
+        "counterparty": "Meridian Partners",
+        "detail": "CH · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "6b8a3f79-8398-4a05-9521-9d450ef5f910",
+        "ts": "2026-06-03T09:34:14.867Z",
+        "direction": "outbound",
+        "amountUsd": 95114,
+        "counterparty": "Acme Components",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "db74e50b-ba02-498d-844e-10704cd20c21",
+        "ts": "2026-06-03T07:02:51.472Z",
+        "direction": "inbound",
+        "amountUsd": 821561,
+        "counterparty": "Shell Entity J",
+        "detail": "AE · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "def3468c-111c-4ab7-8e02-bb859961c61f",
+        "ts": "2026-06-03T03:46:31.746Z",
+        "direction": "inbound",
+        "amountUsd": 456378,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "34ae8724-0d34-4119-9454-885e4331d017",
+        "ts": "2026-06-03T03:19:34.048Z",
+        "direction": "inbound",
+        "amountUsd": 613950,
+        "counterparty": "Tornado Cash (sanctioned mixer)",
+        "detail": "ethereum · ETH · sanctioned",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "8cee821d-eee9-4fe3-b9b2-81dded07e647",
+        "ts": "2026-06-02T18:48:44.859Z",
+        "direction": "inbound",
+        "amountUsd": 855134,
+        "counterparty": "Shell Entity K",
+        "detail": "SC · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "09773902-2659-4795-9f6f-ceddd80e2bb7",
+        "ts": "2026-06-02T14:45:52.628Z",
+        "direction": "inbound",
+        "amountUsd": 506498,
+        "counterparty": "Shell Entity I",
+        "detail": "PA · cross-border · crypto",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "ecc91b68-ed09-4311-a8b9-8d1c9d32132b",
+        "ts": "2026-06-01T22:20:19.490Z",
+        "direction": "inbound",
+        "amountUsd": 79281,
+        "counterparty": "Acme Components",
+        "detail": "NL · cross-border · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "42d78d2a-a4bd-4e0f-93e9-66d84acc5bea",
+        "ts": "2026-06-01T20:34:59.069Z",
+        "direction": "inbound",
+        "amountUsd": 110993,
+        "counterparty": "Acme Components",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "91912dd0-a6a0-4cae-9ffe-5f8ea3aacf4d",
+        "ts": "2026-05-31T19:29:20.992Z",
+        "direction": "outbound",
+        "amountUsd": 89496,
+        "counterparty": "Acme Components",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e03ed04b-861f-45e3-b825-8f9d09ef17d5",
+        "ts": "2026-05-31T15:36:14.763Z",
+        "direction": "inbound",
+        "amountUsd": 87159,
+        "counterparty": "Riverside Logistics",
+        "detail": "MT · crypto",
+        "evidence": false,
+        "highRisk": false
+      }
+    ],
+    "ledger": {
+      "internalCount": 542,
+      "onchainCount": 276,
+      "internalTotalUsd": 45357381,
+      "onchainTotalUsd": 16669008,
+      "windowInternalCount": 75,
+      "windowOnchainCount": 45
+    },
+    "addresses": [
+      {
+        "chain": "ethereum",
+        "address": "0xB1a9ce0nce5pot00000000000000000000000001"
+      }
+    ],
+    "narrative": null
+  },
+  "Danske Bank A/S": {
+    "entityName": "Danske Bank A/S",
+    "hasActivity": false,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [],
+    "evidence": [],
+    "timeline": [],
+    "ledger": {
+      "internalCount": 0,
+      "onchainCount": 0,
+      "internalTotalUsd": 0,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 0,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "Evergrande Group": {
+    "entityName": "Evergrande Group",
+    "hasActivity": false,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [],
+    "evidence": [],
+    "timeline": [],
+    "ledger": {
+      "internalCount": 0,
+      "onchainCount": 0,
+      "internalTotalUsd": 0,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 0,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "FTX Trading Ltd": {
+    "entityName": "FTX Trading Ltd",
+    "hasActivity": false,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [],
+    "evidence": [],
+    "timeline": [],
+    "ledger": {
+      "internalCount": 0,
+      "onchainCount": 0,
+      "internalTotalUsd": 0,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 0,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "Glencore plc": {
+    "entityName": "Glencore plc",
+    "hasActivity": false,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [],
+    "evidence": [],
+    "timeline": [],
+    "ledger": {
+      "internalCount": 0,
+      "onchainCount": 0,
+      "internalTotalUsd": 0,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 0,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "Lindenhof Holdings AG": {
+    "entityName": "Lindenhof Holdings AG",
+    "hasActivity": true,
+    "severity": "high",
+    "window": {
+      "from": "2026-06-03T08:12:42.411Z",
+      "to": "2026-06-20T05:59:06.106Z",
+      "days": 17
+    },
+    "findings": [
+      {
+        "id": "44effe1e-acf7-4774-9000-2c4b7b806947",
+        "flagType": "dormancy_break",
+        "label": "Dormancy Break – Suspicious Activation",
+        "severity": "high",
+        "confidence": 0.88,
+        "rationale": "After roughly 69 days of near-dormancy (only $12,938 of total activity), the account processed 7 transfers totalling $14,451,694 in the last 14 days. A sudden activation of a long-dormant account is a recognised suspicious-activity pattern requiring validation of business legitimacy.",
+        "recommendedAction": "Trigger AML review; validate business legitimacy.",
+        "narrative": null,
+        "status": "proposed",
+        "evidenceCount": 7,
+        "metrics": {
+          "dormantDays": 69,
+          "priorVolumeUsd": 12938,
+          "recentVolumeUsd": 14451694,
+          "recentTransactions": 7
+        }
+      }
+    ],
+    "flows": [
+      {
+        "plane": "onchain",
+        "label": "ethereum",
+        "direction": "mixed",
+        "totalUsd": 7972387,
+        "count": 6,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "CH",
+        "direction": "mixed",
+        "totalUsd": 7261745,
+        "count": 4,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "VG",
+        "direction": "inbound",
+        "totalUsd": 2901708,
+        "count": 1,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "label": "SG",
+        "direction": "outbound",
+        "totalUsd": 2187627,
+        "count": 1,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "AE",
+        "direction": "inbound",
+        "totalUsd": 2100614,
+        "count": 1,
+        "highRisk": true
+      }
+    ],
+    "evidence": [
+      {
+        "plane": "internal",
+        "id": "56608166-a785-45a5-be99-be80c87e71f5",
+        "ts": "2026-06-18T05:59:06.106Z",
+        "direction": "inbound",
+        "amountUsd": 2100614,
+        "counterparty": "Cross-Holding 5",
+        "detail": "AE · cross-border · wire",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "4841d943-f895-4721-bea4-c1a47831327d",
+        "ts": "2026-06-17T07:52:03.856Z",
+        "direction": "outbound",
+        "amountUsd": 2849637,
+        "counterparty": "Cross-Holding 4",
+        "detail": "CH · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c798eb8e-7fb3-4058-88c2-ac3c763df31a",
+        "ts": "2026-06-17T07:36:01.193Z",
+        "direction": "inbound",
+        "amountUsd": 2807592,
+        "counterparty": "Cross-Holding 2",
+        "detail": "CH · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "dd2891ad-3d9f-4de0-84dd-83c0ea047af6",
+        "ts": "2026-06-16T05:21:13.909Z",
+        "direction": "inbound",
+        "amountUsd": 2901708,
+        "counterparty": "Cross-Holding 6",
+        "detail": "VG · cross-border · wire",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "9eb44bea-8c68-4021-b23a-973772fdfc4c",
+        "ts": "2026-06-13T23:17:47.604Z",
+        "direction": "outbound",
+        "amountUsd": 1599573,
+        "counterparty": "Cross-Holding 3",
+        "detail": "CH · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9947095a-5e27-4257-bbce-74704a06b05c",
+        "ts": "2026-06-13T21:27:42.245Z",
+        "direction": "outbound",
+        "amountUsd": 2187627,
+        "counterparty": "Cross-Holding 1",
+        "detail": "SG · cross-border · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "1285e4c5-c97d-4e9c-9097-2dd54c28910e",
+        "ts": "2026-06-05T08:12:42.411Z",
+        "direction": "outbound",
+        "amountUsd": 4943,
+        "counterparty": "Admin / Registrar",
+        "detail": "CH · sepa",
+        "evidence": true,
+        "highRisk": false
+      }
+    ],
+    "timeline": [
+      {
+        "plane": "onchain",
+        "id": "050d652d-fbe5-4d6a-885b-198b8175b305",
+        "ts": "2026-06-19T09:30:15.651Z",
+        "direction": "inbound",
+        "amountUsd": 1506452,
+        "counterparty": "Unattributed high-risk cluster",
+        "detail": "ethereum · ETH · mixer",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "37ee9121-f879-46e2-90c2-255dd83e72eb",
+        "ts": "2026-06-18T21:12:14.890Z",
+        "direction": "inbound",
+        "amountUsd": 1967179,
+        "counterparty": "Unattributed high-risk cluster",
+        "detail": "ethereum · ETH · mixer",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "56608166-a785-45a5-be99-be80c87e71f5",
+        "ts": "2026-06-18T05:59:06.106Z",
+        "direction": "inbound",
+        "amountUsd": 2100614,
+        "counterparty": "Cross-Holding 5",
+        "detail": "AE · cross-border · wire",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "a20289b5-4745-4503-b133-8ea7cb627926",
+        "ts": "2026-06-18T01:14:55.008Z",
+        "direction": "inbound",
+        "amountUsd": 1609749,
+        "counterparty": "Unattributed high-risk cluster",
+        "detail": "ethereum · ETH · mixer",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "4841d943-f895-4721-bea4-c1a47831327d",
+        "ts": "2026-06-17T07:52:03.856Z",
+        "direction": "outbound",
+        "amountUsd": 2849637,
+        "counterparty": "Cross-Holding 4",
+        "detail": "CH · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c798eb8e-7fb3-4058-88c2-ac3c763df31a",
+        "ts": "2026-06-17T07:36:01.193Z",
+        "direction": "inbound",
+        "amountUsd": 2807592,
+        "counterparty": "Cross-Holding 2",
+        "detail": "CH · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "dd2891ad-3d9f-4de0-84dd-83c0ea047af6",
+        "ts": "2026-06-16T05:21:13.909Z",
+        "direction": "inbound",
+        "amountUsd": 2901708,
+        "counterparty": "Cross-Holding 6",
+        "detail": "VG · cross-border · wire",
+        "evidence": true,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "5c032de0-2405-472d-b4b8-285e54694440",
+        "ts": "2026-06-15T11:23:34.470Z",
+        "direction": "inbound",
+        "amountUsd": 1439408,
+        "counterparty": "Unattributed high-risk cluster",
+        "detail": "ethereum · ETH · mixer",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "internal",
+        "id": "9eb44bea-8c68-4021-b23a-973772fdfc4c",
+        "ts": "2026-06-13T23:17:47.604Z",
+        "direction": "outbound",
+        "amountUsd": 1599573,
+        "counterparty": "Cross-Holding 3",
+        "detail": "CH · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9947095a-5e27-4257-bbce-74704a06b05c",
+        "ts": "2026-06-13T21:27:42.245Z",
+        "direction": "outbound",
+        "amountUsd": 2187627,
+        "counterparty": "Cross-Holding 1",
+        "detail": "SG · cross-border · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "49a2353c-864b-4f53-85fb-8f3707004172",
+        "ts": "2026-06-12T17:10:41.446Z",
+        "direction": "inbound",
+        "amountUsd": 1447774,
+        "counterparty": "Unattributed high-risk cluster",
+        "detail": "ethereum · ETH · mixer",
+        "evidence": false,
+        "highRisk": true
+      },
+      {
+        "plane": "onchain",
+        "id": "c74eeb00-17df-4acc-8841-a11420d793a3",
+        "ts": "2026-06-11T04:56:54.884Z",
+        "direction": "outbound",
+        "amountUsd": 1825,
+        "counterparty": "Coinbase (hot wallet)",
+        "detail": "ethereum · ETH",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "1285e4c5-c97d-4e9c-9097-2dd54c28910e",
+        "ts": "2026-06-05T08:12:42.411Z",
+        "direction": "outbound",
+        "amountUsd": 4943,
+        "counterparty": "Admin / Registrar",
+        "detail": "CH · sepa",
+        "evidence": true,
+        "highRisk": false
+      }
+    ],
+    "ledger": {
+      "internalCount": 12,
+      "onchainCount": 6,
+      "internalTotalUsd": 14464632,
+      "onchainTotalUsd": 7972387,
+      "windowInternalCount": 7,
+      "windowOnchainCount": 6
+    },
+    "addresses": [
+      {
+        "chain": "ethereum",
+        "address": "0xL1nden0f0000000000000000000000000000bb03"
+      }
+    ],
+    "narrative": null
+  },
+  "Nestle": {
+    "entityName": "Nestle",
+    "hasActivity": true,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [
+      {
+        "plane": "internal",
+        "label": "CH",
+        "direction": "mixed",
+        "totalUsd": 37352308,
+        "count": 222,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "FR",
+        "direction": "mixed",
+        "totalUsd": 7304069,
+        "count": 36,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "GB",
+        "direction": "mixed",
+        "totalUsd": 7117099,
+        "count": 36,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "US",
+        "direction": "mixed",
+        "totalUsd": 5814159,
+        "count": 35,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "SG",
+        "direction": "mixed",
+        "totalUsd": 5413358,
+        "count": 30,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "DE",
+        "direction": "mixed",
+        "totalUsd": 5098352,
+        "count": 32,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "NL",
+        "direction": "mixed",
+        "totalUsd": 5084522,
+        "count": 34,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "JP",
+        "direction": "mixed",
+        "totalUsd": 4792634,
+        "count": 27,
+        "highRisk": false
+      }
+    ],
+    "evidence": [],
+    "timeline": [
+      {
+        "plane": "internal",
+        "id": "ec5560a7-2f1e-428f-a876-496b5854150b",
+        "ts": "2026-06-20T11:41:05.084Z",
+        "direction": "outbound",
+        "amountUsd": 274566,
+        "counterparty": "Acme Components",
+        "detail": "US · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "5665318b-11f2-48db-8206-aa50b2858726",
+        "ts": "2026-06-18T21:59:47.853Z",
+        "direction": "inbound",
+        "amountUsd": 278993,
+        "counterparty": "Lakeside Holdings",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "4c4ce12b-0543-48a3-b6d0-6f96bf010649",
+        "ts": "2026-06-14T23:25:21.544Z",
+        "direction": "outbound",
+        "amountUsd": 269126,
+        "counterparty": "Meridian Partners",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "55f5bd35-6250-4784-a797-950b4595851d",
+        "ts": "2026-06-14T02:58:21.988Z",
+        "direction": "outbound",
+        "amountUsd": 292325,
+        "counterparty": "Meridian Partners",
+        "detail": "JP · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f840d666-1d18-46a2-8af6-95600b471e6e",
+        "ts": "2026-06-14T02:24:44.012Z",
+        "direction": "outbound",
+        "amountUsd": 280219,
+        "counterparty": "Vertex Services",
+        "detail": "NL · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "068d9eb9-41c8-4dbb-9156-e2a77c045183",
+        "ts": "2026-06-11T22:35:51.006Z",
+        "direction": "outbound",
+        "amountUsd": 287652,
+        "counterparty": "Orion Supplies",
+        "detail": "GB · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a1f6ac86-a240-4fa8-bbce-b98436a7c3ac",
+        "ts": "2026-06-09T19:27:16.738Z",
+        "direction": "inbound",
+        "amountUsd": 292580,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "1cf2cc47-cf3c-4874-a63a-ef6a4fe8b150",
+        "ts": "2026-06-07T15:15:22.454Z",
+        "direction": "outbound",
+        "amountUsd": 297310,
+        "counterparty": "Crestline Co",
+        "detail": "JP · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "aaa8baa4-24dc-4976-8a7b-8ea8b125cfb7",
+        "ts": "2026-06-06T09:53:16.650Z",
+        "direction": "inbound",
+        "amountUsd": 269488,
+        "counterparty": "Orion Supplies",
+        "detail": "JP · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "7ceaa94f-7ccc-4a7a-a735-0d6470ec74c4",
+        "ts": "2026-06-04T14:44:12.270Z",
+        "direction": "outbound",
+        "amountUsd": 295522,
+        "counterparty": "Vertex Services",
+        "detail": "DE · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a6a9fb32-1dca-4cd9-ab80-e66cc642cbc4",
+        "ts": "2026-05-30T10:12:20.867Z",
+        "direction": "inbound",
+        "amountUsd": 288632,
+        "counterparty": "Acme Components",
+        "detail": "JP · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9343a113-205f-4ca2-9eda-07d271b603be",
+        "ts": "2026-05-29T04:43:54.934Z",
+        "direction": "outbound",
+        "amountUsd": 278787,
+        "counterparty": "Orion Supplies",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "150673e8-80af-4376-af40-63991e7bb346",
+        "ts": "2026-05-29T04:24:59.933Z",
+        "direction": "outbound",
+        "amountUsd": 292388,
+        "counterparty": "Orion Supplies",
+        "detail": "US · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "d1bf5452-8bb1-494f-bcee-003d3c023130",
+        "ts": "2026-05-26T19:31:36.622Z",
+        "direction": "outbound",
+        "amountUsd": 288500,
+        "counterparty": "Acme Components",
+        "detail": "DE · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "29e81d97-899c-40ac-99a4-c413aa8a7ee6",
+        "ts": "2026-05-25T00:12:05.683Z",
+        "direction": "inbound",
+        "amountUsd": 273517,
+        "counterparty": "Lakeside Holdings",
+        "detail": "GB · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "df5c4302-e1af-4734-8c75-a0306950eab2",
+        "ts": "2026-05-23T20:42:54.147Z",
+        "direction": "inbound",
+        "amountUsd": 271595,
+        "counterparty": "Acme Components",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "14f92f56-95e3-4f52-9fcc-45164608548b",
+        "ts": "2026-05-23T07:54:34.320Z",
+        "direction": "inbound",
+        "amountUsd": 275600,
+        "counterparty": "Vertex Services",
+        "detail": "GB · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "341b5e5f-6b21-4ed0-86f9-fac9c7798adf",
+        "ts": "2026-05-23T04:46:14.495Z",
+        "direction": "inbound",
+        "amountUsd": 283552,
+        "counterparty": "Acme Components",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "131e7083-e537-4d43-991d-fcae896bb5a7",
+        "ts": "2026-05-23T03:19:05.551Z",
+        "direction": "inbound",
+        "amountUsd": 287201,
+        "counterparty": "Acme Components",
+        "detail": "US · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "69236825-0a4f-41fd-a5bd-0620ee4d7ae3",
+        "ts": "2026-05-20T12:09:24.011Z",
+        "direction": "outbound",
+        "amountUsd": 287261,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ed0a09a7-9c48-4c3e-8966-a0f42626fe2e",
+        "ts": "2026-05-20T02:26:36.318Z",
+        "direction": "inbound",
+        "amountUsd": 272383,
+        "counterparty": "Vertex Services",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "1bbf84e7-73f6-4ee0-8928-742ad92da71e",
+        "ts": "2026-05-18T04:07:05.087Z",
+        "direction": "inbound",
+        "amountUsd": 292575,
+        "counterparty": "Crestline Co",
+        "detail": "NL · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "263cc3e7-6c57-4748-9f51-3f3d1358eb1a",
+        "ts": "2026-05-15T08:38:58.060Z",
+        "direction": "inbound",
+        "amountUsd": 282456,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "d2c4177d-17e0-4406-9c7d-73527ce53d48",
+        "ts": "2026-05-15T02:06:56.568Z",
+        "direction": "inbound",
+        "amountUsd": 269707,
+        "counterparty": "Lakeside Holdings",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f225668a-5320-4221-a7a3-7c9def3d1783",
+        "ts": "2026-05-10T15:32:13.650Z",
+        "direction": "inbound",
+        "amountUsd": 272340,
+        "counterparty": "Orion Supplies",
+        "detail": "SG · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "3a8af05c-73e2-492c-a73e-a6f93e560d4d",
+        "ts": "2026-05-09T14:52:57.369Z",
+        "direction": "inbound",
+        "amountUsd": 291401,
+        "counterparty": "Orion Supplies",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "0d9b7fce-2257-4704-a3d8-0b72a3e44e18",
+        "ts": "2026-05-05T06:34:09.595Z",
+        "direction": "outbound",
+        "amountUsd": 280888,
+        "counterparty": "Meridian Partners",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "400dce8c-a255-46a9-8c49-c46fb99c23cc",
+        "ts": "2026-05-05T01:16:26.016Z",
+        "direction": "outbound",
+        "amountUsd": 288520,
+        "counterparty": "Riverside Logistics",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "007942c0-59a2-42fc-8b8f-31ffd6600871",
+        "ts": "2026-05-04T16:43:13.171Z",
+        "direction": "inbound",
+        "amountUsd": 286015,
+        "counterparty": "Riverside Logistics",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e7706be8-f285-471a-bb22-aaf433b72b55",
+        "ts": "2026-05-03T19:04:31.492Z",
+        "direction": "outbound",
+        "amountUsd": 296159,
+        "counterparty": "Meridian Partners",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9adbfce3-3d23-4c5a-ad28-b916fc6be28a",
+        "ts": "2026-04-29T23:13:26.042Z",
+        "direction": "outbound",
+        "amountUsd": 285284,
+        "counterparty": "Riverside Logistics",
+        "detail": "NL · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "6bcdbb42-36d6-4777-9de4-ba547cb2af9b",
+        "ts": "2026-04-28T08:49:03.746Z",
+        "direction": "inbound",
+        "amountUsd": 299678,
+        "counterparty": "Acme Components",
+        "detail": "SG · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a728ab68-0dd3-4b60-a6b1-b394720e693b",
+        "ts": "2026-04-28T02:30:30.167Z",
+        "direction": "outbound",
+        "amountUsd": 283962,
+        "counterparty": "Lakeside Holdings",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "faf62209-d66d-4a4b-b788-3f73b4c828f2",
+        "ts": "2026-04-28T01:52:57.933Z",
+        "direction": "inbound",
+        "amountUsd": 271166,
+        "counterparty": "Vertex Services",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "2981d5b2-9a6f-4ba4-aaaf-f154f45c3ae8",
+        "ts": "2026-04-27T14:40:26.417Z",
+        "direction": "inbound",
+        "amountUsd": 268519,
+        "counterparty": "Vertex Services",
+        "detail": "GB · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "33eecca2-865b-4363-bf0b-7d9fe8e56d43",
+        "ts": "2026-04-22T15:24:38.847Z",
+        "direction": "outbound",
+        "amountUsd": 294713,
+        "counterparty": "Acme Components",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "cc1e5fbb-6826-41d6-bb23-7a9212363c17",
+        "ts": "2026-04-20T12:48:42.610Z",
+        "direction": "inbound",
+        "amountUsd": 287706,
+        "counterparty": "Orion Supplies",
+        "detail": "SG · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "988e251d-ca5e-4f3b-bed9-992c8ac38648",
+        "ts": "2026-04-14T09:28:29.562Z",
+        "direction": "outbound",
+        "amountUsd": 280634,
+        "counterparty": "Lakeside Holdings",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "95e89d4a-625b-4420-936d-edac6e803c11",
+        "ts": "2026-04-14T02:23:47.744Z",
+        "direction": "inbound",
+        "amountUsd": 284648,
+        "counterparty": "Riverside Logistics",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "d8aaddeb-00fe-49a9-8175-7cb380bfca45",
+        "ts": "2026-04-13T23:04:21.669Z",
+        "direction": "inbound",
+        "amountUsd": 279173,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ae6d4a55-8a04-42ca-ac76-bbf311b630fd",
+        "ts": "2026-04-11T06:27:04.019Z",
+        "direction": "inbound",
+        "amountUsd": 289118,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "011f1467-910c-4711-9bd2-79dfe82bd401",
+        "ts": "2026-04-10T20:35:40.487Z",
+        "direction": "inbound",
+        "amountUsd": 293003,
+        "counterparty": "Riverside Logistics",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ce2bfcf8-dc65-411b-ba3a-2bfb37aea514",
+        "ts": "2026-04-10T15:52:51.259Z",
+        "direction": "outbound",
+        "amountUsd": 277481,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "52673653-5d05-42b1-905d-09550107153c",
+        "ts": "2026-04-10T13:54:29.717Z",
+        "direction": "outbound",
+        "amountUsd": 295176,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "920c38af-463b-477e-b678-f814b2b9c0fd",
+        "ts": "2026-04-10T05:49:13.014Z",
+        "direction": "inbound",
+        "amountUsd": 274380,
+        "counterparty": "Riverside Logistics",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "3a9063d5-bd34-495b-8735-8c10317ed0dc",
+        "ts": "2026-04-09T14:24:08.837Z",
+        "direction": "outbound",
+        "amountUsd": 289438,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "eb42e4bb-6a30-4870-926d-1d517192457d",
+        "ts": "2026-04-09T03:38:20.410Z",
+        "direction": "outbound",
+        "amountUsd": 281523,
+        "counterparty": "Riverside Logistics",
+        "detail": "GB · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "0007fbbb-d39b-4cc5-bf47-6e3255f28fde",
+        "ts": "2026-04-09T01:53:43.976Z",
+        "direction": "inbound",
+        "amountUsd": 281208,
+        "counterparty": "Crestline Co",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e3ddf702-9823-473f-b591-2659b1783b65",
+        "ts": "2026-04-06T18:50:28.355Z",
+        "direction": "inbound",
+        "amountUsd": 298882,
+        "counterparty": "Vertex Services",
+        "detail": "JP · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "87f0ccd1-ff0a-4a45-ba9e-73c65946adce",
+        "ts": "2026-04-06T05:48:49.780Z",
+        "direction": "outbound",
+        "amountUsd": 265622,
+        "counterparty": "Orion Supplies",
+        "detail": "SG · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "4edbe7e5-8f00-4fad-a7e2-21246bea200d",
+        "ts": "2026-04-05T09:42:36.435Z",
+        "direction": "outbound",
+        "amountUsd": 296330,
+        "counterparty": "Acme Components",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "782e328c-c4cc-4a17-a991-9b246c5a53de",
+        "ts": "2026-04-04T02:18:47.186Z",
+        "direction": "outbound",
+        "amountUsd": 285070,
+        "counterparty": "Crestline Co",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "525984f5-f40e-4beb-b62d-766f18555b1a",
+        "ts": "2026-04-03T00:54:21.593Z",
+        "direction": "outbound",
+        "amountUsd": 278014,
+        "counterparty": "Riverside Logistics",
+        "detail": "FR · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "16b88538-3017-4283-b97b-71068e6f79f3",
+        "ts": "2026-03-30T14:07:40.318Z",
+        "direction": "inbound",
+        "amountUsd": 287917,
+        "counterparty": "Vertex Services",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e1875e47-1fc8-4396-b87e-3473264deb17",
+        "ts": "2026-03-29T06:28:43.476Z",
+        "direction": "inbound",
+        "amountUsd": 291899,
+        "counterparty": "Meridian Partners",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "cacd7bc4-b5b0-4178-86c8-5d72692e6f3f",
+        "ts": "2026-03-26T18:45:56.412Z",
+        "direction": "inbound",
+        "amountUsd": 292426,
+        "counterparty": "Orion Supplies",
+        "detail": "GB · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "04c3c4dc-1a52-47cd-aefc-12c4087336b6",
+        "ts": "2026-03-26T16:18:20.374Z",
+        "direction": "inbound",
+        "amountUsd": 295557,
+        "counterparty": "Orion Supplies",
+        "detail": "JP · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8315bb21-fa69-473e-81d6-8e83dc137cca",
+        "ts": "2026-03-25T21:36:49.646Z",
+        "direction": "outbound",
+        "amountUsd": 283588,
+        "counterparty": "Riverside Logistics",
+        "detail": "US · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "08a0423c-6ed4-46b0-97a3-c48a7f85f28b",
+        "ts": "2026-03-25T05:48:53.671Z",
+        "direction": "outbound",
+        "amountUsd": 291318,
+        "counterparty": "Orion Supplies",
+        "detail": "CH · sepa",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "1ccaf3de-8607-44a8-902a-6053f930d612",
+        "ts": "2026-03-22T19:32:44.509Z",
+        "direction": "inbound",
+        "amountUsd": 293690,
+        "counterparty": "Riverside Logistics",
+        "detail": "DE · cross-border · sepa",
+        "evidence": false,
+        "highRisk": false
+      }
+    ],
+    "ledger": {
+      "internalCount": 452,
+      "onchainCount": 0,
+      "internalTotalUsd": 77976501,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 452,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "NSO Group": {
+    "entityName": "NSO Group",
+    "hasActivity": false,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [],
+    "evidence": [],
+    "timeline": [],
+    "ledger": {
+      "internalCount": 0,
+      "onchainCount": 0,
+      "internalTotalUsd": 0,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 0,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "Orion Bay Trading FZE": {
+    "entityName": "Orion Bay Trading FZE",
+    "hasActivity": false,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [],
+    "evidence": [],
+    "timeline": [],
+    "ledger": {
+      "internalCount": 0,
+      "onchainCount": 0,
+      "internalTotalUsd": 0,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 0,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "Tesla": {
+    "entityName": "Tesla",
+    "hasActivity": true,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [
+      {
+        "plane": "internal",
+        "label": "US",
+        "direction": "mixed",
+        "totalUsd": 58571012,
+        "count": 258,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "SG",
+        "direction": "mixed",
+        "totalUsd": 7469893,
+        "count": 33,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "DE",
+        "direction": "mixed",
+        "totalUsd": 6602091,
+        "count": 32,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "CH",
+        "direction": "mixed",
+        "totalUsd": 5950906,
+        "count": 30,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "NL",
+        "direction": "mixed",
+        "totalUsd": 5590176,
+        "count": 29,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "GB",
+        "direction": "mixed",
+        "totalUsd": 5230362,
+        "count": 21,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "JP",
+        "direction": "mixed",
+        "totalUsd": 5080982,
+        "count": 23,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "FR",
+        "direction": "mixed",
+        "totalUsd": 4903501,
+        "count": 21,
+        "highRisk": false
+      }
+    ],
+    "evidence": [],
+    "timeline": [
+      {
+        "plane": "internal",
+        "id": "b5c73f95-fc9a-4ee6-b258-ca877f60c081",
+        "ts": "2026-06-19T23:05:06.694Z",
+        "direction": "inbound",
+        "amountUsd": 356865,
+        "counterparty": "Acme Components",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "410bb688-6941-4f71-b3c0-f96b23c5097f",
+        "ts": "2026-06-16T14:04:22.675Z",
+        "direction": "inbound",
+        "amountUsd": 355996,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "3d2fcb48-2656-45fa-bfba-41622fa10c7b",
+        "ts": "2026-06-16T11:27:14.071Z",
+        "direction": "inbound",
+        "amountUsd": 362504,
+        "counterparty": "Crestline Co",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "24a7b9f7-a3cc-4220-a291-448addc30af4",
+        "ts": "2026-06-14T09:19:23.456Z",
+        "direction": "inbound",
+        "amountUsd": 371418,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "02d33ebd-6848-4f2b-b161-c62c3d6a9283",
+        "ts": "2026-06-13T17:12:33.140Z",
+        "direction": "outbound",
+        "amountUsd": 387409,
+        "counterparty": "Vertex Services",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "95f926b2-382b-4a38-ad7a-2f37bccd0503",
+        "ts": "2026-06-13T00:44:25.437Z",
+        "direction": "outbound",
+        "amountUsd": 369890,
+        "counterparty": "Lakeside Holdings",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "16aaf0aa-d82c-45b7-8e8f-9a90841017b9",
+        "ts": "2026-06-10T15:59:47.586Z",
+        "direction": "outbound",
+        "amountUsd": 358320,
+        "counterparty": "Vertex Services",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "39a421a0-6775-4201-8e11-93a9c55c9aa3",
+        "ts": "2026-06-09T18:42:08.659Z",
+        "direction": "outbound",
+        "amountUsd": 356059,
+        "counterparty": "Vertex Services",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9351a760-590b-47f0-bb75-28c4eab107c3",
+        "ts": "2026-06-03T17:16:26.833Z",
+        "direction": "outbound",
+        "amountUsd": 364448,
+        "counterparty": "Acme Components",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e7e9a513-ee57-4f9b-8ef5-9a2f16f5ba9f",
+        "ts": "2026-06-02T09:53:12.727Z",
+        "direction": "outbound",
+        "amountUsd": 366398,
+        "counterparty": "Riverside Logistics",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "62e61418-0faf-4636-a2ee-34f9f7a91005",
+        "ts": "2026-05-31T19:57:33.059Z",
+        "direction": "inbound",
+        "amountUsd": 375510,
+        "counterparty": "Acme Components",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "05ab3b80-e8a7-4a51-a170-007cbd6ea1f5",
+        "ts": "2026-05-29T07:35:16.043Z",
+        "direction": "inbound",
+        "amountUsd": 392708,
+        "counterparty": "Riverside Logistics",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "fea8ee6d-bc61-45b0-b468-cfbae89386f5",
+        "ts": "2026-05-29T07:23:08.270Z",
+        "direction": "inbound",
+        "amountUsd": 388170,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "439a6a76-ee25-4b29-9f91-ae1f91edf757",
+        "ts": "2026-05-29T07:11:59.214Z",
+        "direction": "inbound",
+        "amountUsd": 390527,
+        "counterparty": "Acme Components",
+        "detail": "JP · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "d5aef728-ee09-42ba-96bd-42290ac449cc",
+        "ts": "2026-05-26T23:56:38.171Z",
+        "direction": "inbound",
+        "amountUsd": 397633,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "6f6eeb1c-c1ef-494c-91d6-57c9dde2b9fc",
+        "ts": "2026-05-25T08:56:32.128Z",
+        "direction": "inbound",
+        "amountUsd": 365352,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "bd134f6c-92d0-488b-a79f-54656378e82a",
+        "ts": "2026-05-25T04:27:35.505Z",
+        "direction": "outbound",
+        "amountUsd": 366521,
+        "counterparty": "Vertex Services",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ac27b742-a236-4361-b690-ef4043f80a5d",
+        "ts": "2026-05-23T11:11:26.670Z",
+        "direction": "inbound",
+        "amountUsd": 383287,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "5f36f4e4-c7fe-40f9-9e63-2e6ebaa23d94",
+        "ts": "2026-05-22T23:33:26.634Z",
+        "direction": "inbound",
+        "amountUsd": 353876,
+        "counterparty": "Crestline Co",
+        "detail": "CH · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8c54545a-09e6-4e48-9baf-c5c775b8e3d0",
+        "ts": "2026-05-17T16:37:11.523Z",
+        "direction": "inbound",
+        "amountUsd": 382091,
+        "counterparty": "Crestline Co",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "6cacd1b1-8412-46f3-9fab-728efdcece0c",
+        "ts": "2026-05-15T23:19:50.823Z",
+        "direction": "outbound",
+        "amountUsd": 392802,
+        "counterparty": "Crestline Co",
+        "detail": "JP · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "85875ce1-ebd8-4698-ba42-10d9112f58c5",
+        "ts": "2026-05-14T16:21:50.903Z",
+        "direction": "outbound",
+        "amountUsd": 385772,
+        "counterparty": "Lakeside Holdings",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "bff04289-8604-4d3e-99fc-4ab0cc8542aa",
+        "ts": "2026-05-13T14:50:15.977Z",
+        "direction": "outbound",
+        "amountUsd": 383344,
+        "counterparty": "Vertex Services",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "16479abb-ab90-4a59-b98b-d36dd8c37b43",
+        "ts": "2026-05-12T08:32:43.529Z",
+        "direction": "inbound",
+        "amountUsd": 382810,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "04459683-5111-432f-b9c2-6f1a418f9c94",
+        "ts": "2026-05-11T07:55:02.245Z",
+        "direction": "inbound",
+        "amountUsd": 391760,
+        "counterparty": "Lakeside Holdings",
+        "detail": "CH · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "883c4b5d-5b1a-4ecc-900e-627ec8b6dcdf",
+        "ts": "2026-05-10T01:34:52.581Z",
+        "direction": "outbound",
+        "amountUsd": 396899,
+        "counterparty": "Vertex Services",
+        "detail": "GB · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9897af17-8525-47ea-98e2-9cc0a39c4df3",
+        "ts": "2026-05-08T16:17:07.325Z",
+        "direction": "inbound",
+        "amountUsd": 378330,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e50ba857-83d1-476e-a6f7-235a927f3730",
+        "ts": "2026-05-07T19:13:39.099Z",
+        "direction": "outbound",
+        "amountUsd": 361929,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "746bf86b-7708-4808-8384-13beea3ae26d",
+        "ts": "2026-05-07T09:05:49.144Z",
+        "direction": "outbound",
+        "amountUsd": 358666,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c0519070-665f-4de6-9537-d58a84182dd1",
+        "ts": "2026-05-03T22:39:22.868Z",
+        "direction": "outbound",
+        "amountUsd": 391057,
+        "counterparty": "Acme Components",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b61c5604-2757-4231-9f91-a386bf828ce9",
+        "ts": "2026-05-03T08:36:20.262Z",
+        "direction": "outbound",
+        "amountUsd": 375793,
+        "counterparty": "Acme Components",
+        "detail": "FR · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "d57c0e09-3626-4b93-8d4c-58be3d1829cb",
+        "ts": "2026-05-02T03:19:16.777Z",
+        "direction": "outbound",
+        "amountUsd": 390020,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "7db8fa8a-8db5-4abc-9b3e-49571fb363ee",
+        "ts": "2026-04-30T05:12:53.331Z",
+        "direction": "outbound",
+        "amountUsd": 399052,
+        "counterparty": "Lakeside Holdings",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "0904b1e3-2405-4ce7-b686-82cbe81542b5",
+        "ts": "2026-04-29T22:23:32.247Z",
+        "direction": "outbound",
+        "amountUsd": 390406,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "30df96df-c009-4bf4-b349-6fa97278b1d5",
+        "ts": "2026-04-29T13:36:13.314Z",
+        "direction": "inbound",
+        "amountUsd": 389362,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "48796c49-7982-4d95-873b-5584209c3505",
+        "ts": "2026-04-29T03:13:42.771Z",
+        "direction": "outbound",
+        "amountUsd": 382401,
+        "counterparty": "Vertex Services",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "39d60eb4-49f7-4724-b6af-ee253f5b6db1",
+        "ts": "2026-04-28T09:44:23.521Z",
+        "direction": "inbound",
+        "amountUsd": 377934,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9b16810e-89bd-449e-951f-4327b700a7a1",
+        "ts": "2026-04-26T19:23:20.894Z",
+        "direction": "inbound",
+        "amountUsd": 362150,
+        "counterparty": "Vertex Services",
+        "detail": "JP · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a4e8c2c9-1f9a-4466-b1f4-b88325250e59",
+        "ts": "2026-04-24T22:49:54.877Z",
+        "direction": "inbound",
+        "amountUsd": 369017,
+        "counterparty": "Vertex Services",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "eaa93cc1-5c82-488d-a159-dad039db275b",
+        "ts": "2026-04-24T12:27:26.959Z",
+        "direction": "inbound",
+        "amountUsd": 354712,
+        "counterparty": "Lakeside Holdings",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e4365a57-84db-41f9-a772-690ab8c3ea53",
+        "ts": "2026-04-22T07:58:52.655Z",
+        "direction": "inbound",
+        "amountUsd": 372654,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "5eec1835-442b-4101-ac90-37f765965f87",
+        "ts": "2026-04-19T08:54:03.757Z",
+        "direction": "outbound",
+        "amountUsd": 370475,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f5d9486b-eb1f-4659-8533-b8ecb65cad2e",
+        "ts": "2026-04-16T18:52:54.258Z",
+        "direction": "outbound",
+        "amountUsd": 387292,
+        "counterparty": "Orion Supplies",
+        "detail": "CH · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "72bd055a-368c-4234-805d-e4bfff877f5b",
+        "ts": "2026-04-15T13:41:19.995Z",
+        "direction": "outbound",
+        "amountUsd": 375447,
+        "counterparty": "Meridian Partners",
+        "detail": "FR · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "5b0a4096-ea91-4ed7-8dad-76bfe577570a",
+        "ts": "2026-04-11T21:04:57.434Z",
+        "direction": "outbound",
+        "amountUsd": 383518,
+        "counterparty": "Riverside Logistics",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b764fab0-0667-4947-a08a-ed0655e38ad3",
+        "ts": "2026-04-10T15:29:44.145Z",
+        "direction": "inbound",
+        "amountUsd": 369742,
+        "counterparty": "Acme Components",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "dbf540af-4b59-4d16-9f7d-ab9276d47508",
+        "ts": "2026-04-09T09:21:20.651Z",
+        "direction": "inbound",
+        "amountUsd": 393447,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "d4cc0e54-8768-4032-a456-df014cd00831",
+        "ts": "2026-04-08T07:28:08.458Z",
+        "direction": "outbound",
+        "amountUsd": 382409,
+        "counterparty": "Vertex Services",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e60bab74-23aa-40cc-9eca-0bfb6eac3909",
+        "ts": "2026-04-08T06:36:28.984Z",
+        "direction": "inbound",
+        "amountUsd": 358600,
+        "counterparty": "Riverside Logistics",
+        "detail": "NL · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "17de2366-2d84-4f74-b716-704177bba0be",
+        "ts": "2026-04-07T03:48:05.320Z",
+        "direction": "inbound",
+        "amountUsd": 354386,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8e45e451-e871-4709-9edc-dbfded0f05c2",
+        "ts": "2026-04-06T08:13:25.267Z",
+        "direction": "inbound",
+        "amountUsd": 366798,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ec98bf73-b4cc-48d0-a307-25fbc87da3ac",
+        "ts": "2026-04-04T06:39:32.133Z",
+        "direction": "outbound",
+        "amountUsd": 383467,
+        "counterparty": "Orion Supplies",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e4cd8560-8eb5-4ee9-aefc-c0e434413f22",
+        "ts": "2026-04-03T17:17:47.094Z",
+        "direction": "outbound",
+        "amountUsd": 387762,
+        "counterparty": "Orion Supplies",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "216e4e99-d702-449e-a821-b091e28ac8f7",
+        "ts": "2026-04-01T19:08:28.750Z",
+        "direction": "outbound",
+        "amountUsd": 371695,
+        "counterparty": "Riverside Logistics",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "6d4ba48e-af06-42d4-9d0a-6e4af0007c54",
+        "ts": "2026-03-31T22:54:47.160Z",
+        "direction": "outbound",
+        "amountUsd": 378136,
+        "counterparty": "Meridian Partners",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "12ce3f1b-f68b-4f53-87c3-14f6d72c3410",
+        "ts": "2026-03-30T09:00:30.880Z",
+        "direction": "outbound",
+        "amountUsd": 363358,
+        "counterparty": "Meridian Partners",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "d0afa48b-f049-4396-90e4-e6bac94b8070",
+        "ts": "2026-03-29T18:48:31.592Z",
+        "direction": "outbound",
+        "amountUsd": 391795,
+        "counterparty": "Orion Supplies",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "7a4c4b93-3ced-486b-9b5a-ebb4c0668707",
+        "ts": "2026-03-29T06:04:56.497Z",
+        "direction": "outbound",
+        "amountUsd": 361435,
+        "counterparty": "Crestline Co",
+        "detail": "US · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a8072e60-7d17-4419-945d-bfc4daa088fd",
+        "ts": "2026-03-28T11:34:31.408Z",
+        "direction": "inbound",
+        "amountUsd": 366026,
+        "counterparty": "Meridian Partners",
+        "detail": "NL · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "2a92030c-797c-4fb4-b4b5-5ef68a70c2ef",
+        "ts": "2026-03-28T06:59:33.541Z",
+        "direction": "inbound",
+        "amountUsd": 366815,
+        "counterparty": "Crestline Co",
+        "detail": "GB · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      }
+    ],
+    "ledger": {
+      "internalCount": 447,
+      "onchainCount": 0,
+      "internalTotalUsd": 99398923,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 447,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "Wells Fargo & Co": {
+    "entityName": "Wells Fargo & Co",
+    "hasActivity": false,
+    "severity": null,
+    "window": null,
+    "findings": [],
+    "flows": [],
+    "evidence": [],
+    "timeline": [],
+    "ledger": {
+      "internalCount": 0,
+      "onchainCount": 0,
+      "internalTotalUsd": 0,
+      "onchainTotalUsd": 0,
+      "windowInternalCount": 0,
+      "windowOnchainCount": 0
+    },
+    "addresses": [],
+    "narrative": null
+  },
+  "Wirecard": {
+    "entityName": "Wirecard",
+    "hasActivity": true,
+    "severity": "high",
+    "window": {
+      "from": "2026-06-03T03:35:33.391Z",
+      "to": "2026-06-12T22:20:33.797Z",
+      "days": 10
+    },
+    "findings": [
+      {
+        "id": "9e43e6a4-b270-4bfa-a6f3-21093ebea5f4",
+        "flagType": "structuring_layering",
+        "label": "Structuring / Layering Risk",
+        "severity": "high",
+        "confidence": 0.88,
+        "rationale": "16 outbound transfers between $9,153 and $9,950 — each just below the $10,000 reporting threshold — were sent within 6 days (total $153,284). Clustering of just-under-threshold payments is a classic structuring/layering pattern intended to avoid mandatory reporting.",
+        "recommendedAction": "Trigger AML investigation.",
+        "narrative": null,
+        "status": "proposed",
+        "evidenceCount": 16,
+        "metrics": {
+          "totalUsd": 153284,
+          "threshold": 10000,
+          "windowDays": 6,
+          "maxAmountUsd": 9950,
+          "minAmountUsd": 9153,
+          "transactions": 16
+        }
+      }
+    ],
+    "flows": [
+      {
+        "plane": "internal",
+        "label": "DE",
+        "direction": "mixed",
+        "totalUsd": 1906939,
+        "count": 52,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "label": "ethereum",
+        "direction": "mixed",
+        "totalUsd": 201653,
+        "count": 10,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "SG",
+        "direction": "outbound",
+        "totalUsd": 172079,
+        "count": 3,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "FR",
+        "direction": "mixed",
+        "totalUsd": 144069,
+        "count": 3,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "NL",
+        "direction": "outbound",
+        "totalUsd": 21105,
+        "count": 1,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "label": "GB",
+        "direction": "inbound",
+        "totalUsd": 19206,
+        "count": 1,
+        "highRisk": false
+      }
+    ],
+    "evidence": [
+      {
+        "plane": "internal",
+        "id": "b52ee6e2-553c-4a52-93d4-f9b0a47426d4",
+        "ts": "2026-06-10T22:20:33.797Z",
+        "direction": "outbound",
+        "amountUsd": 9950,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "afa40e6d-4a72-47b4-9591-f2aa19a39ad1",
+        "ts": "2026-06-10T22:14:00.876Z",
+        "direction": "outbound",
+        "amountUsd": 9665,
+        "counterparty": "Kestrel Trading",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b2660788-20f0-441b-a1d4-fecbcff4a8cd",
+        "ts": "2026-06-10T17:20:59.681Z",
+        "direction": "outbound",
+        "amountUsd": 9330,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "4fdd3a3d-0feb-4715-8692-e6b48357cec8",
+        "ts": "2026-06-10T12:25:26.706Z",
+        "direction": "outbound",
+        "amountUsd": 9773,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f3e05f88-35b4-475e-ac50-7db6d6bbdeb4",
+        "ts": "2026-06-09T19:44:02.325Z",
+        "direction": "outbound",
+        "amountUsd": 9764,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "6d0953df-3df3-460b-b41c-fde6b8c6c6d6",
+        "ts": "2026-06-08T14:19:57.021Z",
+        "direction": "outbound",
+        "amountUsd": 9222,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "259ecfa0-44c3-47e6-a50e-d65bf7a794bc",
+        "ts": "2026-06-08T12:21:00.964Z",
+        "direction": "outbound",
+        "amountUsd": 9459,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "58a325f1-9b0b-4d5d-bd89-9dfd39b13844",
+        "ts": "2026-06-08T12:03:10.257Z",
+        "direction": "outbound",
+        "amountUsd": 9908,
+        "counterparty": "Northbridge Ltd",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "561520ae-f228-41b8-962f-c709aa51a465",
+        "ts": "2026-06-07T13:00:58.059Z",
+        "direction": "outbound",
+        "amountUsd": 9254,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e2aee3a8-05dc-4d3b-8d85-801259a2de84",
+        "ts": "2026-06-07T12:23:44.209Z",
+        "direction": "outbound",
+        "amountUsd": 9153,
+        "counterparty": "Kestrel Trading",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8e201bb6-2edd-4a11-98dc-6807e5843b4d",
+        "ts": "2026-06-06T18:33:41.897Z",
+        "direction": "outbound",
+        "amountUsd": 9851,
+        "counterparty": "Northbridge Ltd",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "bc4f2677-9b79-4881-b954-19f5d8ca033d",
+        "ts": "2026-06-06T01:52:35.603Z",
+        "direction": "outbound",
+        "amountUsd": 9864,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c35a4480-2151-4545-98b7-63ffcb180375",
+        "ts": "2026-06-05T23:59:56.338Z",
+        "direction": "outbound",
+        "amountUsd": 9944,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f49d9207-6bf7-4584-824d-ddea9c1ac89f",
+        "ts": "2026-06-05T20:40:07.481Z",
+        "direction": "outbound",
+        "amountUsd": 9216,
+        "counterparty": "Northbridge Ltd",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "7ce3076e-ba5d-4ef1-b971-97a8c8d11e4b",
+        "ts": "2026-06-05T15:28:22.083Z",
+        "direction": "outbound",
+        "amountUsd": 9235,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9cacd586-b713-4fbd-97a7-bd2433048600",
+        "ts": "2026-06-05T03:35:33.391Z",
+        "direction": "outbound",
+        "amountUsd": 9696,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      }
+    ],
+    "timeline": [
+      {
+        "plane": "onchain",
+        "id": "0b6586bf-b023-48af-b59e-b5889cd7aeda",
+        "ts": "2026-06-12T18:09:41.517Z",
+        "direction": "inbound",
+        "amountUsd": 29339,
+        "counterparty": "Kraken",
+        "detail": "ethereum · USDT",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b8cefc45-91ef-4c72-9696-1f15427628c8",
+        "ts": "2026-06-12T14:55:21.209Z",
+        "direction": "outbound",
+        "amountUsd": 65474,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "fbc22c0a-b822-48e0-9fd2-b1c274dd3bf6",
+        "ts": "2026-06-12T14:38:12.065Z",
+        "direction": "inbound",
+        "amountUsd": 77593,
+        "counterparty": "Acme Components",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "4dd0cb4e-1ea1-48f6-b30c-470eddeda834",
+        "ts": "2026-06-12T12:59:00.231Z",
+        "direction": "outbound",
+        "amountUsd": 72651,
+        "counterparty": "Vertex Services",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "19b98db1-ecf3-4888-bad0-1a0f2e6f320b",
+        "ts": "2026-06-12T10:46:51.562Z",
+        "direction": "outbound",
+        "amountUsd": 79237,
+        "counterparty": "Crestline Co",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "08239056-9ab0-4019-9adf-e12101f95577",
+        "ts": "2026-06-12T06:55:55.998Z",
+        "direction": "outbound",
+        "amountUsd": 53150,
+        "counterparty": "Orion Supplies",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ddb5b09f-22e1-465b-8bf6-bc89d99cb2cb",
+        "ts": "2026-06-12T04:22:51.393Z",
+        "direction": "outbound",
+        "amountUsd": 75531,
+        "counterparty": "Lakeside Holdings",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "da6bf4f8-8c1f-41f2-b2f4-b504317d5fc6",
+        "ts": "2026-06-12T00:03:57.992Z",
+        "direction": "inbound",
+        "amountUsd": 67286,
+        "counterparty": "Orion Supplies",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "50b73156-8f2d-4397-9679-5800dfef5e49",
+        "ts": "2026-06-11T18:31:13.666Z",
+        "direction": "outbound",
+        "amountUsd": 21105,
+        "counterparty": "Crestline Co",
+        "detail": "NL · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "88f279e9-caa7-4c9a-8749-ad39f7a099e4",
+        "ts": "2026-06-11T14:26:39.331Z",
+        "direction": "inbound",
+        "amountUsd": 28146,
+        "counterparty": "Uniswap router",
+        "detail": "ethereum · USDT",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "44aa0347-6e8d-43cf-8741-7b8386f90223",
+        "ts": "2026-06-11T12:51:30.949Z",
+        "direction": "inbound",
+        "amountUsd": 75637,
+        "counterparty": "Crestline Co",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ab0d06a8-43f1-4014-bb8d-c75c3d9bf932",
+        "ts": "2026-06-11T09:43:53.414Z",
+        "direction": "outbound",
+        "amountUsd": 53608,
+        "counterparty": "Vertex Services",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "36e97b54-bb5f-452d-9bd8-c209e7a4e9eb",
+        "ts": "2026-06-11T07:19:20.375Z",
+        "direction": "inbound",
+        "amountUsd": 68185,
+        "counterparty": "Riverside Logistics",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b52ee6e2-553c-4a52-93d4-f9b0a47426d4",
+        "ts": "2026-06-10T22:20:33.797Z",
+        "direction": "outbound",
+        "amountUsd": 9950,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "afa40e6d-4a72-47b4-9591-f2aa19a39ad1",
+        "ts": "2026-06-10T22:14:00.876Z",
+        "direction": "outbound",
+        "amountUsd": 9665,
+        "counterparty": "Kestrel Trading",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9e1e77aa-7cb1-445f-b3af-5070909298c8",
+        "ts": "2026-06-10T19:56:14.021Z",
+        "direction": "outbound",
+        "amountUsd": 36606,
+        "counterparty": "Riverside Logistics",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b2660788-20f0-441b-a1d4-fecbcff4a8cd",
+        "ts": "2026-06-10T17:20:59.681Z",
+        "direction": "outbound",
+        "amountUsd": 9330,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b0ea3d1b-72c1-4422-8cac-a817fa4b403b",
+        "ts": "2026-06-10T15:46:19.782Z",
+        "direction": "inbound",
+        "amountUsd": 44167,
+        "counterparty": "Acme Components",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "da57bea9-3e3f-4761-aefa-22db81a0bd79",
+        "ts": "2026-06-10T12:34:55.600Z",
+        "direction": "inbound",
+        "amountUsd": 37393,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "4fdd3a3d-0feb-4715-8692-e6b48357cec8",
+        "ts": "2026-06-10T12:25:26.706Z",
+        "direction": "outbound",
+        "amountUsd": 9773,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f1ad9ad4-70a1-4677-98ce-3f2e2f0cf96e",
+        "ts": "2026-06-09T23:23:06.405Z",
+        "direction": "inbound",
+        "amountUsd": 64477,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "4fb0196f-d134-4dea-b730-05780c9c60fd",
+        "ts": "2026-06-09T19:54:40.520Z",
+        "direction": "inbound",
+        "amountUsd": 32137,
+        "counterparty": "Riverside Logistics",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "185e52ff-4055-435b-9065-80e93fcd2886",
+        "ts": "2026-06-09T19:49:49.253Z",
+        "direction": "inbound",
+        "amountUsd": 55074,
+        "counterparty": "Crestline Co",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f3e05f88-35b4-475e-ac50-7db6d6bbdeb4",
+        "ts": "2026-06-09T19:44:02.325Z",
+        "direction": "outbound",
+        "amountUsd": 9764,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "ff1a93d3-441a-4732-97db-1faa78315f67",
+        "ts": "2026-06-09T12:05:10.216Z",
+        "direction": "outbound",
+        "amountUsd": 71593,
+        "counterparty": "Meridian Partners",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "5611f1f9-a7de-4157-9690-ea2eea8bd6dd",
+        "ts": "2026-06-09T09:58:40.241Z",
+        "direction": "inbound",
+        "amountUsd": 46574,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8850a6df-b1bb-45a0-8905-b8968a847762",
+        "ts": "2026-06-09T09:27:39.664Z",
+        "direction": "inbound",
+        "amountUsd": 27688,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "634ca22b-68c5-4b32-af94-880ffd885f3b",
+        "ts": "2026-06-09T08:54:25.998Z",
+        "direction": "inbound",
+        "amountUsd": 59744,
+        "counterparty": "Riverside Logistics",
+        "detail": "FR · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "081dc8c2-c2d9-4790-b855-9d39688d805f",
+        "ts": "2026-06-09T06:57:49.761Z",
+        "direction": "inbound",
+        "amountUsd": 26190,
+        "counterparty": "Uniswap router",
+        "detail": "ethereum · USDT",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8e484579-5390-423c-b7df-f34106f3f1b3",
+        "ts": "2026-06-09T02:43:35.277Z",
+        "direction": "outbound",
+        "amountUsd": 36496,
+        "counterparty": "Riverside Logistics",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "11b70899-4b96-4ba1-a2b7-05eb53515140",
+        "ts": "2026-06-08T21:56:31.382Z",
+        "direction": "inbound",
+        "amountUsd": 20808,
+        "counterparty": "Vertex Services",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "a60dd91e-5f37-4ede-a9ab-c19c96cb6b48",
+        "ts": "2026-06-08T20:44:23.514Z",
+        "direction": "inbound",
+        "amountUsd": 29204,
+        "counterparty": "Orion Supplies",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "6d0953df-3df3-460b-b41c-fde6b8c6c6d6",
+        "ts": "2026-06-08T14:19:57.021Z",
+        "direction": "outbound",
+        "amountUsd": 9222,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "259ecfa0-44c3-47e6-a50e-d65bf7a794bc",
+        "ts": "2026-06-08T12:21:00.964Z",
+        "direction": "outbound",
+        "amountUsd": 9459,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "58a325f1-9b0b-4d5d-bd89-9dfd39b13844",
+        "ts": "2026-06-08T12:03:10.257Z",
+        "direction": "outbound",
+        "amountUsd": 9908,
+        "counterparty": "Northbridge Ltd",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b00f777c-e1e5-4b57-a50a-13ea1ae9aedb",
+        "ts": "2026-06-07T20:40:07.916Z",
+        "direction": "inbound",
+        "amountUsd": 76942,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b4c2ff7f-a9b1-4e9a-aa7c-e6215fa9a133",
+        "ts": "2026-06-07T16:22:46.670Z",
+        "direction": "outbound",
+        "amountUsd": 70174,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "561520ae-f228-41b8-962f-c709aa51a465",
+        "ts": "2026-06-07T13:00:58.059Z",
+        "direction": "outbound",
+        "amountUsd": 9254,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "e2aee3a8-05dc-4d3b-8d85-801259a2de84",
+        "ts": "2026-06-07T12:23:44.209Z",
+        "direction": "outbound",
+        "amountUsd": 9153,
+        "counterparty": "Kestrel Trading",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "3976bace-b434-4b42-8e85-92730e7ac47e",
+        "ts": "2026-06-07T10:03:06.342Z",
+        "direction": "inbound",
+        "amountUsd": 69062,
+        "counterparty": "Lakeside Holdings",
+        "detail": "FR · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "4d1db44b-fd3c-47c3-b20a-2e8e74f81120",
+        "ts": "2026-06-07T05:52:11.558Z",
+        "direction": "outbound",
+        "amountUsd": 27535,
+        "counterparty": "Kraken",
+        "detail": "ethereum · USDT",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "441783d7-7425-4b0b-82fb-7d72756c4eb7",
+        "ts": "2026-06-07T03:46:17.808Z",
+        "direction": "outbound",
+        "amountUsd": 25973,
+        "counterparty": "Orion Supplies",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "7fe093f2-2ff6-4e3a-9afe-bd91d1763c9d",
+        "ts": "2026-06-07T00:16:21.368Z",
+        "direction": "inbound",
+        "amountUsd": 54478,
+        "counterparty": "Acme Components",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "b2f68f97-b565-41ee-a790-a872885807ee",
+        "ts": "2026-06-06T21:29:29.872Z",
+        "direction": "outbound",
+        "amountUsd": 55001,
+        "counterparty": "Acme Components",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "8e201bb6-2edd-4a11-98dc-6807e5843b4d",
+        "ts": "2026-06-06T18:33:41.897Z",
+        "direction": "outbound",
+        "amountUsd": 9851,
+        "counterparty": "Northbridge Ltd",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "eba8fe22-1983-4b38-8be8-775fe06d4b36",
+        "ts": "2026-06-06T12:05:50.255Z",
+        "direction": "outbound",
+        "amountUsd": 55073,
+        "counterparty": "Acme Components",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "bc4f2677-9b79-4881-b954-19f5d8ca033d",
+        "ts": "2026-06-06T01:52:35.603Z",
+        "direction": "outbound",
+        "amountUsd": 9864,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c35a4480-2151-4545-98b7-63ffcb180375",
+        "ts": "2026-06-05T23:59:56.338Z",
+        "direction": "outbound",
+        "amountUsd": 9944,
+        "counterparty": "Aurelia GmbH",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "f49d9207-6bf7-4584-824d-ddea9c1ac89f",
+        "ts": "2026-06-05T20:40:07.481Z",
+        "direction": "outbound",
+        "amountUsd": 9216,
+        "counterparty": "Northbridge Ltd",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "7ce3076e-ba5d-4ef1-b971-97a8c8d11e4b",
+        "ts": "2026-06-05T15:28:22.083Z",
+        "direction": "outbound",
+        "amountUsd": 9235,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "658fa5d0-f18e-47f2-8aa8-a69969b6b563",
+        "ts": "2026-06-05T13:38:22.513Z",
+        "direction": "inbound",
+        "amountUsd": 40282,
+        "counterparty": "Orion Supplies",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "40553f5d-6d9f-4217-9095-b27dc50b8a64",
+        "ts": "2026-06-05T09:26:00.422Z",
+        "direction": "outbound",
+        "amountUsd": 29542,
+        "counterparty": "Vertex Services",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "c9a31517-b8f7-4a1b-be05-5e3b94e09d92",
+        "ts": "2026-06-05T05:32:15.596Z",
+        "direction": "outbound",
+        "amountUsd": 24610,
+        "counterparty": "Acme Components",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9cacd586-b713-4fbd-97a7-bd2433048600",
+        "ts": "2026-06-05T03:35:33.391Z",
+        "direction": "outbound",
+        "amountUsd": 9696,
+        "counterparty": "Pelham Services",
+        "detail": "DE · wire",
+        "evidence": true,
+        "highRisk": false
+      },
+      {
+        "plane": "onchain",
+        "id": "80d05315-174b-4e3d-90c4-96c6d5014339",
+        "ts": "2026-06-05T02:48:33.795Z",
+        "direction": "outbound",
+        "amountUsd": 26338,
+        "counterparty": "Uniswap router",
+        "detail": "ethereum · USDT",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "cd706b9a-e718-4898-b7e0-130c0b99919d",
+        "ts": "2026-06-04T17:13:57.865Z",
+        "direction": "outbound",
+        "amountUsd": 24955,
+        "counterparty": "Lakeside Holdings",
+        "detail": "SG · cross-border · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "2625a900-e5a0-4fd8-a4bb-0e05004a1de3",
+        "ts": "2026-06-03T20:52:44.533Z",
+        "direction": "inbound",
+        "amountUsd": 52221,
+        "counterparty": "Lakeside Holdings",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "9a3775de-90dd-4810-b7a3-4adb37d0fe82",
+        "ts": "2026-06-03T14:32:40.232Z",
+        "direction": "inbound",
+        "amountUsd": 61899,
+        "counterparty": "Vertex Services",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "43b1e8a9-f29b-44d6-8008-5fab21c9b7d4",
+        "ts": "2026-06-03T12:54:38.106Z",
+        "direction": "outbound",
+        "amountUsd": 58875,
+        "counterparty": "Meridian Partners",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      },
+      {
+        "plane": "internal",
+        "id": "43b1af5b-8338-4b25-af6f-ff96a19b7272",
+        "ts": "2026-06-03T12:50:29.130Z",
+        "direction": "outbound",
+        "amountUsd": 50096,
+        "counterparty": "Riverside Logistics",
+        "detail": "DE · wire",
+        "evidence": false,
+        "highRisk": false
+      }
+    ],
+    "ledger": {
+      "internalCount": 397,
+      "onchainCount": 91,
+      "internalTotalUsd": 17817101,
+      "onchainTotalUsd": 1742252,
+      "windowInternalCount": 60,
+      "windowOnchainCount": 10
+    },
+    "addresses": [
+      {
+        "chain": "ethereum",
+        "address": "0xW1rec4rd0000000000000000000000000000aa02"
+      }
+    ],
+    "narrative": null
+  }
+}

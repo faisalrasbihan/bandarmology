@@ -2,16 +2,16 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { ArrowRightIcon, CheckCircle2Icon, ChevronDownIcon, UsersIcon } from "lucide-react"
+import { ArrowRightIcon, CheckCircle2Icon, LayoutGridIcon, TableIcon, UsersIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { SeverityBadge } from "@/components/risk-badges"
 import {
   RISK_EVENTS,
-  SOURCE_ORDER,
   clientsForEvent,
   type RiskEvent,
   type RiskSource,
@@ -40,6 +40,27 @@ const STAGE_BADGE_CLASS: Record<CaseStage, string> = {
   closed: "text-muted-foreground",
 }
 
+// Short, colour-coded identifier for each public source — shown on every card /
+// row so the queue reads as one flat list rather than being split by source.
+const SOURCE_META: Record<RiskSource, { label: string; cls: string }> = {
+  "News & Adverse Media": { label: "News", cls: "border-sky-500/40 text-sky-600 dark:text-sky-400" },
+  "Sanctions & Watchlists": { label: "Sanctions", cls: "border-red-600/40 text-red-600 dark:text-red-500" },
+  "Corporate Registry & Ownership": { label: "Registry", cls: "border-violet-500/40 text-violet-600 dark:text-violet-400" },
+  "Funding & Startup Intelligence": { label: "Funding", cls: "border-emerald-500/40 text-emerald-600 dark:text-emerald-500" },
+  "Website & Domain Monitoring": { label: "Domain", cls: "border-amber-600/40 text-amber-600 dark:text-amber-500" },
+}
+
+const SEV_RANK: Record<string, number> = { Critical: 4, High: 3, Medium: 2, Low: 1 }
+
+function SourceBadge({ source }: { source: RiskSource }) {
+  const m = SOURCE_META[source]
+  return (
+    <Badge variant="outline" className={m.cls}>
+      {m.label}
+    </Badge>
+  )
+}
+
 function StageBadge({ stage }: { stage: CaseStage }) {
   return (
     <Badge variant="outline" className={STAGE_BADGE_CLASS[stage]}>
@@ -49,6 +70,10 @@ function StageBadge({ stage }: { stage: CaseStage }) {
       {STAGE_META[stage].label}
     </Badge>
   )
+}
+
+function distinctStages(cases: CaseRecord[]): CaseStage[] {
+  return [...new Set(cases.map((c) => c.stage))]
 }
 
 // One affected-client row inside a marked event: shows the case's current stage
@@ -81,32 +106,24 @@ function CaseRow({ rec }: { rec: CaseRecord }) {
   )
 }
 
-function EventCard({
-  event,
-  cases,
-}: {
-  event: RiskEvent
-  cases: CaseRecord[]
-}) {
+function EventCard({ event, cases }: { event: RiskEvent; cases: CaseRecord[] }) {
   const affected = clientsForEvent(event)
   const marked = cases.length > 0
-  // Map each affected client to its case (clients may have been marked in any order).
   const caseById = new Map(cases.map((c) => [c.clientId, c]))
 
   return (
     <Card className="gap-3">
       <CardHeader className="gap-2">
         <div className="flex flex-wrap items-center gap-2">
+          <SourceBadge source={event.source} />
+          <SeverityBadge severity={event.severity} />
           <Badge variant="secondary" className="font-normal">
             {event.provider}
           </Badge>
-          <SeverityBadge severity={event.severity} />
           <span className="text-xs tabular-nums text-muted-foreground">
             {(event.confidence * 100).toFixed(0)}% confidence
           </span>
-          <span className="ml-auto text-xs text-muted-foreground">
-            {event.detected}
-          </span>
+          <span className="ml-auto text-xs text-muted-foreground">{event.detected}</span>
         </div>
         <p className="text-sm font-semibold">{event.headline}</p>
         <p className="text-sm text-muted-foreground">{event.summary}</p>
@@ -116,8 +133,7 @@ function EventCard({
         <Separator />
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <UsersIcon className="size-3.5" />
-          {affected.length} affected{" "}
-          {affected.length === 1 ? "client" : "clients"}
+          {affected.length} affected {affected.length === 1 ? "client" : "clients"}
         </div>
 
         {!marked ? (
@@ -133,10 +149,7 @@ function EventCard({
                 </Link>
               ))}
             </div>
-            <Button
-              size="sm"
-              onClick={() => markEvent(event, affected)}
-            >
+            <Button size="sm" onClick={() => markEvent(event, affected)}>
               Mark for review
               <ArrowRightIcon data-icon="inline-end" />
             </Button>
@@ -148,18 +161,9 @@ function EventCard({
               return rec ? (
                 <CaseRow key={c.id} rec={rec} />
               ) : (
-                // Edge case: a client added to the event after it was marked.
-                <div
-                  key={c.id}
-                  className="flex items-center justify-between gap-2 py-1"
-                >
+                <div key={c.id} className="flex items-center justify-between gap-2 py-1">
                   <span className="text-sm font-medium">{c.client}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7"
-                    onClick={() => markEvent(event, [c])}
-                  >
+                  <Button variant="outline" size="sm" className="h-7" onClick={() => markEvent(event, [c])}>
                     Mark
                   </Button>
                 </div>
@@ -172,93 +176,134 @@ function EventCard({
   )
 }
 
-// One collapsible source section (News & Adverse Media, Sanctions, …). Collapsed
-// by default unless it carries a Critical/High event, so the queue doesn't fill
-// the page when nothing urgent is in it — the analyst expands what they want.
-function SourceGroup({
-  source,
+function EventTableRow({ event, cases }: { event: RiskEvent; cases: CaseRecord[] }) {
+  const affected = clientsForEvent(event)
+  const marked = cases.length > 0
+  return (
+    <tr className="border-t align-top">
+      <td className="p-2">
+        <SourceBadge source={event.source} />
+      </td>
+      <td className="p-2">
+        <SeverityBadge severity={event.severity} />
+      </td>
+      <td className="max-w-[28rem] p-2">
+        <div className="font-medium">{event.headline}</div>
+        <div className="text-xs text-muted-foreground">
+          {event.provider} · {event.detected}
+        </div>
+      </td>
+      <td className="p-2 tabular-nums">{(event.confidence * 100).toFixed(0)}%</td>
+      <td className="p-2">
+        <div className="flex flex-wrap gap-1">
+          {affected.map((c) => (
+            <Link
+              key={c.id}
+              href={`/clients/${c.id}`}
+              className="text-xs underline-offset-4 hover:underline"
+            >
+              {c.client}
+            </Link>
+          ))}
+        </div>
+      </td>
+      <td className="p-2">
+        {marked ? (
+          <div className="flex flex-wrap gap-1">
+            {distinctStages(cases).map((s) => (
+              <StageBadge key={s} stage={s} />
+            ))}
+          </div>
+        ) : (
+          <Button size="sm" className="h-7" onClick={() => markEvent(event, affected)}>
+            Mark
+          </Button>
+        )}
+      </td>
+    </tr>
+  )
+}
+
+function EventTable({
   events,
   casesByEvent,
 }: {
-  source: RiskSource
   events: RiskEvent[]
   casesByEvent: Map<string, CaseRecord[]>
 }) {
-  const urgent = events.filter((e) => e.severity === "Critical" || e.severity === "High").length
-  const [open, setOpen] = React.useState(urgent > 0)
-
   return (
-    <div className="flex flex-col gap-2 rounded-lg border">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-muted/50"
-      >
-        <ChevronDownIcon
-          className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "" : "-rotate-90"}`}
-        />
-        <h3 className="text-sm font-medium">{source}</h3>
-        <Badge variant="outline" className="text-muted-foreground">
-          {events.length}
-        </Badge>
-        {urgent > 0 && (
-          <Badge variant="outline" className="border-red-600/40 text-red-600 dark:text-red-500">
-            {urgent} high+
-          </Badge>
-        )}
-        <span className="ml-auto text-xs text-muted-foreground">
-          {open ? "Hide" : "Show"}
-        </span>
-      </button>
-
-      {open && (
-        <div className="grid grid-cols-1 gap-3 px-3 pb-3 @3xl/main:grid-cols-2">
-          {events.map((event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              cases={casesByEvent.get(event.id) ?? []}
-            />
+    <div className="overflow-x-auto rounded-md border">
+      <table className="w-full text-left text-sm">
+        <thead className="bg-muted/60 text-xs text-muted-foreground">
+          <tr>
+            <th className="p-2 font-medium">Source</th>
+            <th className="p-2 font-medium">Severity</th>
+            <th className="p-2 font-medium">Event</th>
+            <th className="p-2 font-medium">Conf.</th>
+            <th className="p-2 font-medium">Affected</th>
+            <th className="p-2 font-medium">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {events.map((e) => (
+            <EventTableRow key={e.id} event={e} cases={casesByEvent.get(e.id) ?? []} />
           ))}
-        </div>
-      )}
+        </tbody>
+      </table>
     </div>
   )
 }
 
 export function IncomingRisk() {
   const casesByEvent = useCasesByEvent()
+  const [view, setView] = React.useState<"cards" | "table">("cards")
 
-  // Group the events by their public source, preserving the canonical order.
-  const grouped = React.useMemo(() => {
-    const map = new Map<RiskSource, RiskEvent[]>()
-    for (const source of SOURCE_ORDER) map.set(source, [])
-    for (const e of RISK_EVENTS) map.get(e.source)?.push(e)
-    return SOURCE_ORDER.map((source) => ({
-      source,
-      events: map.get(source) ?? [],
-    })).filter((g) => g.events.length > 0)
-  }, [])
+  // One flat list across all sources, highest-severity first (then confidence).
+  const events = React.useMemo(
+    () =>
+      [...RISK_EVENTS].sort(
+        (a, b) => SEV_RANK[b.severity] - SEV_RANK[a.severity] || b.confidence - a.confidence
+      ),
+    []
+  )
 
   return (
     <div id="incoming-risk" className="flex scroll-mt-20 flex-col gap-4 px-4 lg:px-6">
-      <div className="flex flex-col">
-        <h2 className="text-base font-semibold">Risk Incoming</h2>
-        <p className="text-sm text-muted-foreground">
-          Public events grouped by source. Marking an event opens a case for each
-          affected client and moves it into the pipeline.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div className="flex flex-col">
+          <h2 className="text-base font-semibold">Risk Incoming</h2>
+          <p className="text-sm text-muted-foreground">
+            Public events across every source — each tagged with where it came from. Mark an event
+            to open a case per affected client.
+          </p>
+        </div>
+        <ToggleGroup
+          multiple={false}
+          value={[view]}
+          onValueChange={(v) => setView((v[0] as "cards" | "table") ?? "cards")}
+          variant="outline"
+          className="*:data-[slot=toggle-group-item]:px-3!"
+        >
+          <ToggleGroupItem value="cards" className="gap-1.5">
+            <LayoutGridIcon className="size-4" />
+            Cards
+          </ToggleGroupItem>
+          <ToggleGroupItem value="table" className="gap-1.5">
+            <TableIcon className="size-4" />
+            Table
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
 
-      {grouped.map(({ source, events }) => (
-        <SourceGroup
-          key={source}
-          source={source}
-          events={events}
-          casesByEvent={casesByEvent}
-        />
-      ))}
+      {view === "cards" ? (
+        <div className="grid grid-cols-1 gap-3 @3xl/main:grid-cols-2">
+          {events.map((e) => (
+            <EventCard key={e.id} event={e} cases={casesByEvent.get(e.id) ?? []} />
+          ))}
+        </div>
+      ) : (
+        <EventTable events={events} casesByEvent={casesByEvent} />
+      )}
     </div>
   )
 }

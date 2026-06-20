@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <AppShell title="Risk Dashboard">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <RiskPipeline current="incoming" showEconomics />
+        <RiskPipeline current="incoming" />
         <IncomingRisk />
         <div
           id="risk-trend"

@@ -15,7 +15,7 @@
     "signal": "Behavioural Anomaly – Potential Money Mule",
     "trigger": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions.",
     "sources": 2,
-    "detected": "3h ago",
+    "detected": "11h ago",
     "status": "Escalated",
     "kyc": {
       "onboarded": "Jun 2021",
@@ -26,8 +26,8 @@
     "baseline": "Onboarded Jun 2021 as Global cryptocurrency exchange and custodial wallet provider. Expected activity: High-volume crypto flows; expected given exchange business. Risk rating: High.",
     "observed": "Between 2 June and 9 June 2026, Binance received 22 inbound cross-border crypto transfers totalling $7,965,680 from 17 distinct counterparties. This volume represents a 5.5× spike above the entity's normal 7-day cross-border inflow baseline ($1,460,782 expected). The transaction pattern exhibits several red flags consistent with potential money-mule funnel activity: (1) Concentration of high-value transfers within a compressed 7-day window; (2) Influx from 12 shell entities (68% of counterparties) bearing jurisdictional risk indicators (Panama, Seychelles, UAE, Cayman Islands, Virgin Islands, Russia), with 55% of total volume originating from higher-risk jurisdictions; (3) Interleaved legitimate-appearing entities (Acme Components, Meridian Partners, Vertex Services, Lakeside Holdings, Orion Supplies) mixing with thinly-veiled pass-through structures; (4) Repeated entity-jurisdiction pairs (e.g., Meridian Partners appearing from JP, DE, GB; Vertex Services from GB, FR; Shell Entities A–L geographically distributed). While Binance's KYC profile as a high-volume exchange normalizes substantial crypto inflows, the velocity, source heterogeneity, high-risk concentration, and shell-entity prevalence diverge significantly from historical baseline and suggest rapid layering or collection activity inconsistent with ordinary exchange settlement patterns.",
     "reasoning": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions. The pass-through pattern is consistent with money-mule / funnel-account activity inconsistent with historical behaviour.",
-    "confidence": 0.75,
-    "tier": "LLM",
+    "confidence": 0.88,
+    "tier": "Rules",
     "action": "Monitor transactions; flag for AML analyst review.",
     "summary": "Between 2 June and 9 June 2026, Binance received 22 inbound cross-border crypto transfers totalling $7,965,680 from 17 distinct counterparties. This volume represents a 5.5× spike above the entity's normal 7-day cross-border inflow baseline ($1,460,782 expected). The transaction pattern exhibits several red flags consistent with potential money-mule funnel activity: (1) Concentration of high-value transfers within a compressed 7-day window; (2) Influx from 12 shell entities (68% of counterparties) bearing jurisdictional risk indicators (Panama, Seychelles, UAE, Cayman Islands, Virgin Islands, Russia), with 55% of total volume originating from higher-risk jurisdictions; (3) Interleaved legitimate-appearing entities (Acme Components, Meridian Partners, Vertex Services, Lakeside Holdings, Orion Supplies) mixing with thinly-veiled pass-through structures; (4) Repeated entity-jurisdiction pairs (e.g., Meridian Partners appearing from JP, DE, GB; Vertex Services from GB, FR; Shell Entities A–L geographically distributed). While Binance's KYC profile as a high-volume exchange normalizes substantial crypto inflows, the velocity, source heterogeneity, high-risk concentration, and shell-entity prevalence diverge significantly from historical baseline and suggest rapid layering or collection activity inconsistent with ordinary exchange settlement patterns.",
     "riskBreakdown": [
@@ -88,7 +88,7 @@
     "signal": "Regulatory / Legal Action",
     "trigger": "Renewed regulatory scrutiny of the Estonia-branch AML failures revives one of the largest money-laundering cases on record.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "In Review",
     "kyc": {
       "onboarded": "Nov 2018",
@@ -151,7 +151,7 @@
     "signal": "Financial Distress / Insolvency",
     "trigger": "A winding-up order has been issued and liquidators are seizing overseas assets.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "Escalated",
     "kyc": {
       "onboarded": "Apr 2021",
@@ -214,7 +214,7 @@
     "signal": "Financial Distress / Insolvency",
     "trigger": "Filings in the FTX bankruptcy estate report a multi-billion-dollar customer shortfall and widening clawback litigation.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Jan 2022",
@@ -277,7 +277,7 @@
     "signal": "Regulatory / Legal Action",
     "trigger": "Glencore has agreed a further settlement resolving bribery and corruption allegations.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Feb 2020",
@@ -334,7 +334,7 @@
     "signal": "Dormancy Break – Suspicious Activation",
     "trigger": "After roughly 69 days of near-dormancy (only $12,938 of total activity), the account processed 7 transfers totalling $14,451,694 in the last 14 days.",
     "sources": 1,
-    "detected": "3h ago",
+    "detected": "11h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Sep 2021",
@@ -396,7 +396,7 @@
     "signal": "PEP / Political Exposure",
     "trigger": "Public reporting — \"Kroger Weekly Ad: 6/17-6/23\" — was triaged as PEP / Political Exposure for Nestle.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Nov 2020",
@@ -453,7 +453,7 @@
     "signal": "Sanctions / Watchlist Hit",
     "trigger": "NSO Group remains on the US Entity List, a denied-party/export-control designation.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Dec 2021",
@@ -516,7 +516,7 @@
     "signal": "Jurisdiction / Geographic Risk",
     "trigger": "Public registry data links Orion Bay to an opaque ownership chain via corporate-services nominees in a high-risk free zone.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Mar 2023",
@@ -579,7 +579,7 @@
     "signal": "Adverse Media / Reputational Risk",
     "trigger": "Public reporting — \"Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law\" — was triaged as Adverse Media / Reputational Risk for Tesla.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "Cleared",
     "kyc": {
       "onboarded": "Mar 2022",
@@ -636,7 +636,7 @@
     "signal": "Regulatory / Legal Action",
     "trigger": "Wells Fargo has paid a regulatory penalty over consumer-account practices.",
     "sources": 1,
-    "detected": "3m ago",
+    "detected": "8h ago",
     "status": "New",
     "kyc": {
       "onboarded": "May 2019",
@@ -693,7 +693,7 @@
     "signal": "Adverse Media / Reputational Risk",
     "trigger": "In June 2020, Wirecard's auditors uncovered that EUR 1.9 billion supposedly held in two Philippine bank accounts (BDO and BPI) had never existed.",
     "sources": 2,
-    "detected": "15h ago",
+    "detected": "23h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Jan 2019",
