@@ -10,6 +10,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type Column,
   type ColumnDef,
   type ColumnFiltersState,
   type SortingState,
@@ -41,6 +42,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -65,7 +67,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import Link from "next/link"
-import { EllipsisVerticalIcon, Columns3Icon, ChevronDownIcon, ChevronsLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from "lucide-react"
+import { EllipsisVerticalIcon, Columns3Icon, ChevronDownIcon, ChevronUpIcon, ChevronsUpDownIcon, ChevronsLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon, SearchIcon, XIcon } from "lucide-react"
 
 import {
   initials,
@@ -81,6 +83,7 @@ export const schema = z.object({
   sector: z.string(),
   jurisdiction: z.string(),
   relationship: z.string(),
+  flagged: z.boolean(),
   severity: z.string(),
   originalRisk: z.string(),
   currentRisk: z.string(),
@@ -123,6 +126,30 @@ const STATUS_BY_TAB: Record<string, string> = {
   cleared: "Cleared",
 }
 
+const SEVERITY_RANK: Record<string, number> = { Critical: 4, High: 3, Medium: 2, Low: 1 }
+const STATUS_RANK: Record<string, number> = { New: 4, Escalated: 3, "In Review": 2, Cleared: 1 }
+
+function SortHeader({ column, label }: { column: Column<Alert, unknown>; label: string }) {
+  const sorted = column.getIsSorted()
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="-ml-2 h-7 px-2 text-muted-foreground hover:text-foreground"
+      onClick={() => column.toggleSorting(sorted === "asc")}
+    >
+      {label}
+      {sorted === "asc" ? (
+        <ChevronUpIcon className="size-3.5" />
+      ) : sorted === "desc" ? (
+        <ChevronDownIcon className="size-3.5" />
+      ) : (
+        <ChevronsUpDownIcon className="size-3.5 opacity-50" />
+      )}
+    </Button>
+  )
+}
+
 const columns: ColumnDef<Alert>[] = [
   {
     id: "select",
@@ -156,7 +183,7 @@ const columns: ColumnDef<Alert>[] = [
   },
   {
     accessorKey: "client",
-    header: "Client",
+    header: ({ column }) => <SortHeader column={column} label="Client" />,
     cell: ({ row }) => (
       <div className="flex flex-col gap-0.5">
         <span className="font-medium text-foreground">{row.original.client}</span>
@@ -170,6 +197,7 @@ const columns: ColumnDef<Alert>[] = [
   {
     accessorKey: "relationship",
     header: "Relationship",
+    filterFn: "equalsString",
     cell: ({ row }) => (
       <Badge variant="secondary" className="font-normal">
         {row.original.relationship}
@@ -178,14 +206,18 @@ const columns: ColumnDef<Alert>[] = [
   },
   {
     accessorKey: "currentRisk",
-    header: "Risk Drift",
+    header: ({ column }) => <SortHeader column={column} label="Risk Drift" />,
+    sortingFn: (a, b) => a.original.riskScore - b.original.riskScore,
     cell: ({ row }) => (
       <RiskDrift from={row.original.originalRisk} to={row.original.currentRisk} />
     ),
   },
   {
     accessorKey: "severity",
-    header: "Priority",
+    header: ({ column }) => <SortHeader column={column} label="Priority" />,
+    filterFn: "equalsString",
+    sortingFn: (a, b) =>
+      (SEVERITY_RANK[a.original.severity] ?? 0) - (SEVERITY_RANK[b.original.severity] ?? 0),
     cell: ({ row }) => <SeverityBadge severity={row.original.severity} />,
   },
   {
@@ -204,7 +236,9 @@ const columns: ColumnDef<Alert>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => <SortHeader column={column} label="Status" />,
+    sortingFn: (a, b) =>
+      (STATUS_RANK[a.original.status] ?? 0) - (STATUS_RANK[b.original.status] ?? 0),
     cell: ({ row }) => <StatusBadge status={row.original.status} />,
   },
   {
@@ -282,6 +316,8 @@ export function DataTable({ data }: { data: Alert[] }) {
     setActiveTab(value)
     setPagination((p) => ({ ...p, pageIndex: 0 }))
   }
+
+  const selectedCount = Object.keys(rowSelection).length
 
   const table = useReactTable({
     data: filteredData,
@@ -387,6 +423,107 @@ export function DataTable({ data }: { data: Alert[] }) {
         </div>
       </div>
       <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative">
+            <SearchIcon className="absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search client…"
+              value={(table.getColumn("client")?.getFilterValue() as string) ?? ""}
+              onChange={(e) =>
+                table.getColumn("client")?.setFilterValue(e.target.value)
+              }
+              className="h-8 w-44 pl-7"
+            />
+          </div>
+          <Select
+            value={(table.getColumn("severity")?.getFilterValue() as string) ?? "all"}
+            onValueChange={(v) =>
+              table.getColumn("severity")?.setFilterValue(!v || v === "all" ? undefined : v)
+            }
+          >
+            <SelectTrigger size="sm" className="w-[140px]">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">All priorities</SelectItem>
+                <SelectItem value="Critical">Critical</SelectItem>
+                <SelectItem value="High">High</SelectItem>
+                <SelectItem value="Medium">Medium</SelectItem>
+                <SelectItem value="Low">Low</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select
+            value={(table.getColumn("relationship")?.getFilterValue() as string) ?? "all"}
+            onValueChange={(v) =>
+              table.getColumn("relationship")?.setFilterValue(!v || v === "all" ? undefined : v)
+            }
+          >
+            <SelectTrigger size="sm" className="w-[150px]">
+              <SelectValue placeholder="Relationship" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">All relationships</SelectItem>
+                <SelectItem value="Payments">Payments</SelectItem>
+                <SelectItem value="Custody">Custody</SelectItem>
+                <SelectItem value="Lending">Lending</SelectItem>
+                <SelectItem value="Trading">Trading</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {columnFilters.length > 0 && (
+            <Button variant="ghost" size="sm" onClick={() => setColumnFilters([])}>
+              Clear
+              <XIcon data-icon="inline-end" />
+            </Button>
+          )}
+        </div>
+        {selectedCount > 0 && (
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-muted/40 px-3 py-2">
+            <span className="text-sm font-medium">{selectedCount} selected</span>
+            <Separator orientation="vertical" className="h-4" />
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                toast.success(`Escalated ${selectedCount} alert(s)`)
+                table.resetRowSelection()
+              }}
+            >
+              Escalate
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                toast(`Marked ${selectedCount} alert(s) in review`)
+                table.resetRowSelection()
+              }}
+            >
+              Mark in review
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                toast(`Dismissed ${selectedCount} alert(s)`)
+                table.resetRowSelection()
+              }}
+            >
+              Dismiss
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="ml-auto"
+              onClick={() => table.resetRowSelection()}
+            >
+              Clear selection
+            </Button>
+          </div>
+        )}
         <div className="overflow-hidden rounded-lg border">
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-muted">
@@ -662,7 +799,7 @@ function AlertDetailDrawer({
           </DetailRow>
         </div>
         <DrawerFooter>
-          <Button render={<Link href={`/clients/${item.id}`} />}>
+          <Button nativeButton={false} render={<Link href={`/clients/${item.id}`} />}>
             View full profile
           </Button>
           <div className="grid grid-cols-2 gap-2">

@@ -17,7 +17,7 @@ export default function Page() {
           </div>
           <PriorityDonut />
         </div>
-        <DataTable data={data} />
+        <DataTable data={data.filter((c) => c.flagged)} />
       </div>
     </AppShell>
   )

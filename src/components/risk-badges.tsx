@@ -50,6 +50,13 @@ export function StatusBadge({ status }: { status: string }) {
       </Badge>
     )
   }
+  if (status === "Monitored") {
+    return (
+      <Badge variant="outline" className="text-muted-foreground">
+        Monitored
+      </Badge>
+    )
+  }
   return <Badge variant="outline">New</Badge>
 }
 

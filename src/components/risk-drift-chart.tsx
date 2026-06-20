@@ -40,15 +40,17 @@ function buildSeries(originalRisk: string, currentScore: number) {
 export function RiskDriftChart({
   originalRisk,
   currentScore,
+  showSignal = true,
 }: {
   originalRisk: string
   currentScore: number
+  showSignal?: boolean
 }) {
   const data = buildSeries(originalRisk, currentScore)
   const eventMonth = MONTHS[8]
 
   return (
-    <ChartContainer config={chartConfig} className="aspect-auto h-[240px] w-full">
+    <ChartContainer config={chartConfig} className="aspect-auto h-full min-h-[200px] w-full">
       <AreaChart data={data} margin={{ left: 0, right: 12, top: 8 }}>
         <defs>
           <linearGradient id="fillScore" x1="0" y1="0" x2="0" y2="1">
@@ -60,12 +62,14 @@ export function RiskDriftChart({
         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
         <YAxis domain={[0, 100]} tickLine={false} axisLine={false} width={28} />
         <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-        <ReferenceLine
-          x={eventMonth}
-          stroke="var(--color-score)"
-          strokeDasharray="4 4"
-          label={{ value: "Signal detected", position: "insideTopRight", fontSize: 11, fill: "var(--muted-foreground)" }}
-        />
+        {showSignal && (
+          <ReferenceLine
+            x={eventMonth}
+            stroke="var(--color-score)"
+            strokeDasharray="4 4"
+            label={{ value: "Signal detected", position: "insideTopRight", fontSize: 11, fill: "var(--muted-foreground)" }}
+          />
+        )}
         <Area
           dataKey="score"
           type="monotone"

@@ -61,7 +61,8 @@
         "headline": "Our next chapter: building a 24/7 crypto trading operation"
       }
     ],
-    "summary": "Helvetia was onboarded as a low-risk German SaaS business expected to run small EUR payroll and supplier flows. Public sources now show a full pivot to crypto proprietary trading plus an offshore re-domicile to the Cayman Islands, with stablecoin inflows that have no basis in the onboarding profile. Because the change is structural rather than a one-off event, corroborated across five sources, and directly contradicts the original business model, the score climbs into the high band — the onboarding baseline now explains almost none of the current activity."
+    "summary": "Helvetia was onboarded as a low-risk German SaaS business expected to run small EUR payroll and supplier flows. Public sources now show a full pivot to crypto proprietary trading plus an offshore re-domicile to the Cayman Islands, with stablecoin inflows that have no basis in the onboarding profile. Because the change is structural rather than a one-off event, corroborated across five sources, and directly contradicts the original business model, the score climbs into the high band — the onboarding baseline now explains almost none of the current activity.",
+    "flagged": true
   },
   {
     "id": 2,
@@ -120,7 +121,8 @@
         "headline": "New intermediate holding company linked to Nordwind Capital"
       }
     ],
-    "summary": "Nordwind onboarded with a transparent two-owner Swiss structure on a custody relationship. A registry update introduces two further beneficial owners through an intermediate holding in a higher-risk jurisdiction, reducing ownership transparency. The score sits high because the new owners must be screened against sanctions and PEP lists before activity continues, and the opacity itself raises residual risk even before screening results return."
+    "summary": "Nordwind onboarded with a transparent two-owner Swiss structure on a custody relationship. A registry update introduces two further beneficial owners through an intermediate holding in a higher-risk jurisdiction, reducing ownership transparency. The score sits high because the new owners must be screened against sanctions and PEP lists before activity continues, and the opacity itself raises residual risk even before screening results return.",
+    "flagged": true
   },
   {
     "id": 3,
@@ -184,7 +186,8 @@
         "headline": "Cross-border shipping fraud widens to include finance intermediaries"
       }
     ],
-    "summary": "Lighthouse was a medium-risk trade-finance client settling documentary credits in USD. Six independent outlets now name it in an active cross-border fraud investigation involving falsified shipping documents, striking at its core activity. Strong corroboration and direct relevance push the score to the high band; what keeps it short of critical is that the investigation is ongoing rather than concluded."
+    "summary": "Lighthouse was a medium-risk trade-finance client settling documentary credits in USD. Six independent outlets now name it in an active cross-border fraud investigation involving falsified shipping documents, striking at its core activity. Strong corroboration and direct relevance push the score to the high band; what keeps it short of critical is that the investigation is ongoing rather than concluded.",
+    "flagged": true
   },
   {
     "id": 4,
@@ -243,7 +246,8 @@
         "headline": "Linked-entity inflow pattern flagged by rules engine"
       }
     ],
-    "summary": "Aurelia onboarded as a passive holding company with minimal expected movement. Several linked entities at a shared address have suddenly received large inflows after long dormancy, a pattern consistent with layering. The score is high but not critical because corroboration is currently limited to two sources and the origin of the funds is still being established."
+    "summary": "Aurelia onboarded as a passive holding company with minimal expected movement. Several linked entities at a shared address have suddenly received large inflows after long dormancy, a pattern consistent with layering. The score is high but not critical because corroboration is currently limited to two sources and the origin of the funds is still being established.",
+    "flagged": true
   },
   {
     "id": 5,
@@ -302,7 +306,8 @@
         "headline": "No recent filings to explain renewed activity"
       }
     ],
-    "summary": "Meridian was a low-risk logistics client, largely dormant for 18 months. Activity has jumped from near-zero to high daily volume with no public business reason. The dormancy break drives most of the increase; the score lands in the upper-medium band rather than high because there is no adverse media and the activity may yet have a legitimate explanation pending review."
+    "summary": "Meridian was a low-risk logistics client, largely dormant for 18 months. Activity has jumped from near-zero to high daily volume with no public business reason. The dormancy break drives most of the increase; the score lands in the upper-medium band rather than high because there is no adverse media and the activity may yet have a legitimate explanation pending review.",
+    "flagged": true
   },
   {
     "id": 6,
@@ -361,7 +366,8 @@
         "headline": "Saffron expands into three new markets"
       }
     ],
-    "summary": "Saffron onboarded as a small early-stage fund on a lending relationship. A large new round and simultaneous expansion into three jurisdictions move its activity profile well beyond the onboarding baseline. The rise is driven by scale and credit exposure rather than misconduct — the coverage is positive growth news — so it enters the high band primarily through expanded exposure, not adverse signals."
+    "summary": "Saffron onboarded as a small early-stage fund on a lending relationship. A large new round and simultaneous expansion into three jurisdictions move its activity profile well beyond the onboarding baseline. The rise is driven by scale and credit exposure rather than misconduct — the coverage is positive growth news — so it enters the high band primarily through expanded exposure, not adverse signals.",
+    "flagged": true
   },
   {
     "id": 7,
@@ -420,7 +426,8 @@
         "headline": "Counterparty match confirmed against EU designation"
       }
     ],
-    "summary": "Blackford settles physical commodities with EU and UK counterparties. A recurring counterparty has been added to the EU consolidated sanctions list, creating direct exposure if settlement continues. This high-confidence rules match contributes strongly to the score; it stays just below critical only because exposure can be contained by freezing the single counterparty."
+    "summary": "Blackford settles physical commodities with EU and UK counterparties. A recurring counterparty has been added to the EU consolidated sanctions list, creating direct exposure if settlement continues. This high-confidence rules match contributes strongly to the score; it stays just below critical only because exposure can be contained by freezing the single counterparty.",
+    "flagged": true
   },
   {
     "id": 8,
@@ -479,7 +486,8 @@
         "headline": "Registered address updated to new jurisdiction"
       }
     ],
-    "summary": "Pioneer onboarded with an Estonian seat under an EU regime. A relocation of its legal seat to a lighter-touch jurisdiction changes the supervisory framework and may affect ownership transparency. The score stays in the medium band — the move is structural and warrants re-checking, but there is no adverse media or financial-crime indicator attached."
+    "summary": "Pioneer onboarded with an Estonian seat under an EU regime. A relocation of its legal seat to a lighter-touch jurisdiction changes the supervisory framework and may affect ownership transparency. The score stays in the medium band — the move is structural and warrants re-checking, but there is no adverse media or financial-crime indicator attached.",
+    "flagged": true
   },
   {
     "id": 9,
@@ -538,7 +546,8 @@
         "headline": "Local coverage of environmental compliance concern"
       }
     ],
-    "summary": "Cobalt is a project-financed mining client on a lending relationship. Regional outlets report an environmental permit dispute with limited tier-1 corroboration. The score holds in the medium band because the issue is operational and credit-relevant rather than financial-crime, and confidence is lower given the partial corroboration."
+    "summary": "Cobalt is a project-financed mining client on a lending relationship. Regional outlets report an environmental permit dispute with limited tier-1 corroboration. The score holds in the medium band because the issue is operational and credit-relevant rather than financial-crime, and confidence is lower given the partial corroboration.",
+    "flagged": true
   },
   {
     "id": 10,
@@ -592,7 +601,8 @@
         "headline": "Entity name change recorded in registry"
       }
     ],
-    "summary": "Vantage onboarded for property-investment settlement under its original legal name. A registry filing shows a name change with no other structural change. The score remains medium: a name change requires a KYC refresh to confirm continuity, but on its own carries limited risk and is supported by a single source."
+    "summary": "Vantage onboarded for property-investment settlement under its original legal name. A registry filing shows a name change with no other structural change. The score remains medium: a name change requires a KYC refresh to confirm continuity, but on its own carries limited risk and is supported by a single source.",
+    "flagged": true
   },
   {
     "id": 11,
@@ -646,7 +656,8 @@
         "headline": "Outlier transfer auto-flagged and cleared after review"
       }
     ],
-    "summary": "Atlas is a stable, low-risk freight client. A single transfer above its usual range was auto-flagged, then explained by a documented bulk fuel purchase consistent with its business. With the outlier resolved and no adverse media, the score stays firmly in the low band and the alert is cleared."
+    "summary": "Atlas is a stable, low-risk freight client. A single transfer above its usual range was auto-flagged, then explained by a documented bulk fuel purchase consistent with its business. With the outlier resolved and no adverse media, the score stays firmly in the low band and the alert is cleared.",
+    "flagged": true
   },
   {
     "id": 12,
@@ -700,6 +711,252 @@
         "headline": "Minor content diff detected on product page"
       }
     ],
-    "summary": "Selene is a research-stage biotech with predictable grant and supplier flows. Website monitoring detected a cosmetic wording change with no shift in business activity. The score is low and unchanged in substance; the baseline snapshot was simply updated and no further action is required."
+    "summary": "Selene is a research-stage biotech with predictable grant and supplier flows. Website monitoring detected a cosmetic wording change with no shift in business activity. The score is low and unchanged in substance; the baseline snapshot was simply updated and no further action is required.",
+    "flagged": true
+  },
+  {
+    "id": 13,
+    "client": "Alpine Asset Services",
+    "sector": "Asset Management",
+    "jurisdiction": "Switzerland",
+    "relationship": "Custody",
+    "severity": "Medium",
+    "originalRisk": "Medium",
+    "currentRisk": "Medium",
+    "riskScore": 42,
+    "riskDelta": 0,
+    "signal": "No active signal",
+    "trigger": "No material change since onboarding",
+    "sources": 0,
+    "detected": "Stable",
+    "status": "Monitored",
+    "flagged": false,
+    "kyc": {
+      "onboarded": "Jun 2021",
+      "expectedModel": "Discretionary asset management",
+      "expectedActivity": "Custody safekeeping; periodic rebalancing",
+      "owners": "2 Swiss-resident principals"
+    },
+    "baseline": "Onboarded for discretionary asset management. Expected activity: custody safekeeping; periodic rebalancing. Risk rating: Medium.",
+    "observed": "Public monitoring shows no material change versus the onboarding profile.",
+    "reasoning": "No public signal has been detected that contradicts the onboarding baseline. The client remains within its expected activity profile.",
+    "confidence": 0.9,
+    "tier": "Rules",
+    "action": "No action required; continue periodic monitoring.",
+    "summary": "Alpine Asset Services remains within its onboarding profile with no public signals contradicting the baseline. The score stays in the medium band, driven entirely by the onboarding risk rating with no drift contribution. The client is under routine periodic monitoring.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "No financial-crime indicators detected."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse media identified."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No lending exposure on this relationship."
+      }
+    ],
+    "citations": []
+  },
+  {
+    "id": 14,
+    "client": "Brightwater Payments Ltd",
+    "sector": "Payments",
+    "jurisdiction": "United Kingdom",
+    "relationship": "Payments",
+    "severity": "Low",
+    "originalRisk": "Low",
+    "currentRisk": "Low",
+    "riskScore": 27,
+    "riskDelta": 0,
+    "signal": "No active signal",
+    "trigger": "No material change since onboarding",
+    "sources": 0,
+    "detected": "Stable",
+    "status": "Monitored",
+    "flagged": false,
+    "kyc": {
+      "onboarded": "Mar 2022",
+      "expectedModel": "Cross-border payments",
+      "expectedActivity": "Predictable GBP/EUR settlement",
+      "owners": "Founder-owned (UK)"
+    },
+    "baseline": "Onboarded for cross-border payments. Expected activity: predictable gbp/eur settlement. Risk rating: Low.",
+    "observed": "Public monitoring shows no material change versus the onboarding profile.",
+    "reasoning": "No public signal has been detected that contradicts the onboarding baseline. The client remains within its expected activity profile.",
+    "confidence": 0.9,
+    "tier": "Rules",
+    "action": "No action required; continue periodic monitoring.",
+    "summary": "Brightwater Payments Ltd remains within its onboarding profile with no public signals contradicting the baseline. The score stays in the low band, driven entirely by the onboarding risk rating with no drift contribution. The client is under routine periodic monitoring.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "Low",
+        "reason": "No financial-crime indicators detected."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse media identified."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No lending exposure on this relationship."
+      }
+    ],
+    "citations": []
+  },
+  {
+    "id": 15,
+    "client": "Continental Auto Group",
+    "sector": "Automotive",
+    "jurisdiction": "Germany",
+    "relationship": "Lending",
+    "severity": "Medium",
+    "originalRisk": "Medium",
+    "currentRisk": "Medium",
+    "riskScore": 44,
+    "riskDelta": 0,
+    "signal": "No active signal",
+    "trigger": "No material change since onboarding",
+    "sources": 0,
+    "detected": "Stable",
+    "status": "Monitored",
+    "flagged": false,
+    "kyc": {
+      "onboarded": "Sep 2020",
+      "expectedModel": "Vehicle distribution",
+      "expectedActivity": "Scheduled drawdowns and supplier payments",
+      "owners": "Listed parent (Germany)"
+    },
+    "baseline": "Onboarded for vehicle distribution. Expected activity: scheduled drawdowns and supplier payments. Risk rating: Medium.",
+    "observed": "Public monitoring shows no material change versus the onboarding profile.",
+    "reasoning": "No public signal has been detected that contradicts the onboarding baseline. The client remains within its expected activity profile.",
+    "confidence": 0.9,
+    "tier": "Rules",
+    "action": "No action required; continue periodic monitoring.",
+    "summary": "Continental Auto Group remains within its onboarding profile with no public signals contradicting the baseline. The score stays in the medium band, driven entirely by the onboarding risk rating with no drift contribution. The client is under routine periodic monitoring.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "No financial-crime indicators detected."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse media identified."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Medium",
+        "reason": "Standard lending exposure within limits."
+      }
+    ],
+    "citations": []
+  },
+  {
+    "id": 16,
+    "client": "Delphi Pharma SA",
+    "sector": "Pharmaceuticals",
+    "jurisdiction": "France",
+    "relationship": "Payments",
+    "severity": "Low",
+    "originalRisk": "Low",
+    "currentRisk": "Low",
+    "riskScore": 24,
+    "riskDelta": 0,
+    "signal": "No active signal",
+    "trigger": "No material change since onboarding",
+    "sources": 0,
+    "detected": "Stable",
+    "status": "Monitored",
+    "flagged": false,
+    "kyc": {
+      "onboarded": "Jan 2023",
+      "expectedModel": "Pharmaceutical distribution",
+      "expectedActivity": "Supplier and logistics payments (EUR)",
+      "owners": "Private group (France)"
+    },
+    "baseline": "Onboarded for pharmaceutical distribution. Expected activity: supplier and logistics payments (eur). Risk rating: Low.",
+    "observed": "Public monitoring shows no material change versus the onboarding profile.",
+    "reasoning": "No public signal has been detected that contradicts the onboarding baseline. The client remains within its expected activity profile.",
+    "confidence": 0.9,
+    "tier": "Rules",
+    "action": "No action required; continue periodic monitoring.",
+    "summary": "Delphi Pharma SA remains within its onboarding profile with no public signals contradicting the baseline. The score stays in the low band, driven entirely by the onboarding risk rating with no drift contribution. The client is under routine periodic monitoring.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "Low",
+        "reason": "No financial-crime indicators detected."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse media identified."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No lending exposure on this relationship."
+      }
+    ],
+    "citations": []
+  },
+  {
+    "id": 17,
+    "client": "Everest Trading Co",
+    "sector": "Commodities",
+    "jurisdiction": "Singapore",
+    "relationship": "Trading",
+    "severity": "Medium",
+    "originalRisk": "Medium",
+    "currentRisk": "Medium",
+    "riskScore": 39,
+    "riskDelta": 0,
+    "signal": "No active signal",
+    "trigger": "No material change since onboarding",
+    "sources": 0,
+    "detected": "Stable",
+    "status": "Monitored",
+    "flagged": false,
+    "kyc": {
+      "onboarded": "Nov 2021",
+      "expectedModel": "Agricultural commodity trading",
+      "expectedActivity": "USD settlement with established houses",
+      "owners": "2 named directors (Singapore)"
+    },
+    "baseline": "Onboarded for agricultural commodity trading. Expected activity: usd settlement with established houses. Risk rating: Medium.",
+    "observed": "Public monitoring shows no material change versus the onboarding profile.",
+    "reasoning": "No public signal has been detected that contradicts the onboarding baseline. The client remains within its expected activity profile.",
+    "confidence": 0.9,
+    "tier": "Rules",
+    "action": "No action required; continue periodic monitoring.",
+    "summary": "Everest Trading Co remains within its onboarding profile with no public signals contradicting the baseline. The score stays in the medium band, driven entirely by the onboarding risk rating with no drift contribution. The client is under routine periodic monitoring.",
+    "riskBreakdown": [
+      {
+        "type": "Compliance Risk",
+        "status": "Medium",
+        "reason": "No financial-crime indicators detected."
+      },
+      {
+        "type": "Reputational Risk",
+        "status": "Low",
+        "reason": "No adverse media identified."
+      },
+      {
+        "type": "Credit Risk",
+        "status": "Not Applicable",
+        "reason": "No lending exposure on this relationship."
+      }
+    ],
+    "citations": []
   }
 ]

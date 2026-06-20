@@ -25,12 +25,12 @@ const data = {
   navMain: [
     {
       title: "Risk Dashboard",
-      url: "#",
+      url: "/",
       icon: <LayoutDashboardIcon />,
     },
     {
       title: "Clients",
-      url: "#",
+      url: "/clients",
       icon: <UsersIcon />,
     },
     {
