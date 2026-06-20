@@ -3,7 +3,8 @@ export type SignalSource =
   | "gdelt"
   | "open_sanctions"
   | "newsapi"
-  | "mediastack";
+  | "mediastack"
+  | "crunchbase";
 
 /** Tags used both to scope a fetch and to route a fetched item back to entities (see ARCHITECTURE.md). */
 export interface SignalTags {

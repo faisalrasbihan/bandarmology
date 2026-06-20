@@ -1,4 +1,5 @@
 import { runStage1, type ClassifiedSignal } from "../filter";
+import { fetchCrunchbase } from "./fetchers/crunchbase";
 import { fetchGdelt } from "./fetchers/gdelt";
 import { fetchGoogleNewsRss } from "./fetchers/googleNewsRss";
 import { fetchMediastack } from "./fetchers/mediastack";
@@ -13,6 +14,7 @@ const FETCHERS: { source: SignalSource; run: (query: FetchQuery) => Promise<Sign
   { source: "open_sanctions", run: fetchOpenSanctions },
   { source: "newsapi", run: fetchNewsApi },
   { source: "mediastack", run: fetchMediastack },
+  { source: "crunchbase", run: fetchCrunchbase },
 ];
 
 /**

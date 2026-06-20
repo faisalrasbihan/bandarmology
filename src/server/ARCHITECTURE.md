@@ -427,7 +427,11 @@ The full pipeline (Stage 0 → 1 → 2 → 3) and both data layers exist today:
   migration framework); stores call this instead of repeating the promise-caching dance
 - `src/server/anthropic.ts` — Anthropic client singleton + per-model token-cost helpers
 - `src/server/signals/types.ts` — `Signal`, `SignalTags`, `FetchQuery`, `FetchError`
-- `src/server/signals/fetchers/{googleNewsRss,gdelt,openSanctions,newsapi,mediastack}.ts`
+- `src/server/signals/fetchers/{googleNewsRss,gdelt,openSanctions,newsapi,mediastack,crunchbase}.ts`
+  — `crunchbase.ts` adds funding/registry intelligence (ownership + business-model drift
+  signals); it uses the real Crunchbase v4 API when `CRUNCHBASE_API_KEY` is set and otherwise
+  emits a deterministic *synthetic* funding feed (flagged `raw.synthetic = true`, stable URLs)
+  so the source still runs end-to-end in the demo
 - `src/server/signals/helpers.ts` — `buildSearchTerm`/`buildKeywordList`/`toSignal`, shared by
   the fetchers so the query syntax and normalized `Signal` shape live in one place
 - `src/server/signals/store.ts` — Postgres-backed dedupe store (embedded DDL is the single
@@ -477,5 +481,19 @@ The full pipeline (Stage 0 → 1 → 2 → 3) and both data layers exist today:
 - `src/app/api/baselines/route.ts` + `baselines/seed/route.ts` — list / seed KYC baselines
 - `src/app/api/cost-summary/route.ts` — `GET`, spend + cost-per-1000-alerts + % resolved without LLM
 - `src/app/alerts/page.tsx` + `src/components/alerts-view.tsx` — the alerts console UI
+- `src/server/baseline/profileStore.ts` + `profileSeed.ts` — Layer 2 *synthetic* relationship
+  profile (relationship type, exposure, relationship manager, watchlist status) in its own
+  `client_profiles` table; internal data, never merged into the Layer 1 `signals` store
+- `src/server/dashboard/{types,index}.ts` — `buildClientRecords()`, the explicit **read-only**
+  Layer 1 × Layer 2 join that assembles the frontend's `ClientRecord` shape (KYC baseline +
+  client profile + ingested signals + highest-confidence alert + its Stage 3 drift). No LLM,
+  writes nothing back — the two planes meet only in named, auditable join steps (this for
+  display, Stage 3 for analysis)
+- `src/app/api/dashboard/route.ts` — `GET`, the client book as `ClientRecord[]`;
+  `dashboard/snapshot/route.ts` — `POST`, writes that book to `src/app/data.json`, the static
+  file the (unchanged) frontend imports. This is the backend↔frontend seam: the UI keeps
+  importing JSON; the snapshot endpoint makes that JSON reflect real DB state on demand
+- `src/app/api/seed/route.ts` — `POST`, one-shot demo bootstrap: seed baselines + profiles,
+  then ingest Layer 1 signals (incl. Crunchbase) per entity through Stage 1. No LLM calls
 
 See README.md for setup, and the "Next steps" list there for what's still to build.
