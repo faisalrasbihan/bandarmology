@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, UsersIcon, BellIcon, FolderSearchIcon, ShieldAlertIcon, ScrollTextIcon, Settings2Icon, CircleHelpIcon, ShieldIcon } from "lucide-react"
+import { LayoutDashboardIcon, UsersIcon, BellIcon, FolderSearchIcon, ShieldAlertIcon, ScrollTextIcon, Settings2Icon, CircleHelpIcon } from "lucide-react"
 
 const data = {
   user: {
@@ -78,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:p-1.5!"
               render={<a href="#" />}
             >
-              <ShieldIcon className="size-5!" />
+              <img src="/bandar2.svg" alt="Bandarmology" className="size-5!" />
               <span className="text-base font-semibold">Bandarmology</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
