@@ -36,20 +36,59 @@ function Stat({ label, value }: { label: string; value: number }) {
   )
 }
 
-export function ClientsTable({ clients }: { clients: ClientRecord[] }) {
+// A signal triggers re-KYC when it invalidates the client's onboarding profile
+// (ownership/control, business model, jurisdiction, identity, or a behavioural
+// break from the expected pattern). Keyword-matched so it survives wording
+// changes in the signal data rather than relying on exact labels. Drives the
+// "Re-KYC required" view from the dashboard KPI card.
+const KYC_DRIFT_PATTERN =
+  /ownership|control|business model|kyc|jurisdiction|entity name|scale|dormancy|behaviou?ral/i
+
+function requiresReKyc(signal: string) {
+  return KYC_DRIFT_PATTERN.test(signal)
+}
+
+const PRIORITIES = ["Critical", "High", "Medium", "Low"]
+
+export function ClientsTable({
+  clients,
+  initialPriority,
+  initialView,
+}: {
+  clients: ClientRecord[]
+  initialPriority?: string
+  initialView?: string
+}) {
   const router = useRouter()
   const [query, setQuery] = React.useState("")
   const [relationship, setRelationship] = React.useState("all")
-  const [book, setBook] = React.useState("all")
+  // "book" doubles as the status/view filter, seeded from the KPI deep-link.
+  const [book, setBook] = React.useState(() =>
+    initialView === "watchlist" || initialView === "re-kyc" ? initialView : "all"
+  )
+  const [severity, setSeverity] = React.useState(() =>
+    initialPriority && PRIORITIES.includes(initialPriority) ? initialPriority : "all"
+  )
 
   const filtered = clients.filter((c) => {
     const q = query.toLowerCase()
     const matchesQuery =
       c.client.toLowerCase().includes(q) || c.sector.toLowerCase().includes(q)
     const matchesRel = relationship === "all" || c.relationship === relationship
+    const matchesSeverity = severity === "all" || c.severity === severity
     const matchesBook =
-      book === "all" || (book === "flagged" ? c.flagged : !c.flagged)
-    return matchesQuery && matchesRel && matchesBook
+      book === "all"
+        ? true
+        : book === "flagged"
+          ? c.flagged
+          : book === "monitored"
+            ? !c.flagged
+            : book === "watchlist"
+              ? Boolean(c.watchlist)
+              : book === "re-kyc"
+                ? requiresReKyc(c.signal)
+                : true
+    return matchesQuery && matchesRel && matchesSeverity && matchesBook
   })
 
   return (
@@ -77,6 +116,20 @@ export function ClientsTable({ clients }: { clients: ClientRecord[] }) {
             className="h-8 w-56 pl-7"
           />
         </div>
+        <Select value={severity} onValueChange={(v) => v && setSeverity(v)}>
+          <SelectTrigger size="sm" className="w-[140px]">
+            <SelectValue placeholder="Priority" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all">All priorities</SelectItem>
+              <SelectItem value="Critical">Critical</SelectItem>
+              <SelectItem value="High">High</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <Select value={relationship} onValueChange={(v) => v && setRelationship(v)}>
           <SelectTrigger size="sm" className="w-[150px]">
             <SelectValue placeholder="Relationship" />
@@ -92,7 +145,7 @@ export function ClientsTable({ clients }: { clients: ClientRecord[] }) {
           </SelectContent>
         </Select>
         <Select value={book} onValueChange={(v) => v && setBook(v)}>
-          <SelectTrigger size="sm" className="w-[140px]">
+          <SelectTrigger size="sm" className="w-[150px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -100,6 +153,8 @@ export function ClientsTable({ clients }: { clients: ClientRecord[] }) {
               <SelectItem value="all">All clients</SelectItem>
               <SelectItem value="flagged">Flagged</SelectItem>
               <SelectItem value="monitored">Monitored</SelectItem>
+              <SelectItem value="watchlist">On watchlist</SelectItem>
+              <SelectItem value="re-kyc">Re-KYC required</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

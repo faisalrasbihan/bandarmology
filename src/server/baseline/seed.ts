@@ -61,6 +61,85 @@ const SEED: Omit<KycBaseline, "entityId">[] = [
     riskRating: "low",
     onboardedAt: "2021-09-05T00:00:00.000Z",
   },
+  // ── Additional demo entities ────────────────────────────────────────────────
+  // Authored to broaden the book across flag types (financial distress,
+  // sanctions, regulatory action, jurisdiction risk) and severity levels so the
+  // dashboard shows a realistic distribution. As above, each baseline is written
+  // so the seeded Layer 1 signals read as a clear drift from the onboarding
+  // profile. Not real AMINA data.
+  {
+    companyName: "FTX Trading Ltd",
+    expectedSectors: ["crypto", "exchange"],
+    expectedCountries: ["BS"],
+    expectedBusinessModel: "Cryptocurrency exchange and derivatives trading platform.",
+    expectedTxVolumeRange: "High-volume crypto and fiat flows, consistent with an exchange",
+    ownershipStructure: ["Privately held", "Founder-controlled (single significant holder)"],
+    riskRating: "high",
+    onboardedAt: "2022-01-20T00:00:00.000Z",
+  },
+  {
+    companyName: "Wells Fargo & Co",
+    expectedSectors: ["banking", "financial_services"],
+    expectedCountries: ["US"],
+    expectedBusinessModel: "Diversified retail and commercial bank.",
+    expectedTxVolumeRange: "Very high-volume USD correspondent flows",
+    ownershipStructure: ["Publicly listed (NYSE)", "Widely held"],
+    riskRating: "medium",
+    onboardedAt: "2019-05-12T00:00:00.000Z",
+  },
+  {
+    companyName: "Danske Bank A/S",
+    expectedSectors: ["banking", "financial_services"],
+    expectedCountries: ["DK", "EE"],
+    expectedBusinessModel: "Nordic universal bank with Baltic branch operations.",
+    expectedTxVolumeRange: "High-volume EUR/DKK cross-border flows",
+    ownershipStructure: ["Publicly listed (Nasdaq Copenhagen)", "Widely held"],
+    riskRating: "medium",
+    onboardedAt: "2018-11-03T00:00:00.000Z",
+  },
+  {
+    companyName: "Glencore plc",
+    expectedSectors: ["commodities", "mining"],
+    expectedCountries: ["CH", "JE"],
+    expectedBusinessModel: "Commodity trading and mining group.",
+    expectedTxVolumeRange: "Very high-value commodity settlement flows, multi-currency",
+    ownershipStructure: ["Publicly listed (LSE)", "Widely held"],
+    riskRating: "medium",
+    onboardedAt: "2020-02-18T00:00:00.000Z",
+  },
+  {
+    companyName: "Evergrande Group",
+    expectedSectors: ["real_estate", "construction"],
+    expectedCountries: ["CN", "KY"],
+    expectedBusinessModel: "Property developer and construction group.",
+    expectedTxVolumeRange: "Large CNY/USD construction and financing flows",
+    ownershipStructure: ["Publicly listed (HKEX)", "Founder-controlled (majority holder)"],
+    riskRating: "high",
+    onboardedAt: "2021-04-08T00:00:00.000Z",
+  },
+  {
+    companyName: "NSO Group",
+    expectedSectors: ["technology", "cybersecurity"],
+    expectedCountries: ["IL"],
+    expectedBusinessModel: "Cyber-intelligence and surveillance software vendor.",
+    expectedTxVolumeRange: "Moderate USD/EUR enterprise contract flows",
+    ownershipStructure: ["Privately held", "Investor consortium"],
+    riskRating: "high",
+    onboardedAt: "2021-12-01T00:00:00.000Z",
+  },
+  {
+    // Synthetic shell entity (not a real company) — a free-zone trading vehicle
+    // with opaque, nominee ownership, used to demonstrate jurisdiction/PEP risk
+    // surfacing from public registries rather than the AML transaction layer.
+    companyName: "Orion Bay Trading FZE",
+    expectedSectors: ["trading", "general_trading"],
+    expectedCountries: ["AE"],
+    expectedBusinessModel: "General trading company registered in a UAE free zone.",
+    expectedTxVolumeRange: "Moderate, irregular cross-border flows",
+    ownershipStructure: ["Privately held", "Nominee director (corporate services provider)"],
+    riskRating: "high",
+    onboardedAt: "2023-03-15T00:00:00.000Z",
+  },
 ];
 
 export async function seedBaselines(): Promise<KycBaseline[]> {

@@ -18,6 +18,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { Separator } from "@/components/ui/separator"
 import { RiskDriftChart, type ChartSignal } from "@/components/risk-drift-chart"
 import { EscalateDialog } from "@/components/escalate-dialog"
 import { ExposureTags } from "@/components/exposure-tags"
@@ -202,7 +203,7 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
               {formatMoney(exposureAtRisk(client.exposureUsd, client.riskScore))} at risk
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-start gap-2">
             {client.flagged && (
               <Button
                 variant="outline"
@@ -370,26 +371,6 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
           ))}
         </CardContent>
       </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Risk Breakdown</CardTitle>
-            <CardDescription>
-              Contextual to the {client.relationship.toLowerCase()} relationship
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-3">
-            {client.riskBreakdown.map((r, i) => (
-              <div key={i} className="flex flex-col gap-2 rounded-lg border p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium">{r.type}</span>
-                  <RiskStatusBadge status={r.status} />
-                </div>
-                <span className="text-xs text-muted-foreground">{r.reason}</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Activity timeline + sources */}
       <div className="grid grid-cols-1 gap-4 @3xl/main:grid-cols-3">

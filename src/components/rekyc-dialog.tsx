@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Loader2Icon } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -55,7 +54,6 @@ export function RekycDialog({ client }: { client: string }) {
     return (
       <div className="flex flex-col items-end gap-1">
         <Button variant="outline" disabled className="text-muted-foreground">
-          <Loader2Icon data-icon="inline-start" className="animate-spin" />
           Re-KYC in progress
         </Button>
         <span className="text-xs text-muted-foreground tabular-nums">

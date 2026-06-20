@@ -4,6 +4,9 @@ A real-time intelligence prototype for the AMINA Bank "Dynamic Risk Profiling Sy
 challenge. It fuses public risk signals (news, sanctions, registries) with a simulated
 internal KYC/AML profile to surface early risk flags and detect KYC drift.
 
+**🌐 Live demo: [bandarmology.vercel.app](https://bandarmology.vercel.app)** — the alerts
+console is at [bandarmology.vercel.app/alerts](https://bandarmology.vercel.app/alerts).
+
 See [src/server/ARCHITECTURE.md](./src/server/ARCHITECTURE.md) for the full system design
 and [CLAUDE.md](./CLAUDE.md) for instructions Claude Code follows when working in this repo.
 
