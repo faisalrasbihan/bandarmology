@@ -1,10 +1,16 @@
+import { getBaselineByCompany } from "../baseline";
 import { attachStage1Classifications, type ClassifiedSignal } from "../filter";
-import { getStoredSignals } from "../signals";
-import { classifySignalWithLlm } from "./stage2";
-import { createAlert, getSignalIdsWithAlerts, logLlmCall } from "./store";
-import type { Alert } from "./types";
-
-const STAGE2_MODEL = "claude-haiku-4-5";
+import { getSignalsByIds, getStoredSignals } from "../signals";
+import { classifySignalWithLlm, STAGE2_MODEL } from "./stage2";
+import { analyzeDrift, STAGE3_MODEL } from "./stage3";
+import {
+  createAlert,
+  createDriftFinding,
+  getAlertById,
+  getSignalIdsWithAlerts,
+  logLlmCall,
+} from "./store";
+import type { Alert, DriftFinding } from "./types";
 
 /**
  * Runs Stage 2 over signals that survived Stage 1 and don't already have an
@@ -16,6 +22,7 @@ const STAGE2_MODEL = "claude-haiku-4-5";
 export async function runStage2(filter?: { entityHint?: string; limit?: number }): Promise<{
   alerts: Alert[];
   skippedNoFlag: number;
+  skippedWrongEntity: number;
   errors: { signalId: string; error: string }[];
 }> {
   const stored = await getStoredSignals(filter?.entityHint ? { entityHint: filter.entityHint } : undefined);
@@ -28,6 +35,7 @@ export async function runStage2(filter?: { entityHint?: string; limit?: number }
   const alerts: Alert[] = [];
   const errors: { signalId: string; error: string }[] = [];
   let skippedNoFlag = 0;
+  let skippedWrongEntity = 0;
 
   for (const signal of candidates) {
     const result = await classifySignalWithLlm(signal as ClassifiedSignal);
@@ -47,6 +55,14 @@ export async function runStage2(filter?: { entityHint?: string; limit?: number }
       continue;
     }
 
+    // False-positive guard: the LLM judged this signal isn't actually about the
+    // searched entity (same-name company, person, passing mention). Don't raise
+    // an alert for the wrong entity. The call is still logged above for cost.
+    if (!result.output.concernsEntity) {
+      skippedWrongEntity++;
+      continue;
+    }
+
     const alert = await createAlert({
       signal: { id: signal.id, entityHint: signal.entityHint },
       output: result.output,
@@ -56,8 +72,63 @@ export async function runStage2(filter?: { entityHint?: string; limit?: number }
     alerts.push(alert);
   }
 
-  return { alerts, skippedNoFlag, errors };
+  return { alerts, skippedNoFlag, skippedWrongEntity, errors };
 }
 
-export { getAlerts, setAlertStatus, getCostSummary } from "./store";
-export type { Alert, AlertStatus, TokenUsage, Stage2Output } from "./types";
+/**
+ * Stage 3 deep analysis for one alert — the explicit, auditable Layer 1 × Layer 2
+ * join. Fetches the alert and its signal (Layer 1) and the entity's KYC baseline
+ * (Layer 2), runs the drift analysis, logs the LLM call, and persists the
+ * finding. Returns `{ finding: null, reason }` if there's no baseline to compare
+ * against or the analysis fails — never fabricates a drift result.
+ */
+export async function runStage3(alertId: string): Promise<{
+  finding: DriftFinding | null;
+  reason: string | null;
+}> {
+  const alert = await getAlertById(alertId);
+  if (!alert) return { finding: null, reason: "alert not found" };
+
+  const baseline = await getBaselineByCompany(alert.entityHint);
+  if (!baseline) {
+    return { finding: null, reason: `no KYC baseline on file for "${alert.entityHint}"` };
+  }
+
+  const [signal] = await getSignalsByIds([alert.signalId]);
+  if (!signal) return { finding: null, reason: "underlying signal not found" };
+
+  const result = await analyzeDrift(alert, signal, baseline);
+
+  await logLlmCall({
+    stage: "stage3",
+    model: STAGE3_MODEL,
+    signalId: signal.id,
+    tokenUsage: result.tokenUsage,
+    success: result.output !== null,
+    error: result.error,
+  });
+
+  if (!result.output) {
+    return { finding: null, reason: result.error ?? "drift analysis failed validation" };
+  }
+
+  const finding = await createDriftFinding({
+    alertId: alert.id,
+    entityHint: alert.entityHint,
+    output: result.output,
+    model: STAGE3_MODEL,
+    tokenUsage: result.tokenUsage,
+  });
+  return { finding, reason: null };
+}
+
+export { submitStage2Batch, collectStage2Batch } from "./batch";
+export {
+  getAlerts,
+  getAlertById,
+  setAlertStatus,
+  getAlertDecisions,
+  getDriftFindings,
+  getCostSummary,
+} from "./store";
+export type { Alert, AlertStatus, AlertDecision, DriftFinding, TokenUsage, Stage2Output, Stage3Output } from "./types";

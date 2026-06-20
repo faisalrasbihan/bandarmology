@@ -40,7 +40,7 @@ const data = {
     },
     {
       title: "Investigations",
-      url: "#",
+      url: "/investigation",
       icon: <FolderSearchIcon />,
     },
     {

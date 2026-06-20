@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tabs"
 import { RiskDriftChart, type ChartSignal } from "@/components/risk-drift-chart"
 import { EscalateDialog } from "@/components/escalate-dialog"
+import { ExposureTags } from "@/components/exposure-tags"
 import { RekycDialog } from "@/components/rekyc-dialog"
 import { exposureAtRisk, formatMoney } from "@/lib/format"
 import {
@@ -202,6 +203,15 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            {client.flagged && (
+              <Button
+                variant="outline"
+                nativeButton={false}
+                render={<Link href={`/investigation/${client.id}`} />}
+              >
+                Open Investigation
+              </Button>
+            )}
             <EscalateDialog
               client={client.client}
               defaultAction={client.action}
@@ -312,6 +322,54 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader>
+            <CardTitle>Detected Change</CardTitle>
+            <CardDescription>Layer 1 — public real-time intelligence</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-muted-foreground">
+                {client.signal}
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                detected {client.detected}
+              </span>
+            </div>
+            <p>{client.observed}</p>
+            <Separator />
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                Why this fired
+              </span>
+              <p className="text-muted-foreground">{client.reasoning}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <ExposureTags entityName={client.client} />
+
+      {/* Risk breakdown */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Risk Breakdown</CardTitle>
+          <CardDescription>
+            Contextual to the {client.relationship.toLowerCase()} relationship
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 gap-3 @2xl/main:grid-cols-3">
+          {client.riskBreakdown.map((r, i) => (
+            <div key={i} className="flex flex-col gap-2 rounded-lg border p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium">{r.type}</span>
+                <RiskStatusBadge status={r.status} />
+              </div>
+              <span className="text-xs text-muted-foreground">{r.reason}</span>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
         <Card>
           <CardHeader>
             <CardTitle>Risk Breakdown</CardTitle>
