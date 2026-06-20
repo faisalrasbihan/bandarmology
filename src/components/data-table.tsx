@@ -118,7 +118,7 @@ export const schema = z.object({
   ),
 })
 
-type Alert = z.infer<typeof schema>
+export type Alert = z.infer<typeof schema>
 
 // Tab value -> the status it filters the worklist to.
 const STATUS_BY_TAB: Record<string, string> = {

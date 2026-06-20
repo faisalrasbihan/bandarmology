@@ -18,8 +18,8 @@ import { LayoutDashboardIcon, UsersIcon, BellIcon, FolderSearchIcon, ShieldAlert
 
 const data = {
   user: {
-    name: "Risk Analyst",
-    email: "risk@amina.example",
+    name: "Hans Muller",
+    email: "hans.muller@amina.example",
     avatar: "/avatars/analyst.jpg",
   },
   navMain: [

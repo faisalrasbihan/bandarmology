@@ -11,6 +11,12 @@ import {
 } from "@/components/ui/card"
 import { ArrowUpIcon } from "lucide-react"
 
+function scrollToFlaggedAlerts() {
+  document
+    .getElementById("flagged-alerts")
+    ?.scrollIntoView({ behavior: "smooth", block: "start" })
+}
+
 function DeltaBadge({ value }: { value: string }) {
   return (
     <Badge variant="outline" className="gap-0.5 text-amber-600 dark:text-amber-500">
@@ -23,11 +29,23 @@ function DeltaBadge({ value }: { value: string }) {
 export function SectionCards() {
   return (
     <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
-      <Card className="@container/card">
+      <Card
+        role="button"
+        tabIndex={0}
+        aria-label="Jump to flagged alerts"
+        onClick={scrollToFlaggedAlerts}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            scrollToFlaggedAlerts()
+          }
+        }}
+        className="@container/card cursor-pointer transition-colors hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      >
         <CardHeader>
           <CardDescription>Critical Alerts</CardDescription>
           <CardTitle className="text-3xl font-semibold tabular-nums text-red-600 dark:text-red-500">
-            4
+            3
           </CardTitle>
           <CardAction>
             <DeltaBadge value="+2" />

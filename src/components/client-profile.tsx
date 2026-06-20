@@ -12,15 +12,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { RiskDriftChart } from "@/components/risk-drift-chart"
+import { RiskDriftChart, type ChartSignal } from "@/components/risk-drift-chart"
 import { EscalateDialog } from "@/components/escalate-dialog"
+import { RekycDialog } from "@/components/rekyc-dialog"
 import { exposureAtRisk, formatMoney } from "@/lib/format"
 import {
   initials,
@@ -87,6 +87,29 @@ function scoreFactors(c: ClientRecord) {
   ]
 }
 
+// Turn the client's source citations into chart signals. The most recent
+// citation is the live trigger (rendered as a fresh "new" marker and carrying
+// the full Detected-Change detail); earlier ones are treated as already
+// followed-up corroboration.
+function buildSignals(c: ClientRecord): ChartSignal[] {
+  const sorted = [...c.citations].sort((a, b) => a.date.localeCompare(b.date))
+  return sorted.map((cit, i) => {
+    const isLatest = i === sorted.length - 1
+    return {
+      id: `${c.id}-${i}`,
+      date: cit.date,
+      source: cit.source,
+      headline: cit.headline,
+      signalLabel: isLatest ? c.signal : cit.source,
+      observed: isLatest ? c.observed : cit.headline,
+      reasoning: isLatest
+        ? c.reasoning
+        : `Picked up from ${cit.source}. Corroborates the emerging ${c.signal.toLowerCase()} pattern against the onboarding baseline.`,
+      followedUp: !isLatest,
+    }
+  })
+}
+
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5">
@@ -99,6 +122,7 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 
 export function ClientProfile({ client }: { client: ClientRecord }) {
+  const signals = buildSignals(client)
   const timeline = [
     {
       date: client.kyc.onboarded,
@@ -183,7 +207,7 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
               defaultAction={client.action}
               trigger={<Button variant="outline">Escalate</Button>}
             />
-            <Button>Trigger Re-KYC</Button>
+            <RekycDialog client={client.client} />
           </div>
         </div>
       </div>
@@ -201,7 +225,9 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
             <RiskDriftChart
               originalRisk={client.originalRisk}
               currentScore={client.riskScore}
-              showSignal={client.originalRisk !== client.currentRisk}
+              signals={client.originalRisk !== client.currentRisk ? signals : []}
+              clientName={client.client}
+              defaultAction={client.action}
             />
           </CardContent>
           <CardFooter className="gap-2 border-t pt-4 text-sm">
@@ -269,7 +295,7 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
         </Card>
       </div>
 
-      {/* Layer 2 vs Layer 1 */}
+      {/* KYC baseline + risk breakdown */}
       <div className="grid grid-cols-1 gap-4 @3xl/main:grid-cols-2">
         <Card>
           <CardHeader>
@@ -288,50 +314,24 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Detected Change</CardTitle>
-            <CardDescription>Layer 1 — public real-time intelligence</CardDescription>
+            <CardTitle>Risk Breakdown</CardTitle>
+            <CardDescription>
+              Contextual to the {client.relationship.toLowerCase()} relationship
+            </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-muted-foreground">
-                {client.signal}
-              </Badge>
-              <span className="text-xs text-muted-foreground">
-                detected {client.detected}
-              </span>
-            </div>
-            <p>{client.observed}</p>
-            <Separator />
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Why this fired
-              </span>
-              <p className="text-muted-foreground">{client.reasoning}</p>
-            </div>
+          <CardContent className="grid grid-cols-1 gap-3">
+            {client.riskBreakdown.map((r, i) => (
+              <div key={i} className="flex flex-col gap-2 rounded-lg border p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-medium">{r.type}</span>
+                  <RiskStatusBadge status={r.status} />
+                </div>
+                <span className="text-xs text-muted-foreground">{r.reason}</span>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>
-
-      {/* Risk breakdown */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Risk Breakdown</CardTitle>
-          <CardDescription>
-            Contextual to the {client.relationship.toLowerCase()} relationship
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-3 @2xl/main:grid-cols-3">
-          {client.riskBreakdown.map((r, i) => (
-            <div key={i} className="flex flex-col gap-2 rounded-lg border p-3">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-medium">{r.type}</span>
-                <RiskStatusBadge status={r.status} />
-              </div>
-              <span className="text-xs text-muted-foreground">{r.reason}</span>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
 
       {/* Activity timeline + sources */}
       <div className="grid grid-cols-1 gap-4 @3xl/main:grid-cols-3">
