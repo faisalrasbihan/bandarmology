@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/tabs"
 import { RiskDriftChart } from "@/components/risk-drift-chart"
 import { EscalateDialog } from "@/components/escalate-dialog"
+import { exposureAtRisk, formatMoney } from "@/lib/format"
 import {
   initials,
   RiskDrift,
@@ -36,6 +37,7 @@ export interface ClientRecord {
   jurisdiction: string
   relationship: string
   flagged: boolean
+  exposureUsd: number
   severity: string
   originalRisk: string
   currentRisk: string
@@ -156,13 +158,26 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <EscalateDialog
-            client={client.client}
-            defaultAction={client.action}
-            trigger={<Button variant="outline">Escalate</Button>}
-          />
-          <Button>Trigger Re-KYC</Button>
+        <div className="flex flex-col items-start gap-3 sm:items-end">
+          <div className="flex flex-col sm:items-end">
+            <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              Exposure
+            </span>
+            <span className="text-xl font-semibold tabular-nums">
+              {formatMoney(client.exposureUsd)}
+            </span>
+            <span className="text-xs text-muted-foreground tabular-nums">
+              {formatMoney(exposureAtRisk(client.exposureUsd, client.riskScore))} at risk
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <EscalateDialog
+              client={client.client}
+              defaultAction={client.action}
+              trigger={<Button variant="outline">Escalate</Button>}
+            />
+            <Button>Trigger Re-KYC</Button>
+          </div>
         </div>
       </div>
 

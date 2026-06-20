@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table"
 import { initials, RiskDrift, StatusBadge } from "@/components/risk-badges"
 import type { ClientRecord } from "@/components/client-profile"
+import { exposureAtRisk, formatMoney } from "@/lib/format"
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
@@ -115,6 +116,7 @@ export function ClientsTable({ clients }: { clients: ClientRecord[] }) {
               <TableHead>Relationship</TableHead>
               <TableHead>Jurisdiction</TableHead>
               <TableHead>Onboarded</TableHead>
+              <TableHead>Exposure</TableHead>
               <TableHead>Risk Drift</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-8" />
@@ -149,6 +151,14 @@ export function ClientsTable({ clients }: { clients: ClientRecord[] }) {
                   <TableCell className="text-muted-foreground">{c.jurisdiction}</TableCell>
                   <TableCell className="text-muted-foreground">{c.kyc.onboarded}</TableCell>
                   <TableCell>
+                    <div className="flex flex-col gap-0.5 tabular-nums">
+                      <span className="font-medium">{formatMoney(c.exposureUsd)}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatMoney(exposureAtRisk(c.exposureUsd, c.riskScore))} at risk
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
                     <RiskDrift from={c.originalRisk} to={c.currentRisk} />
                   </TableCell>
                   <TableCell>
@@ -161,7 +171,7 @@ export function ClientsTable({ clients }: { clients: ClientRecord[] }) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={8} className="h-24 text-center">
                   No clients match these filters.
                 </TableCell>
               </TableRow>

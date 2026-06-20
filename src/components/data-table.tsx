@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { exposureAtRisk, formatMoney } from "@/lib/format"
 import {
   Select,
   SelectContent,
@@ -84,6 +85,7 @@ export const schema = z.object({
   jurisdiction: z.string(),
   relationship: z.string(),
   flagged: z.boolean(),
+  exposureUsd: z.number(),
   severity: z.string(),
   originalRisk: z.string(),
   currentRisk: z.string(),
@@ -202,6 +204,18 @@ const columns: ColumnDef<Alert>[] = [
       <Badge variant="secondary" className="font-normal">
         {row.original.relationship}
       </Badge>
+    ),
+  },
+  {
+    accessorKey: "exposureUsd",
+    header: ({ column }) => <SortHeader column={column} label="Exposure" />,
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-0.5 tabular-nums">
+        <span className="font-medium">{formatMoney(row.original.exposureUsd)}</span>
+        <span className="text-xs text-muted-foreground">
+          {formatMoney(exposureAtRisk(row.original.exposureUsd, row.original.riskScore))} at risk
+        </span>
+      </div>
     ),
   },
   {
@@ -741,6 +755,14 @@ function AlertDetailDrawer({
                 <Badge variant="outline" className="text-muted-foreground">
                   {item.tier}
                 </Badge>
+              </DetailRow>
+              <DetailRow label="Exposure">
+                <span className="tabular-nums">{formatMoney(item.exposureUsd)}</span>
+              </DetailRow>
+              <DetailRow label="At risk">
+                <span className="tabular-nums">
+                  {formatMoney(exposureAtRisk(item.exposureUsd, item.riskScore))}
+                </span>
               </DetailRow>
             </div>
             <div className="flex flex-col gap-1">

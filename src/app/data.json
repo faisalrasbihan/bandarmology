@@ -62,7 +62,8 @@
       }
     ],
     "summary": "Helvetia was onboarded as a low-risk German SaaS business expected to run small EUR payroll and supplier flows. Public sources now show a full pivot to crypto proprietary trading plus an offshore re-domicile to the Cayman Islands, with stablecoin inflows that have no basis in the onboarding profile. Because the change is structural rather than a one-off event, corroborated across five sources, and directly contradicts the original business model, the score climbs into the high band — the onboarding baseline now explains almost none of the current activity.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 42000000
   },
   {
     "id": 2,
@@ -122,7 +123,8 @@
       }
     ],
     "summary": "Nordwind onboarded with a transparent two-owner Swiss structure on a custody relationship. A registry update introduces two further beneficial owners through an intermediate holding in a higher-risk jurisdiction, reducing ownership transparency. The score sits high because the new owners must be screened against sanctions and PEP lists before activity continues, and the opacity itself raises residual risk even before screening results return.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 128000000
   },
   {
     "id": 3,
@@ -187,7 +189,8 @@
       }
     ],
     "summary": "Lighthouse was a medium-risk trade-finance client settling documentary credits in USD. Six independent outlets now name it in an active cross-border fraud investigation involving falsified shipping documents, striking at its core activity. Strong corroboration and direct relevance push the score to the high band; what keeps it short of critical is that the investigation is ongoing rather than concluded.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 76000000
   },
   {
     "id": 4,
@@ -247,7 +250,8 @@
       }
     ],
     "summary": "Aurelia onboarded as a passive holding company with minimal expected movement. Several linked entities at a shared address have suddenly received large inflows after long dormancy, a pattern consistent with layering. The score is high but not critical because corroboration is currently limited to two sources and the origin of the funds is still being established.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 54000000
   },
   {
     "id": 5,
@@ -307,7 +311,8 @@
       }
     ],
     "summary": "Meridian was a low-risk logistics client, largely dormant for 18 months. Activity has jumped from near-zero to high daily volume with no public business reason. The dormancy break drives most of the increase; the score lands in the upper-medium band rather than high because there is no adverse media and the activity may yet have a legitimate explanation pending review.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 18000000
   },
   {
     "id": 6,
@@ -367,7 +372,8 @@
       }
     ],
     "summary": "Saffron onboarded as a small early-stage fund on a lending relationship. A large new round and simultaneous expansion into three jurisdictions move its activity profile well beyond the onboarding baseline. The rise is driven by scale and credit exposure rather than misconduct — the coverage is positive growth news — so it enters the high band primarily through expanded exposure, not adverse signals.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 35000000
   },
   {
     "id": 7,
@@ -427,7 +433,8 @@
       }
     ],
     "summary": "Blackford settles physical commodities with EU and UK counterparties. A recurring counterparty has been added to the EU consolidated sanctions list, creating direct exposure if settlement continues. This high-confidence rules match contributes strongly to the score; it stays just below critical only because exposure can be contained by freezing the single counterparty.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 90000000
   },
   {
     "id": 8,
@@ -487,7 +494,8 @@
       }
     ],
     "summary": "Pioneer onboarded with an Estonian seat under an EU regime. A relocation of its legal seat to a lighter-touch jurisdiction changes the supervisory framework and may affect ownership transparency. The score stays in the medium band — the move is structural and warrants re-checking, but there is no adverse media or financial-crime indicator attached.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 12000000
   },
   {
     "id": 9,
@@ -547,7 +555,8 @@
       }
     ],
     "summary": "Cobalt is a project-financed mining client on a lending relationship. Regional outlets report an environmental permit dispute with limited tier-1 corroboration. The score holds in the medium band because the issue is operational and credit-relevant rather than financial-crime, and confidence is lower given the partial corroboration.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 60000000
   },
   {
     "id": 10,
@@ -602,7 +611,8 @@
       }
     ],
     "summary": "Vantage onboarded for property-investment settlement under its original legal name. A registry filing shows a name change with no other structural change. The score remains medium: a name change requires a KYC refresh to confirm continuity, but on its own carries limited risk and is supported by a single source.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 28000000
   },
   {
     "id": 11,
@@ -657,7 +667,8 @@
       }
     ],
     "summary": "Atlas is a stable, low-risk freight client. A single transfer above its usual range was auto-flagged, then explained by a documented bulk fuel purchase consistent with its business. With the outlier resolved and no adverse media, the score stays firmly in the low band and the alert is cleared.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 9000000
   },
   {
     "id": 12,
@@ -712,7 +723,8 @@
       }
     ],
     "summary": "Selene is a research-stage biotech with predictable grant and supplier flows. Website monitoring detected a cosmetic wording change with no shift in business activity. The score is low and unchanged in substance; the baseline snapshot was simply updated and no further action is required.",
-    "flagged": true
+    "flagged": true,
+    "exposureUsd": 4000000
   },
   {
     "id": 13,
@@ -761,7 +773,8 @@
         "reason": "No lending exposure on this relationship."
       }
     ],
-    "citations": []
+    "citations": [],
+    "exposureUsd": 210000000
   },
   {
     "id": 14,
@@ -810,7 +823,8 @@
         "reason": "No lending exposure on this relationship."
       }
     ],
-    "citations": []
+    "citations": [],
+    "exposureUsd": 15000000
   },
   {
     "id": 15,
@@ -859,7 +873,8 @@
         "reason": "Standard lending exposure within limits."
       }
     ],
-    "citations": []
+    "citations": [],
+    "exposureUsd": 85000000
   },
   {
     "id": 16,
@@ -908,7 +923,8 @@
         "reason": "No lending exposure on this relationship."
       }
     ],
-    "citations": []
+    "citations": [],
+    "exposureUsd": 22000000
   },
   {
     "id": 17,
@@ -957,6 +973,7 @@
         "reason": "No lending exposure on this relationship."
       }
     ],
-    "citations": []
+    "citations": [],
+    "exposureUsd": 48000000
   }
 ]
