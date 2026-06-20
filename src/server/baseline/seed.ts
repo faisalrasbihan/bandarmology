@@ -48,6 +48,19 @@ const SEED: Omit<KycBaseline, "entityId">[] = [
     riskRating: "low",
     onboardedAt: "2020-11-20T00:00:00.000Z",
   },
+  {
+    // Synthetic shell entity (not a real company) — onboarded as a quiet holding
+    // vehicle so the AML transaction layer can demonstrate a dormancy-break flag
+    // that the news/KYC-drift pipeline could never see (no public footprint).
+    companyName: "Lindenhof Holdings AG",
+    expectedSectors: ["holding", "investment"],
+    expectedCountries: ["CH"],
+    expectedBusinessModel: "Passive Swiss holding company for a family investment portfolio.",
+    expectedTxVolumeRange: "Near-zero; occasional small administrative payments only",
+    ownershipStructure: ["Privately held", "Single beneficial owner (family trust)"],
+    riskRating: "low",
+    onboardedAt: "2021-09-05T00:00:00.000Z",
+  },
 ];
 
 export async function seedBaselines(): Promise<KycBaseline[]> {

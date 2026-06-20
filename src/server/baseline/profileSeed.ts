@@ -57,6 +57,16 @@ const SEED: Omit<ClientProfile, "entityId">[] = [
     watchlist: false,
     watchlistMeta: null,
   },
+  {
+    companyName: "Lindenhof Holdings AG",
+    relationship: "Custody",
+    exposureUsd: 12_000_000,
+    displaySector: "Holding / Investment",
+    jurisdiction: "Switzerland",
+    relationshipManager: "C. Frei",
+    watchlist: false,
+    watchlistMeta: null,
+  },
 ];
 
 export async function seedClientProfiles(): Promise<ClientProfile[]> {

@@ -45,7 +45,17 @@ function rowToBaseline(row: BaselineRow): KycBaseline {
 
 export async function upsertBaseline(b: Omit<KycBaseline, "entityId"> & { entityId?: string }): Promise<KycBaseline> {
   await ensureSchema();
-  const entityId = b.entityId ?? randomUUID();
+  // Idempotent by company name: reuse the existing row's id so re-seeding
+  // upserts via ON CONFLICT (entity_id) instead of colliding on the unique
+  // lower(company_name) index.
+  let entityId = b.entityId;
+  if (!entityId) {
+    const { rows } = await getPool().query<{ entity_id: string }>(
+      `SELECT entity_id FROM kyc_baselines WHERE lower(company_name) = lower($1)`,
+      [b.companyName]
+    );
+    entityId = rows[0]?.entity_id ?? randomUUID();
+  }
   await getPool().query(
     `INSERT INTO kyc_baselines
        (entity_id, company_name, expected_sectors, expected_countries, expected_business_model,

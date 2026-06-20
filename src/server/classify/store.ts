@@ -6,6 +6,7 @@ import type {
   AlertStatus,
   DriftFinding,
   LlmCallLog,
+  LlmStage,
   Stage2Output,
   Stage3Output,
   TokenUsage,
@@ -80,7 +81,7 @@ const ensureSchema = defineSchema(`
 
 /** Every LLM call is logged here regardless of outcome — this feeds the cost-per-1000-alerts metric. */
 export async function logLlmCall(params: {
-  stage: "stage2" | "stage3";
+  stage: LlmStage;
   model: string;
   signalId: string | null;
   tokenUsage: TokenUsage;

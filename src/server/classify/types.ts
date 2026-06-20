@@ -90,9 +90,18 @@ export interface Alert {
   createdAt: string;
 }
 
+/**
+ * Every distinct LLM call path in the system. Each new LLM feature must add its
+ * stage here so its spend is logged through the same `llm_calls` table and rolls
+ * into the cost-per-1000-alerts metric — there is no LLM call path that bypasses
+ * this. `tag_extract`/`exposure` = the exposure-graph propagation (Feature 1);
+ * `investigate` = the transaction-investigation narrative (Feature 2).
+ */
+export type LlmStage = "stage2" | "stage3" | "aml" | "tag_extract" | "exposure" | "investigate";
+
 export interface LlmCallLog {
   id: string;
-  stage: "stage2" | "stage3";
+  stage: LlmStage;
   model: string;
   signalId: string | null;
   inputTokens: number;
