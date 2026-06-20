@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { ArrowRightIcon, CheckCircle2Icon, UsersIcon } from "lucide-react"
+import { ArrowRightIcon, CheckCircle2Icon, ChevronDownIcon, UsersIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -172,6 +172,61 @@ function EventCard({
   )
 }
 
+// One collapsible source section (News & Adverse Media, Sanctions, …). Collapsed
+// by default unless it carries a Critical/High event, so the queue doesn't fill
+// the page when nothing urgent is in it — the analyst expands what they want.
+function SourceGroup({
+  source,
+  events,
+  casesByEvent,
+}: {
+  source: RiskSource
+  events: RiskEvent[]
+  casesByEvent: Map<string, CaseRecord[]>
+}) {
+  const urgent = events.filter((e) => e.severity === "Critical" || e.severity === "High").length
+  const [open, setOpen] = React.useState(urgent > 0)
+
+  return (
+    <div className="flex flex-col gap-2 rounded-lg border">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-muted/50"
+      >
+        <ChevronDownIcon
+          className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "" : "-rotate-90"}`}
+        />
+        <h3 className="text-sm font-medium">{source}</h3>
+        <Badge variant="outline" className="text-muted-foreground">
+          {events.length}
+        </Badge>
+        {urgent > 0 && (
+          <Badge variant="outline" className="border-red-600/40 text-red-600 dark:text-red-500">
+            {urgent} high+
+          </Badge>
+        )}
+        <span className="ml-auto text-xs text-muted-foreground">
+          {open ? "Hide" : "Show"}
+        </span>
+      </button>
+
+      {open && (
+        <div className="grid grid-cols-1 gap-3 px-3 pb-3 @3xl/main:grid-cols-2">
+          {events.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              cases={casesByEvent.get(event.id) ?? []}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function IncomingRisk() {
   const casesByEvent = useCasesByEvent()
 
@@ -197,23 +252,12 @@ export function IncomingRisk() {
       </div>
 
       {grouped.map(({ source, events }) => (
-        <div key={source} className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <h3 className="text-sm font-medium text-muted-foreground">{source}</h3>
-            <Badge variant="outline" className="text-muted-foreground">
-              {events.length}
-            </Badge>
-          </div>
-          <div className="grid grid-cols-1 gap-3 @3xl/main:grid-cols-2">
-            {events.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                cases={casesByEvent.get(event.id) ?? []}
-              />
-            ))}
-          </div>
-        </div>
+        <SourceGroup
+          key={source}
+          source={source}
+          events={events}
+          casesByEvent={casesByEvent}
+        />
       ))}
     </div>
   )

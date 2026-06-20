@@ -1,14 +1,14 @@
 import { AppShell } from "@/components/app-shell"
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { PriorityDonut } from "@/components/priority-donut"
-import { RiskFunnel } from "@/components/risk-funnel"
+import { RiskPipeline } from "@/components/risk-pipeline"
 import { IncomingRisk } from "@/components/incoming-risk"
 
 export default function Page() {
   return (
     <AppShell title="Risk Dashboard">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <RiskFunnel />
+        <RiskPipeline current="incoming" showEconomics />
         <IncomingRisk />
         <div
           id="risk-trend"
