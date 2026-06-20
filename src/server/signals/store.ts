@@ -1,17 +1,13 @@
-import { getPool } from "../db";
+import { defineSchema, getPool } from "../db";
 import type { Signal, SignalSource } from "./types";
 
 /**
- * Postgres-backed dedupe store (see schema.sql). Keyed on a normalized URL,
- * with a normalized title+day fallback so the same story reported by two
- * different sources under two different URLs is still recognized as one
- * signal rather than stored twice.
+ * Postgres-backed dedupe store. Keyed on a normalized URL, with a normalized
+ * title+day fallback so the same story reported by two different sources under
+ * two different URLs is still recognized as one signal rather than stored twice.
+ * This embedded DDL is the single source of truth for the `signals` table.
  */
-
-let schemaReady: Promise<void> | null = null;
-
-// Mirrors schema.sql — keep the two in sync if either changes.
-const SCHEMA_DDL = `
+const ensureSchema = defineSchema(`
   CREATE TABLE IF NOT EXISTS signals (
     id UUID PRIMARY KEY,
     entity_hint TEXT NOT NULL,
@@ -33,20 +29,7 @@ const SCHEMA_DDL = `
   CREATE UNIQUE INDEX IF NOT EXISTS signals_url_key_idx ON signals (url_key);
   CREATE INDEX IF NOT EXISTS signals_title_day_key_idx ON signals (title_day_key);
   CREATE INDEX IF NOT EXISTS signals_entity_hint_idx ON signals (lower(entity_hint));
-`;
-
-function ensureSchema(): Promise<void> {
-  if (!schemaReady) {
-    schemaReady = getPool()
-      .query(SCHEMA_DDL)
-      .then(() => undefined)
-      .catch((err) => {
-        schemaReady = null; // allow retry on next call rather than caching a failure forever
-        throw err;
-      });
-  }
-  return schemaReady;
-}
+`);
 
 function normalizeUrl(url: string): string {
   try {
@@ -192,6 +175,13 @@ export async function getStoredSignals(filter?: { entityHint?: string }): Promis
         filter.entityHint,
       ])
     : await pool.query<SignalRow>(`SELECT * FROM signals ORDER BY fetched_at DESC`);
+  return rows.map(rowToSignal);
+}
+
+export async function getSignalsByIds(ids: string[]): Promise<Signal[]> {
+  await ensureSchema();
+  if (ids.length === 0) return [];
+  const { rows } = await getPool().query<SignalRow>(`SELECT * FROM signals WHERE id = ANY($1)`, [ids]);
   return rows.map(rowToSignal);
 }
 

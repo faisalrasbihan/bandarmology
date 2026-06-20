@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { buildSearchTerm, toSignal } from "../helpers";
 import type { FetchQuery, Signal } from "../types";
 
 const BASE_URL = "https://newsapi.org/v2/everything";
@@ -42,26 +42,14 @@ export async function fetchNewsApi(query: FetchQuery): Promise<Signal[]> {
   const data = (await res.json()) as { articles?: NewsApiArticle[] };
   const fetchedAt = new Date().toISOString();
 
-  return (data.articles ?? []).map((a): Signal => ({
-    id: randomUUID(),
-    entityHint: query.companyName,
-    source: "newsapi",
-    title: a.title,
-    snippet: a.description,
-    url: a.url,
-    publishedAt: a.publishedAt ?? null,
-    fetchedAt,
-    tags: {
-      sectors: query.sectors ?? [],
-      countries: query.countries ?? [],
-      keywords: [],
-    },
-    raw: a as unknown as Record<string, unknown>,
-  }));
-}
-
-function buildSearchTerm(query: FetchQuery): string {
-  const terms = [query.companyName, ...(query.aliases ?? [])];
-  const quoted = terms.map((t) => (t.includes(" ") ? `"${t}"` : t));
-  return quoted.length > 1 ? `(${quoted.join(" OR ")})` : quoted[0];
+  return (data.articles ?? []).map((a): Signal =>
+    toSignal(query, "newsapi", {
+      title: a.title,
+      snippet: a.description,
+      url: a.url,
+      publishedAt: a.publishedAt ?? null,
+      fetchedAt,
+      raw: a as unknown as Record<string, unknown>,
+    })
+  );
 }

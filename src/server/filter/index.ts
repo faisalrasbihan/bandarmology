@@ -30,6 +30,7 @@ export async function attachStage1Classifications(signals: Signal[]): Promise<Cl
 }
 
 export { classifySignal } from "./stage1";
+export { getTriageStats } from "./store";
 export { RISK_TAXONOMY } from "./taxonomy";
 export type { RiskCategory } from "./taxonomy";
 export type { RiskMatch, Stage1Classification } from "./stage1";
