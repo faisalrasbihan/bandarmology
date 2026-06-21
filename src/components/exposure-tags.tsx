@@ -1,13 +1,7 @@
-"use client"
-
-import { useEffect, useState } from "react"
-
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-interface ExposureEdge {
-  id: string
-  entityName: string
+export interface ExposureTag {
   tagType: string
   tagValue: string
   source: string
@@ -27,28 +21,11 @@ const TAG_LABEL: Record<string, string> = {
 /**
  * Layer 1 public exposure graph for a single client — what it's tagged with
  * (sector, country, named directors, suppliers, …) that second-order
- * propagation can later match against incoming public signals. Fetched live
- * since exposure edges aren't baked into the static dashboard snapshot.
+ * propagation can later match against incoming public signals. Snapshotted into
+ * data.json at build time (see src/server/dashboard), so the client page needs
+ * no live DB call and works in any deployment.
  */
-export function ExposureTags({ entityName }: { entityName: string }) {
-  const [edges, setEdges] = useState<ExposureEdge[] | null>(null)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    let cancelled = false
-    fetch(`/api/exposures?entityName=${encodeURIComponent(entityName)}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (!cancelled) setEdges(d.edges ?? [])
-      })
-      .catch(() => {
-        if (!cancelled) setError(true)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [entityName])
-
+export function ExposureTags({ tags = [] }: { tags?: ExposureTag[] }) {
   return (
     <Card>
       <CardHeader>
@@ -56,15 +33,12 @@ export function ExposureTags({ entityName }: { entityName: string }) {
         <CardDescription>Layer 1 — sector, jurisdiction, director, supplier/customer links</CardDescription>
       </CardHeader>
       <CardContent>
-        {error && <p className="text-destructive text-sm">Failed to load exposure tags.</p>}
-        {!error && edges === null && <p className="text-muted-foreground text-sm">Loading…</p>}
-        {edges?.length === 0 && (
+        {tags.length === 0 ? (
           <p className="text-muted-foreground text-sm">No public exposure tags recorded for this entity.</p>
-        )}
-        {edges && edges.length > 0 && (
+        ) : (
           <div className="flex flex-wrap gap-2">
-            {edges.map((e) => (
-              <Badge key={e.id} variant="outline" className="gap-1.5 font-normal">
+            {tags.map((e, i) => (
+              <Badge key={`${e.tagType}-${e.tagValue}-${i}`} variant="outline" className="gap-1.5 font-normal">
                 <span className="text-muted-foreground">{TAG_LABEL[e.tagType] ?? e.tagType}</span>
                 {e.tagValue}
                 <span className="text-muted-foreground/70 tabular-nums">
