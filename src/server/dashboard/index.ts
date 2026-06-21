@@ -28,6 +28,7 @@ const SOURCE_LABEL: Record<SignalSource, string> = {
   newsapi: "NewsAPI",
   mediastack: "Mediastack",
   crunchbase: "Crunchbase",
+  social_media: "Social Media",
 };
 
 const RISK_TITLE: Record<string, string> = { low: "Low", medium: "Medium", high: "High" };

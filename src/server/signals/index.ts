@@ -5,6 +5,7 @@ import { fetchGoogleNewsRss } from "./fetchers/googleNewsRss";
 import { fetchMediastack } from "./fetchers/mediastack";
 import { fetchNewsApi } from "./fetchers/newsapi";
 import { fetchOpenSanctions } from "./fetchers/openSanctions";
+import { fetchSocialMedia } from "./fetchers/socialMedia";
 import { upsertSignals } from "./store";
 import type { FetchError, FetchQuery, Signal, SignalSource } from "./types";
 
@@ -15,6 +16,7 @@ const FETCHERS: { source: SignalSource; run: (query: FetchQuery) => Promise<Sign
   { source: "newsapi", run: fetchNewsApi },
   { source: "mediastack", run: fetchMediastack },
   { source: "crunchbase", run: fetchCrunchbase },
+  { source: "social_media", run: fetchSocialMedia },
 ];
 
 /**
