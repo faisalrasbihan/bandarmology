@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
@@ -319,12 +320,14 @@ export function InvestigationView({
                               <ChevronDownIcon data-icon="inline-end" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start">
-                              <DropdownMenuLabel>Escalate to</DropdownMenuLabel>
-                              {ESCALATION_TARGETS.map((t) => (
-                                <DropdownMenuItem key={t} onClick={() => actOnFinding(f, "Escalated", t)}>
-                                  {t}
-                                </DropdownMenuItem>
-                              ))}
+                              <DropdownMenuGroup>
+                                <DropdownMenuLabel>Escalate to</DropdownMenuLabel>
+                                {ESCALATION_TARGETS.map((t) => (
+                                  <DropdownMenuItem key={t} onClick={() => actOnFinding(f, "Escalated", t)}>
+                                    {t}
+                                  </DropdownMenuItem>
+                                ))}
+                              </DropdownMenuGroup>
                             </DropdownMenuContent>
                           </DropdownMenu>
                           <Button
