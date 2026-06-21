@@ -3,12 +3,13 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { PriorityDonut } from "@/components/priority-donut"
 import { RiskPipeline } from "@/components/risk-pipeline"
 import { IncomingRisk } from "@/components/incoming-risk"
+import { getPipelineCounts } from "@/lib/pipeline-counts"
 
 export default function Page() {
   return (
     <AppShell title="Risk Dashboard">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <RiskPipeline current="incoming" />
+        <RiskPipeline current="incoming" counts={getPipelineCounts()} />
         <IncomingRisk />
         <div
           id="risk-trend"

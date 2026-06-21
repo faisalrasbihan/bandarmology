@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   CheckCircle2Icon,
@@ -7,6 +8,7 @@ import {
   CircleCheckBigIcon,
   EyeIcon,
   FlagIcon,
+  MessageSquareIcon,
   SearchIcon,
   ShieldAlertIcon,
   ShieldCheckIcon,
@@ -14,7 +16,13 @@ import {
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -23,7 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { type AuditAction, clearAuditLog, useAuditLog } from "@/lib/audit-log"
+import { type AuditAction, useAuditLog } from "@/lib/audit-log"
 
 const ACTION_META: Record<
   AuditAction,
@@ -36,6 +44,10 @@ const ACTION_META: Record<
   Escalated: {
     icon: <ShieldAlertIcon className="size-3.5" />,
     cls: "border-red-600/40 text-red-600 dark:text-red-500",
+  },
+  "Followed up": {
+    icon: <MessageSquareIcon className="size-3.5" />,
+    cls: "border-sky-500/40 text-sky-600 dark:text-sky-400",
   },
   Confirmed: {
     icon: <ShieldCheckIcon className="size-3.5" />,
@@ -75,6 +87,14 @@ function fmtTs(ts: string): string {
 export function AuditLogView() {
   const router = useRouter()
   const entries = useAuditLog()
+  const [company, setCompany] = useState("all")
+
+  // Distinct companies present in the log, for the filter dropdown.
+  const companies = useMemo(
+    () => [...new Set(entries.map((e) => e.entity))].sort(),
+    [entries]
+  )
+  const shown = company === "all" ? entries : entries.filter((e) => e.entity === company)
 
   return (
     <div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6">
@@ -82,14 +102,25 @@ export function AuditLogView() {
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-semibold">Audit Log</h1>
           <p className="text-sm text-muted-foreground">
-            Immutable record of every analyst decision — who acted, on which client, and when.
-            Each flag stays <span className="font-medium">proposed</span> until a human acts here.
+            Append-only record of every analyst decision across the workflow (marks, escalations,
+            follow-ups, and closures), capturing who acted, on which client, and when. This is the
+            full decision trail, not only closures.
           </p>
         </div>
-        {entries.length > 0 && (
-          <Button variant="outline" size="sm" onClick={clearAuditLog}>
-            Clear log
-          </Button>
+        {companies.length > 0 && (
+          <Select value={company} onValueChange={(v) => v && setCompany(v)}>
+            <SelectTrigger size="sm" className="w-56" aria-label="Filter by company">
+              <SelectValue placeholder="All companies" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All companies ({entries.length})</SelectItem>
+              {companies.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
       </div>
 
@@ -106,8 +137,8 @@ export function AuditLogView() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {entries.length ? (
-              entries.map((e) => {
+            {shown.length ? (
+              shown.map((e) => {
                 const meta = ACTION_META[e.action]
                 const clickable = e.clientId != null
                 return (

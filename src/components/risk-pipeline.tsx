@@ -5,12 +5,8 @@ import { useRouter } from "next/navigation"
 import { ChevronRightIcon, InfoIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import {
-  STAGE_META,
-  useFunnelCounts,
-  type CaseStage,
-} from "@/lib/case-stages"
-import { RISK_EVENTS } from "@/lib/risk-events"
+import { STAGE_META, type CaseStage } from "@/lib/case-stages"
+import type { PipelineCounts } from "@/lib/pipeline-counts"
 
 // The five operational stages a risk moves through, each owning a page. This is
 // the workflow funnel; the AI cost funnel (below) is what *produces* the
@@ -50,13 +46,13 @@ const STAGE_CONTEXT: Record<PipelineStage, { note: string; badge?: { text: strin
     note: "alerts awaiting triage",
     badge: { text: "Alerts", cls: "border-red-600/40 text-red-600 dark:text-red-500" },
   },
-  marked: { note: "client cases you've opened" },
+  marked: { note: "flagged client cases" },
   investigation: {
-    note: "cases that need action today",
+    note: "cases with activity to review",
     badge: { text: "Needs action today", cls: "border-amber-600/40 text-amber-600 dark:text-amber-500" },
   },
-  escalated: { note: "escalated to the watchlist" },
-  closed: { note: "resolved and recorded in the audit log" },
+  escalated: { note: "clients on the watchlist" },
+  closed: { note: "cases closed" },
 }
 
 // Illustrative cost-staged pipeline economics (one polling window). Each stage
@@ -177,10 +173,9 @@ function EconomicsFunnel() {
  * The cost-staged AI funnel that produces the incoming count is available on
  * every page by hovering (or focusing) the "Risk Incoming" stage.
  */
-export function RiskPipeline({ current }: { current: PipelineStage }) {
+export function RiskPipeline({ current, counts }: { current: PipelineStage; counts: PipelineCounts }) {
   const router = useRouter()
-  const counts = useFunnelCounts(RISK_EVENTS)
-  const countFor = (key: PipelineStage) => (key === "incoming" ? counts.incoming : counts[key])
+  const countFor = (key: PipelineStage) => counts[key]
   const ctx = STAGE_CONTEXT[current]
   const currentLabel = STAGES.find((s) => s.key === current)?.label
 
@@ -196,9 +191,18 @@ export function RiskPipeline({ current }: { current: PipelineStage }) {
           )}
         </div>
         <p className="text-sm text-muted-foreground">
-          You are on the <span className="font-medium text-foreground">{currentLabel}</span> stage —{" "}
-          <span className="font-medium text-foreground tabular-nums">{countFor(current)}</span>{" "}
-          {ctx.note}.
+          You are on the <span className="font-medium text-foreground">{currentLabel}</span> stage.{" "}
+          {current === "closed" ? (
+            <>
+              <span className="font-medium text-foreground tabular-nums">{counts.closed}</span> of{" "}
+              <span className="font-medium text-foreground tabular-nums">{counts.marked}</span> cases closed.
+            </>
+          ) : (
+            <>
+              <span className="font-medium text-foreground tabular-nums">{countFor(current)}</span>{" "}
+              {ctx.note}.
+            </>
+          )}
         </p>
       </div>
 

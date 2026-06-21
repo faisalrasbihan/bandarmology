@@ -12,6 +12,7 @@ import * as React from "react"
 export type AuditAction =
   | "Acknowledged"
   | "Escalated"
+  | "Followed up"
   | "Added to watchlist"
   | "Removed from watchlist"
   | "Confirmed"
