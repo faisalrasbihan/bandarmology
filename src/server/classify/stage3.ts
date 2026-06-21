@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropic, sumUsage, tokenUsageFor } from "../anthropic";
 import type { KycBaseline } from "../baseline/types";
+import { redactOwnership } from "../pii/redact";
 import type { Signal } from "../signals/types";
 import { DRIFT_SEVERITIES, DRIFT_TYPES, Stage3OutputSchema, type Stage3Output, type TokenUsage } from "./types";
 import type { Alert } from "./types";
@@ -89,7 +90,7 @@ function buildPrompt(alert: Alert, signal: Signal, baseline: KycBaseline): strin
     `Expected countries: ${baseline.expectedCountries.join(", ") || "n/a"}`,
     `Expected business model: ${baseline.expectedBusinessModel}`,
     `Expected tx volume: ${baseline.expectedTxVolumeRange}`,
-    `Ownership structure: ${baseline.ownershipStructure.join("; ") || "n/a"}`,
+    `Ownership structure (beneficial owner names pseudonymized as Individual-N for data minimization): ${redactOwnership(baseline.ownershipStructure).join("; ") || "n/a"}`,
     `Onboarding risk rating: ${baseline.riskRating}`,
     `Onboarded at: ${baseline.onboardedAt}`,
     "",
