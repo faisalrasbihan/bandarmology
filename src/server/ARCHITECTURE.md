@@ -85,7 +85,7 @@ flowchart TD
     IDX -->|"concurrent, allSettled"| F3[openSanctions.ts]
     IDX -->|"concurrent, allSettled"| F4[newsapi.ts]
     IDX -->|"concurrent, allSettled"| F5[mediastack.ts]
-    F1 & F2 & F3 & F4 & F5 -->|Signal\[\] or rejected| IDX
+    F1 & F2 & F3 & F4 & F5 -->|"Signal[] or rejected"| IDX
     IDX -->|"signals[], errors[]"| STOREMOD["store.ts\nupsertSignals(): dedupe by\nnormalized URL + fuzzy title/day"]
     STOREMOD --> MEM[("Postgres\nsignals table")]
     IDX -->|"inserted signals"| STAGE1MOD["filter/index.ts\nrunStage1(): keyword + lexical\nscore vs. risk taxonomy"]

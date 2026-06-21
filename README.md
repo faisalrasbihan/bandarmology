@@ -10,6 +10,179 @@ console is at [bandarmology.vercel.app/alerts](https://bandarmology.vercel.app/a
 See [src/server/ARCHITECTURE.md](./src/server/ARCHITECTURE.md) for the full system design
 and [CLAUDE.md](./CLAUDE.md) for instructions Claude Code follows when working in this repo.
 
+## Pipeline
+
+The system is a cost-staged pipeline: cheap, free triage runs first and resolves most
+volume, so the paid LLM stages only ever see what survives. Every LLM call is logged with
+token counts, so the system can report cost per 1,000 alerts and the % of volume resolved at
+each stage without an LLM call — this is what's judged under "Cost Efficiency."
+
+```
+Ingestion → Stage 1: cheap filter → Stage 2: LLM classify → Stage 3: deep analysis (escalated only)
+```
+
+| Stage | What it does | Cost | Status |
+| --- | --- | --- | --- |
+| 0. Ingestion | Pull raw items from each public source, normalize into `Signal` | API calls only, no LLM | **Built** — `src/server/signals/` |
+| 1. Cheap filter | Rule/keyword match + lexical overlap against the risk taxonomy; dedupe (done at ingestion); tag-based routing | ~free | **Built** — `src/server/filter/` |
+| 2. LLM classify | Cheap/fast model (Haiku 4.5) on items that survive Stage 1; structured output: `flag_type, confidence, citations[], rationale, recommended_action` | Low | **Built** — `src/server/classify/` |
+| 3. Deep analysis | Stronger model (Sonnet 4.6), escalated cases only; diffs the flagged signal against the Layer 2 KYC baseline to detect drift; produces case narrative | Higher, but rare | **Built** — `src/server/classify/stage3.ts` |
+
+### Pipeline flowchart
+
+```mermaid
+flowchart LR
+    subgraph L1["Layer 1 — Public sources"]
+        GN[Google News RSS]
+        GD[GDELT DOC 2.0]
+        OS[OpenSanctions]
+        NA[NewsAPI]
+        MS[Mediastack]
+    end
+
+    GN & GD & OS & NA & MS -->|"Promise.allSettled"| ING["Stage 0: Ingestion\nnormalize → Signal"]
+    ING --> STORE[("Signal store\ndedupe + persist")]
+    STORE --> S1["Stage 1: Cheap filter\nkeyword + lexical overlap\nvs. risk taxonomy"]
+    S1 -->|survives filter| S2["Stage 2: LLM classify\n(Haiku 4.5, forced tool call)\nflag_type, confidence,\ncitations[], rationale"]
+    S1 -->|filtered out| DROP[discarded, logged]
+    S2 -->|escalated only| S3["Stage 3: Deep analysis\n(stronger model, e.g. Sonnet)\ndiff vs. Layer 2 baseline"]
+    S2 -->|low confidence / no flag| DROP2[no alert created]
+    S3 --> ALERT["Alert (status: proposed)"]
+    S2 -->|high confidence flag| ALERT
+
+    subgraph L2["Layer 2 — Simulated internal (separate store)"]
+        KYC[("KycBaseline")]
+        TX[("Synthetic AML tx feed")]
+    end
+    KYC -.->|"explicit, logged join"| S3
+    TX -.->|"explicit, logged join"| S3
+
+    ALERT --> HUMAN{{"Human review\nconfirmed / escalated / dismissed"}}
+```
+
+### Schema graph
+
+```mermaid
+erDiagram
+    FetchQuery ||--o{ Signal : "produces (per fetcher call)"
+    Signal }o--|| SignalSource : "tagged with"
+    Signal ||--o{ SignalTags : "has"
+    Signal ||--o{ FetchError : "or fails as (per source)"
+    Signal ||--o| Alert : "cited by"
+    Signal ||--o| SignalTriage : "scored by"
+    SignalTriage }o--o{ RiskCategory : "matches against"
+    Alert ||--o{ LlmCallLog : "logged via"
+    Alert ||--o{ AlertDecision : "audited by"
+    Alert ||--o{ DriftFinding : "deep-analyzed into"
+    KycBaseline ||--o{ DriftFinding : "diffed against (Stage 3 join)"
+
+    FetchQuery {
+        string companyName
+        string[] aliases
+        string[] sectors
+        string[] countries
+        number maxResults
+    }
+    Signal {
+        string id
+        string entityHint
+        SignalSource source
+        string title
+        string snippet
+        string url
+        string publishedAt
+        string fetchedAt
+        SignalTags tags
+        object raw
+    }
+    SignalTags {
+        string[] sectors
+        string[] countries
+        string[] keywords
+    }
+    FetchError {
+        SignalSource source
+        string message
+    }
+    RiskCategory {
+        string id
+        string label
+        string description
+        string[] keywords
+    }
+    SignalTriage {
+        string signalId
+        boolean passed
+        string topCategoryId
+        number topScore
+        json matches "RiskMatch[]"
+        string classifiedAt
+    }
+    KycBaseline {
+        string entityId
+        string companyName
+        string[] expectedSectors
+        string[] expectedCountries
+        string expectedBusinessModel
+        string expectedTxVolumeRange
+        string[] ownershipStructure
+        string riskRating
+        string onboardedAt
+    }
+    Alert {
+        string id
+        string signalId
+        string entityHint
+        string flagType
+        number confidence
+        string[] citations "Signal.id refs"
+        string rationale
+        string recommendedAction
+        string status "proposed|confirmed|escalated|dismissed"
+        string modelUsed
+        object tokenUsage
+        string createdAt
+    }
+    LlmCallLog {
+        string id
+        string stage "stage2|stage3"
+        string model
+        string signalId
+        number inputTokens
+        number outputTokens
+        number costUsd
+        boolean success
+        string error
+        string createdAt
+    }
+    AlertDecision {
+        string id
+        string alertId
+        string fromStatus
+        string toStatus
+        string actor
+        string note
+        string createdAt
+    }
+    DriftFinding {
+        string id
+        string alertId
+        string entityHint
+        boolean driftDetected
+        string driftType
+        string severity
+        number confidence
+        json comparison "per-dimension"
+        string narrative
+        string recommendedAction
+        object tokenUsage
+        string createdAt
+    }
+```
+
+For the backend module flowchart and the detailed per-stage rationale, see
+[src/server/ARCHITECTURE.md](./src/server/ARCHITECTURE.md).
+
 ## Status
 
 This repo implements the full pipeline end-to-end: **Layer 1 Stage 0 (ingestion) → Stage 1
