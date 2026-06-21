@@ -10,7 +10,6 @@ import {
   CheckCircle2Icon,
   ChevronDownIcon,
   ShieldAlertIcon,
-  SparklesIcon,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -143,8 +142,6 @@ export function InvestigationView({
   const [view, setView] = useState<InvestigationData | null>(initialData ?? null)
   const [loading, setLoading] = useState(!initialData)
   const [error, setError] = useState<string | null>(null)
-  const [narrating, setNarrating] = useState(false)
-  const [narrateError, setNarrateError] = useState<string | null>(null)
   const [timelineExpanded, setTimelineExpanded] = useState(false)
   const [ledgerExpanded, setLedgerExpanded] = useState(false)
   // Human-in-the-loop: findings stay "proposed" until the analyst acts here.
@@ -214,27 +211,6 @@ export function InvestigationView({
     void load()
   }, [load, initialData])
 
-  async function generateSummary() {
-    setNarrating(true)
-    setNarrateError(null)
-    try {
-      const res = await fetch(`/api/investigation/${encodeURIComponent(entityName)}/narrate`, {
-        method: "POST",
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setNarrateError(data.error ?? "Summary failed")
-        if (data.view) setView(data.view)
-      } else {
-        setView(data)
-      }
-    } catch {
-      setNarrateError("Summary request failed")
-    } finally {
-      setNarrating(false)
-    }
-  }
-
   const maxFlow = view ? Math.max(1, ...view.flows.map((f) => f.totalUsd)) : 1
   const visibleTimeline = view
     ? timelineExpanded
@@ -282,12 +258,6 @@ export function InvestigationView({
             </div>
           )}
         </div>
-        {view?.hasActivity && (
-          <Button size="sm" variant="outline" disabled={narrating} onClick={generateSummary}>
-            <SparklesIcon data-icon="inline-start" />
-            {narrating ? "Generating…" : view.narrative ? "Regenerate AI summary" : "Generate AI summary"}
-          </Button>
-        )}
       </div>
 
       {loading && <p className="text-muted-foreground text-sm">Loading…</p>}
@@ -305,30 +275,6 @@ export function InvestigationView({
 
       {view?.hasActivity && (
         <>
-          {/* AI summary, when generated */}
-          {(view.narrative || narrateError) && (
-            <Card className="border-primary/30 bg-primary/[0.03]">
-              <CardHeader>
-                <div className="flex flex-wrap items-center gap-2">
-                  <CardTitle className="text-base">AI Investigation Summary</CardTitle>
-                  {view.narrativeConfidence != null && (
-                    <span className="text-muted-foreground text-xs tabular-nums">
-                      confidence {(view.narrativeConfidence * 100).toFixed(0)}%
-                    </span>
-                  )}
-                </div>
-                <CardDescription>
-                  Grounded only to the findings, flows and transactions shown on this page. Token
-                  cost logged under stage &ldquo;investigate&rdquo; — see Alerts → cost summary.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {narrateError && <p className="text-destructive text-sm">{narrateError}</p>}
-                {view.narrative && <p className="text-sm">{view.narrative}</p>}
-              </CardContent>
-            </Card>
-          )}
-
           {/* 1. Findings — lead with the pattern, not the ledger */}
           <Card>
             <CardHeader>

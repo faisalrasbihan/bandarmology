@@ -49,7 +49,6 @@ const STAGE_CONTEXT: Record<PipelineStage, { note: string; badge?: { text: strin
   marked: { note: "flagged client cases" },
   investigation: {
     note: "cases with activity to review",
-    badge: { text: "Needs action today", cls: "border-amber-600/40 text-amber-600 dark:text-amber-500" },
   },
   escalated: { note: "clients on the watchlist" },
   closed: { note: "cases closed" },
