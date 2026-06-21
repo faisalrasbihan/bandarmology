@@ -248,9 +248,22 @@ export function AlertsFeed({
                   </TableCell>
                   <TableCell className="text-muted-foreground">{e.type}</TableCell>
                   <TableCell>
-                    <span className="block max-w-80 truncate" title={e.headline}>
-                      {e.headline}
-                    </span>
+                    {e.url ? (
+                      <a
+                        href={e.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(ev) => ev.stopPropagation()}
+                        className="block max-w-80 truncate text-primary underline-offset-4 hover:underline"
+                        title={e.headline}
+                      >
+                        {e.headline}
+                      </a>
+                    ) : (
+                      <span className="block max-w-80 truncate" title={e.headline}>
+                        {e.headline}
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
                     {e.clientName ? (

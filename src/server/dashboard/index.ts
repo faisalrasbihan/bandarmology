@@ -1,4 +1,5 @@
 import { AML_FLAG_LABEL, getFindings, type AmlFinding } from "../aml";
+import { getExposureEdges } from "../exposure";
 import { getBaselines, getClientProfiles, type ClientProfile, type KycBaseline } from "../baseline";
 import { getAlerts, getDriftFindings } from "../classify/store";
 import type { Alert, DriftFinding } from "../classify/types";
@@ -137,7 +138,8 @@ function toRecord(
   signals: Signal[],
   alert: Alert | null,
   drift: DriftFinding | null,
-  aml: AmlFinding | null
+  aml: AmlFinding | null,
+  exposureTags: ClientRecord["exposureTags"]
 ): ClientRecord {
   const signalsById = new Map(signals.map((s) => [s.id, s]));
   const originalRisk = RISK_TITLE[baseline.riskRating] ?? "Medium";
@@ -177,7 +179,7 @@ function toRecord(
     ? alert.citations
         .map((cid) => signalsById.get(cid))
         .filter((s): s is Signal => Boolean(s))
-        .map((s) => ({ source: SOURCE_LABEL[s.source] ?? s.source, date: dateOf(s), headline: s.title }))
+        .map((s) => ({ source: SOURCE_LABEL[s.source] ?? s.source, date: dateOf(s), headline: s.title, url: s.url }))
     : [];
   const amlCitations = aml
     ? [
@@ -285,6 +287,7 @@ function toRecord(
     summary: driven.summary,
     riskBreakdown: buildBreakdown(flagged, severity, alert?.flagType ?? null, profile?.relationship ?? "Trading", driven.reasoning, aml),
     citations,
+    exposureTags,
     watchlist: profile?.watchlist ?? false,
     watchlistMeta: profile?.watchlistMeta ?? undefined,
   };
@@ -306,11 +309,18 @@ export async function buildClientRecords(): Promise<ClientRecord[]> {
   const records: ClientRecord[] = [];
   for (let i = 0; i < baselines.length; i++) {
     const baseline = baselines[i];
-    const [signals, alerts, amlFindings] = await Promise.all([
+    const [signals, alerts, amlFindings, edges] = await Promise.all([
       getStoredSignals({ entityHint: baseline.companyName }),
       getAlerts({ entityHint: baseline.companyName }),
       getFindings({ entityName: baseline.companyName }),
+      getExposureEdges({ entityName: baseline.companyName }),
     ]);
+    const exposureTags = edges.map((e) => ({
+      tagType: e.tagType,
+      tagValue: e.tagValue,
+      source: e.source,
+      confidence: e.confidence,
+    }));
     // Primary alert: highest confidence, then most recent.
     const alert =
       alerts.slice().sort((a, b) =>
@@ -329,7 +339,8 @@ export async function buildClientRecords(): Promise<ClientRecord[]> {
         signals,
         alert,
         drift,
-        aml
+        aml,
+        exposureTags
       )
     );
   }

@@ -8,6 +8,8 @@ export type FeedEvent = {
   source: string
   type: string
   headline: string
+  /** Source article URL, when the underlying citation has one (news signals). */
+  url?: string
   clientId: number | null
   clientName: string | null
   severity: string | null
@@ -71,6 +73,7 @@ export function buildAlertFeed(): { events: FeedEvent[]; pipeline: Pipeline } {
         source: cit.source,
         type: c.signal,
         headline: cit.headline,
+        url: cit.url,
         clientId: c.id,
         clientName: c.client,
         severity: c.severity,

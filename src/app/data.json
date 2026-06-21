@@ -15,7 +15,7 @@
     "signal": "Behavioural Anomaly – Potential Money Mule",
     "trigger": "22 high-value inbound cross-border transfers (total $7,965,680) from 17 distinct counterparties arrived within 7 days — roughly 5.5× the entity's normal cross-border inflow, 55% from higher-risk jurisdictions.",
     "sources": 2,
-    "detected": "11h ago",
+    "detected": "17h ago",
     "status": "Escalated",
     "kyc": {
       "onboarded": "Jun 2021",
@@ -61,7 +61,34 @@
       {
         "source": "NewsAPI",
         "date": "2026-06-18",
-        "headline": "Bitcoin sees $180M in long liquidations in a single hour as leverage unwinds violently"
+        "headline": "Bitcoin sees $180M in long liquidations in a single hour as leverage unwinds violently",
+        "url": "https://cryptobriefing.com/bitcoin-180m-long-liquidations-hour/"
+      }
+    ],
+    "exposureTags": [
+      {
+        "tagType": "country",
+        "tagValue": "MT",
+        "source": "onboarding",
+        "confidence": 1
+      },
+      {
+        "tagType": "director",
+        "tagValue": "Changpeng Zhao",
+        "source": "registry",
+        "confidence": 1
+      },
+      {
+        "tagType": "regulator",
+        "tagValue": "CFTC",
+        "source": "registry",
+        "confidence": 1
+      },
+      {
+        "tagType": "sector",
+        "tagValue": "crypto",
+        "source": "onboarding",
+        "confidence": 1
       }
     ],
     "watchlist": true,
@@ -88,7 +115,7 @@
     "signal": "Regulatory / Legal Action",
     "trigger": "Renewed regulatory scrutiny of the Estonia-branch AML failures revives one of the largest money-laundering cases on record.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "In Review",
     "kyc": {
       "onboarded": "Nov 2018",
@@ -124,9 +151,11 @@
       {
         "source": "NewsAPI",
         "date": "2026-06-14",
-        "headline": "Danske Bank faces renewed scrutiny over Estonia branch AML failures"
+        "headline": "Danske Bank faces renewed scrutiny over Estonia branch AML failures",
+        "url": "https://demo.local/demo-danske-bank-a-s-danske-bank-faces-renewed-scrutiny-over-estonia-branch-aml-failures"
       }
     ],
+    "exposureTags": [],
     "watchlist": true,
     "watchlistMeta": {
       "reason": "Historic Estonia-branch AML failures; non-resident flows under enhanced review.",
@@ -151,7 +180,7 @@
     "signal": "Financial Distress / Insolvency",
     "trigger": "A winding-up order has been issued and liquidators are seizing overseas assets.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "Escalated",
     "kyc": {
       "onboarded": "Apr 2021",
@@ -187,9 +216,11 @@
       {
         "source": "Mediastack",
         "date": "2026-06-14",
-        "headline": "Evergrande liquidators move to seize overseas assets after winding-up order"
+        "headline": "Evergrande liquidators move to seize overseas assets after winding-up order",
+        "url": "https://demo.local/demo-evergrande-group-evergrande-liquidators-move-to-seize-overseas-assets-after-winding-up-order"
       }
     ],
+    "exposureTags": [],
     "watchlist": true,
     "watchlistMeta": {
       "reason": "Winding-up order and liquidation; cross-default risk across group entities.",
@@ -214,7 +245,7 @@
     "signal": "Financial Distress / Insolvency",
     "trigger": "Filings in the FTX bankruptcy estate report a multi-billion-dollar customer shortfall and widening clawback litigation.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Jan 2022",
@@ -250,9 +281,11 @@
       {
         "source": "NewsAPI",
         "date": "2026-06-14",
-        "headline": "FTX estate reports multi-billion shortfall as clawback suits widen"
+        "headline": "FTX estate reports multi-billion shortfall as clawback suits widen",
+        "url": "https://demo.local/demo-ftx-trading-ltd-ftx-estate-reports-multi-billion-shortfall-as-clawback-suits-widen"
       }
     ],
+    "exposureTags": [],
     "watchlist": true,
     "watchlistMeta": {
       "reason": "Exchange collapse and fraud proceedings; assets frozen pending estate resolution.",
@@ -277,7 +310,7 @@
     "signal": "Regulatory / Legal Action",
     "trigger": "Glencore has agreed a further settlement resolving bribery and corruption allegations.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Feb 2020",
@@ -313,9 +346,11 @@
       {
         "source": "NewsAPI",
         "date": "2026-06-14",
-        "headline": "Glencore agrees additional settlement over bribery allegations"
+        "headline": "Glencore agrees additional settlement over bribery allegations",
+        "url": "https://demo.local/demo-glencore-plc-glencore-agrees-additional-settlement-over-bribery-allegations"
       }
     ],
+    "exposureTags": [],
     "watchlist": false
   },
   {
@@ -334,7 +369,7 @@
     "signal": "Dormancy Break – Suspicious Activation",
     "trigger": "After roughly 69 days of near-dormancy (only $12,938 of total activity), the account processed 7 transfers totalling $14,451,694 in the last 14 days.",
     "sources": 1,
-    "detected": "11h ago",
+    "detected": "17h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Sep 2021",
@@ -378,6 +413,26 @@
         "headline": "7 flagged transactions — Dormancy Break – Suspicious Activation"
       }
     ],
+    "exposureTags": [
+      {
+        "tagType": "country",
+        "tagValue": "CH",
+        "source": "onboarding",
+        "confidence": 1
+      },
+      {
+        "tagType": "director",
+        "tagValue": "Markus Braun",
+        "source": "registry",
+        "confidence": 0.9
+      },
+      {
+        "tagType": "sector",
+        "tagValue": "holding",
+        "source": "onboarding",
+        "confidence": 1
+      }
+    ],
     "watchlist": false
   },
   {
@@ -396,7 +451,7 @@
     "signal": "PEP / Political Exposure",
     "trigger": "Public reporting — \"Kroger Weekly Ad: 6/17-6/23\" — was triaged as PEP / Political Exposure for Nestle.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Nov 2020",
@@ -432,7 +487,28 @@
       {
         "source": "NewsAPI",
         "date": "2026-06-16",
-        "headline": "Kroger Weekly Ad: 6/17-6/23"
+        "headline": "Kroger Weekly Ad: 6/17-6/23",
+        "url": "https://www.southernsavers.com/kroger-weekly-ad-617-623-2/"
+      }
+    ],
+    "exposureTags": [
+      {
+        "tagType": "country",
+        "tagValue": "CH",
+        "source": "onboarding",
+        "confidence": 1
+      },
+      {
+        "tagType": "director",
+        "tagValue": "Mark Schneider",
+        "source": "registry",
+        "confidence": 1
+      },
+      {
+        "tagType": "sector",
+        "tagValue": "consumer_goods",
+        "source": "onboarding",
+        "confidence": 1
       }
     ],
     "watchlist": false
@@ -453,7 +529,7 @@
     "signal": "Sanctions / Watchlist Hit",
     "trigger": "NSO Group remains on the US Entity List, a denied-party/export-control designation.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Dec 2021",
@@ -489,9 +565,11 @@
       {
         "source": "GDELT",
         "date": "2026-06-14",
-        "headline": "NSO Group remains on US Entity List amid export-control review"
+        "headline": "NSO Group remains on US Entity List amid export-control review",
+        "url": "https://demo.local/demo-nso-group-nso-group-remains-on-us-entity-list-amid-export-control-review"
       }
     ],
+    "exposureTags": [],
     "watchlist": true,
     "watchlistMeta": {
       "reason": "US Entity List designation and export-control exposure; product-misuse allegations.",
@@ -516,7 +594,7 @@
     "signal": "Jurisdiction / Geographic Risk",
     "trigger": "Public registry data links Orion Bay to an opaque ownership chain via corporate-services nominees in a high-risk free zone.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "New",
     "kyc": {
       "onboarded": "Mar 2023",
@@ -552,9 +630,11 @@
       {
         "source": "OpenSanctions",
         "date": "2026-06-14",
-        "headline": "Free-zone trading entity linked to opaque ownership chain"
+        "headline": "Free-zone trading entity linked to opaque ownership chain",
+        "url": "https://demo.local/demo-orion-bay-trading-fze-free-zone-trading-entity-linked-to-opaque-ownership-chain"
       }
     ],
+    "exposureTags": [],
     "watchlist": true,
     "watchlistMeta": {
       "reason": "Opaque nominee ownership in a high-risk free zone; possible PEP association.",
@@ -579,7 +659,7 @@
     "signal": "Adverse Media / Reputational Risk",
     "trigger": "Public reporting — \"Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law\" — was triaged as Adverse Media / Reputational Risk for Tesla.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "Cleared",
     "kyc": {
       "onboarded": "Mar 2022",
@@ -615,7 +695,28 @@
       {
         "source": "NewsAPI",
         "date": "2026-06-19",
-        "headline": "Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law"
+        "headline": "Investor Rights Alert: ADMA Biologics (ADMA) Faces Securities Fraud Class Action after Channel Stuffing Allegations Cause 29% Stock Drop – Investors Notified to Contact BFA Law",
+        "url": "https://www.globenewswire.com/news-release/2026/06/19/3314680/0/en/Investor-Rights-Alert-ADMA-Biologics-ADMA-Faces-Securities-Fraud-Class-Action-after-Channel-Stuffing-Allegations-Cause-29-Stock-Drop-Investors-Notified-to-Contact-BFA-Law.html"
+      }
+    ],
+    "exposureTags": [
+      {
+        "tagType": "country",
+        "tagValue": "US",
+        "source": "onboarding",
+        "confidence": 1
+      },
+      {
+        "tagType": "director",
+        "tagValue": "Elon Musk",
+        "source": "registry",
+        "confidence": 1
+      },
+      {
+        "tagType": "sector",
+        "tagValue": "automotive",
+        "source": "onboarding",
+        "confidence": 1
       }
     ],
     "watchlist": false
@@ -636,7 +737,7 @@
     "signal": "Regulatory / Legal Action",
     "trigger": "Wells Fargo has paid a regulatory penalty over consumer-account practices.",
     "sources": 1,
-    "detected": "8h ago",
+    "detected": "14h ago",
     "status": "New",
     "kyc": {
       "onboarded": "May 2019",
@@ -672,9 +773,11 @@
       {
         "source": "NewsAPI",
         "date": "2026-06-14",
-        "headline": "Wells Fargo pays penalty over consumer-account practices"
+        "headline": "Wells Fargo pays penalty over consumer-account practices",
+        "url": "https://demo.local/demo-wells-fargo-co-wells-fargo-pays-penalty-over-consumer-account-practices"
       }
     ],
+    "exposureTags": [],
     "watchlist": false
   },
   {
@@ -693,7 +796,7 @@
     "signal": "Adverse Media / Reputational Risk",
     "trigger": "In June 2020, Wirecard's auditors uncovered that EUR 1.9 billion supposedly held in two Philippine bank accounts (BDO and BPI) had never existed.",
     "sources": 2,
-    "detected": "23h ago",
+    "detected": "1d ago",
     "status": "New",
     "kyc": {
       "onboarded": "Jan 2019",
@@ -734,12 +837,39 @@
       {
         "source": "Google News",
         "date": "2026-06-15",
-        "headline": "In June 2020, auditors discovered that EUR 1.9 billion supposedly held in two Philippine bank accounts had never existed, and both BDO and BPI told regulators the documents bearing their letterheads were fabrications. - Space Daily"
+        "headline": "In June 2020, auditors discovered that EUR 1.9 billion supposedly held in two Philippine bank accounts had never existed, and both BDO and BPI told regulators the documents bearing their letterheads were fabrications. - Space Daily",
+        "url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxNLVYtR2phbTdPdFFPa3ZiYTBiQkliWk9XbjZDUlRUUGhtUjRNdGhxVkxEODBjSmtqa05PalBUZGlMWmotV01iZVJuZm5mQnFzRWFCbUVPQjVTb2t1bXpSbGpjaHVpTmpxOHBzQlZZSS1zanprd2p3WEV2QzE3TlhBN0xZT0NTV3FITU9FeHkwZUNISzZ3VTE5Q1A3YTFYa0dzYUp1amNOSENEUTlyVzllRk5MYUkzRnJLX0p4c3kyOHd1b3BNaFBkejFDdXhicmVrZ0dTelVadWtTSDlxcVoxTGxCV3VjNGhUcU4yVVdrQ0xCa21qR1lfSkQ3WV9tNjZXaTg2R0F4WkVJaHF3eUpzblA0bURaYWQwbnZZZjIxakNJUHlTOVQtUENFQ2dsR1NVNWU2bFI1OVJhOFpTOEFUQUtMTkN0MFE?oc=5"
       },
       {
         "source": "AML Monitoring",
         "date": "2026-06-20",
         "headline": "16 flagged transactions — Structuring / Layering Risk"
+      }
+    ],
+    "exposureTags": [
+      {
+        "tagType": "country",
+        "tagValue": "DE",
+        "source": "onboarding",
+        "confidence": 1
+      },
+      {
+        "tagType": "director",
+        "tagValue": "Markus Braun",
+        "source": "registry",
+        "confidence": 1
+      },
+      {
+        "tagType": "regulator",
+        "tagValue": "BaFin",
+        "source": "registry",
+        "confidence": 1
+      },
+      {
+        "tagType": "sector",
+        "tagValue": "payments",
+        "source": "onboarding",
+        "confidence": 1
       }
     ],
     "watchlist": true,
