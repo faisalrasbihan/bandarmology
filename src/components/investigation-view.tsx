@@ -8,12 +8,20 @@ import {
   ArrowLeftIcon,
   ArrowUpRightIcon,
   CheckCircle2Icon,
+  ChevronDownIcon,
   ShieldAlertIcon,
   SparklesIcon,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardContent,
@@ -101,6 +109,13 @@ function fmtDate(ts: string): string {
   })
 }
 
+// Where a risk officer can route a confirmed finding.
+const ESCALATION_TARGETS = [
+  "Compliance review",
+  "AML investigation (SAR)",
+  "MLRO / senior management",
+]
+
 const STATUS_VARIANT: Record<AmlStatus, "secondary" | "default" | "destructive" | "outline"> = {
   proposed: "secondary",
   confirmed: "default",
@@ -149,7 +164,8 @@ export function InvestigationView({
 
   function actOnFinding(
     finding: InvestigationFinding,
-    decision: "Escalated" | "Acknowledged"
+    decision: "Escalated" | "Acknowledged",
+    destination?: string
   ) {
     setStatusOverrides((prev) => ({
       ...prev,
@@ -160,12 +176,14 @@ export function InvestigationView({
       entity: entityName,
       clientId,
       severity: finding.severity,
-      detail: `${finding.label} — ${finding.rationale}`,
+      detail: destination
+        ? `${finding.label} → ${destination}: ${finding.rationale}`
+        : `${finding.label}: ${finding.rationale}`,
       source: "Investigation",
     })
     toast.success(
       decision === "Escalated"
-        ? `Escalated: ${finding.label}`
+        ? `Escalated to ${destination}: ${finding.label}`
         : `Acknowledged: ${finding.label}`,
       { description: "Recorded in the Audit Log." }
     )
@@ -348,14 +366,21 @@ export function InvestigationView({
                         </span>
                       ) : (
                         <>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => actOnFinding(f, "Escalated")}
-                          >
-                            <ShieldAlertIcon data-icon="inline-start" />
-                            Escalate
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger render={<Button size="sm" variant="destructive" />}>
+                              <ShieldAlertIcon data-icon="inline-start" />
+                              Escalate
+                              <ChevronDownIcon data-icon="inline-end" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start">
+                              <DropdownMenuLabel>Escalate to</DropdownMenuLabel>
+                              {ESCALATION_TARGETS.map((t) => (
+                                <DropdownMenuItem key={t} onClick={() => actOnFinding(f, "Escalated", t)}>
+                                  {t}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                           <Button
                             size="sm"
                             variant="outline"

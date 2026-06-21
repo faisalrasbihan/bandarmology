@@ -8,25 +8,32 @@ import { initials, RiskDrift, SeverityBadge } from "@/components/risk-badges"
 import { RiskPipeline } from "@/components/risk-pipeline"
 import { type ClientRecord } from "@/components/client-profile"
 import { ChevronRightIcon } from "lucide-react"
+import { getPipelineCounts } from "@/lib/pipeline-counts"
 
 import data from "@/app/data.json"
+import investigations from "@/app/investigations.json"
 
 // Entry point for "Investigations" in the sidebar — lists every flagged client
 // so the analyst has somewhere to drill into the combined internal (Layer 2) +
 // on-chain (Layer 1) transaction view. Each card links to /investigation/[id];
 // the detail page itself decides whether there's actually activity to show.
 export default function InvestigationIndexPage() {
-  const clients = (data as ClientRecord[]).filter((c) => c.flagged)
+  // Only clients with an actual transaction-level investigation surface — so the
+  // list matches the "Under Investigation" pipeline count.
+  const inv = investigations as Record<string, { hasActivity?: boolean }>
+  const clients = (data as ClientRecord[]).filter(
+    (c) => c.flagged && inv[c.client]?.hasActivity
+  )
 
   return (
     <AppShell title="Investigations">
       <div className="flex flex-col gap-4 py-4 md:py-6">
-        <RiskPipeline current="investigation" />
+        <RiskPipeline current="investigation" counts={getPipelineCounts()} />
       </div>
       <div className="flex flex-col gap-4 p-4 md:p-6">
         <p className="text-muted-foreground text-sm">
           Combined internal bank transactions and known public-ledger activity for clients whose
-          risk has drifted — merged read-only for display, never written back across layers.
+          risk has drifted, merged read-only for display and never written back across layers.
         </p>
         <div className="flex flex-col gap-3">
           {clients.map((c) => (

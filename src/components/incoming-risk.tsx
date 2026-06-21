@@ -12,6 +12,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { SeverityBadge } from "@/components/risk-badges"
 import {
   RISK_EVENTS,
+  SOURCE_ORDER,
   clientsForEvent,
   type RiskEvent,
   type RiskSource,
@@ -51,13 +52,69 @@ const SOURCE_META: Record<RiskSource, { label: string; cls: string }> = {
 }
 
 const SEV_RANK: Record<string, number> = { Critical: 4, High: 3, Medium: 2, Low: 1 }
+const SEVERITIES = ["Critical", "High", "Medium", "Low"]
 
-function SourceBadge({ source }: { source: RiskSource }) {
+// Source tag — clickable when `onClick` is given, so it doubles as a filter
+// control both in the toolbar and on each card/row.
+function SourceBadge({
+  source,
+  onClick,
+  active,
+}: {
+  source: RiskSource
+  onClick?: () => void
+  active?: boolean
+}) {
   const m = SOURCE_META[source]
-  return (
-    <Badge variant="outline" className={m.cls}>
+  const badge = (
+    <Badge variant="outline" className={`${m.cls} ${active ? "ring-2 ring-current/30" : ""}`}>
       {m.label}
     </Badge>
+  )
+  if (!onClick) return badge
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation()
+        onClick()
+      }}
+      className="cursor-pointer rounded-full"
+      aria-pressed={active}
+    >
+      {badge}
+    </button>
+  )
+}
+
+// Severity tag, clickable as a filter (wraps the shared SeverityBadge).
+function SeverityChip({
+  severity,
+  onClick,
+  active,
+}: {
+  severity: string
+  onClick?: () => void
+  active?: boolean
+}) {
+  const inner = (
+    <span className={active ? "rounded-md ring-2 ring-primary/40" : ""}>
+      <SeverityBadge severity={severity} />
+    </span>
+  )
+  if (!onClick) return inner
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation()
+        onClick()
+      }}
+      className="cursor-pointer"
+      aria-pressed={active}
+    >
+      {inner}
+    </button>
   )
 }
 
@@ -106,7 +163,17 @@ function CaseRow({ rec }: { rec: CaseRecord }) {
   )
 }
 
-function EventCard({ event, cases }: { event: RiskEvent; cases: CaseRecord[] }) {
+function EventCard({
+  event,
+  cases,
+  onToggleSource,
+  onToggleSeverity,
+}: {
+  event: RiskEvent
+  cases: CaseRecord[]
+  onToggleSource: (s: RiskSource) => void
+  onToggleSeverity: (s: string) => void
+}) {
   const affected = clientsForEvent(event)
   const marked = cases.length > 0
   const caseById = new Map(cases.map((c) => [c.clientId, c]))
@@ -115,8 +182,8 @@ function EventCard({ event, cases }: { event: RiskEvent; cases: CaseRecord[] }) 
     <Card className="gap-3">
       <CardHeader className="gap-2">
         <div className="flex flex-wrap items-center gap-2">
-          <SourceBadge source={event.source} />
-          <SeverityBadge severity={event.severity} />
+          <SourceBadge source={event.source} onClick={() => onToggleSource(event.source)} />
+          <SeverityChip severity={event.severity} onClick={() => onToggleSeverity(event.severity)} />
           <Badge variant="secondary" className="font-normal">
             {event.provider}
           </Badge>
@@ -176,16 +243,26 @@ function EventCard({ event, cases }: { event: RiskEvent; cases: CaseRecord[] }) 
   )
 }
 
-function EventTableRow({ event, cases }: { event: RiskEvent; cases: CaseRecord[] }) {
+function EventTableRow({
+  event,
+  cases,
+  onToggleSource,
+  onToggleSeverity,
+}: {
+  event: RiskEvent
+  cases: CaseRecord[]
+  onToggleSource: (s: RiskSource) => void
+  onToggleSeverity: (s: string) => void
+}) {
   const affected = clientsForEvent(event)
   const marked = cases.length > 0
   return (
     <tr className="border-t align-top">
       <td className="p-2">
-        <SourceBadge source={event.source} />
+        <SourceBadge source={event.source} onClick={() => onToggleSource(event.source)} />
       </td>
       <td className="p-2">
-        <SeverityBadge severity={event.severity} />
+        <SeverityChip severity={event.severity} onClick={() => onToggleSeverity(event.severity)} />
       </td>
       <td className="max-w-[28rem] p-2">
         <div className="font-medium">{event.headline}</div>
@@ -227,9 +304,13 @@ function EventTableRow({ event, cases }: { event: RiskEvent; cases: CaseRecord[]
 function EventTable({
   events,
   casesByEvent,
+  onToggleSource,
+  onToggleSeverity,
 }: {
   events: RiskEvent[]
   casesByEvent: Map<string, CaseRecord[]>
+  onToggleSource: (s: RiskSource) => void
+  onToggleSeverity: (s: string) => void
 }) {
   return (
     <div className="overflow-x-auto rounded-md border">
@@ -246,7 +327,13 @@ function EventTable({
         </thead>
         <tbody>
           {events.map((e) => (
-            <EventTableRow key={e.id} event={e} cases={casesByEvent.get(e.id) ?? []} />
+            <EventTableRow
+              key={e.id}
+              event={e}
+              cases={casesByEvent.get(e.id) ?? []}
+              onToggleSource={onToggleSource}
+              onToggleSeverity={onToggleSeverity}
+            />
           ))}
         </tbody>
       </table>
@@ -257,14 +344,32 @@ function EventTable({
 export function IncomingRisk() {
   const casesByEvent = useCasesByEvent()
   const [view, setView] = React.useState<"cards" | "table">("cards")
+  const [sources, setSources] = React.useState<Set<RiskSource>>(new Set())
+  const [severities, setSeverities] = React.useState<Set<string>>(new Set())
 
-  // One flat list across all sources, highest-severity first (then confidence).
+  const toggle = <T,>(setter: React.Dispatch<React.SetStateAction<Set<T>>>, value: T) =>
+    setter((prev) => {
+      const next = new Set(prev)
+      if (next.has(value)) next.delete(value)
+      else next.add(value)
+      return next
+    })
+  const toggleSource = (s: RiskSource) => toggle(setSources, s)
+  const toggleSeverity = (s: string) => toggle(setSeverities, s)
+  const clearFilters = () => {
+    setSources(new Set())
+    setSeverities(new Set())
+  }
+  const filtersActive = sources.size > 0 || severities.size > 0
+
+  // Flat list across all sources, highest-severity first (then confidence),
+  // narrowed by the active source / severity tag filters.
   const events = React.useMemo(
     () =>
-      [...RISK_EVENTS].sort(
-        (a, b) => SEV_RANK[b.severity] - SEV_RANK[a.severity] || b.confidence - a.confidence
-      ),
-    []
+      [...RISK_EVENTS]
+        .filter((e) => (sources.size === 0 || sources.has(e.source)) && (severities.size === 0 || severities.has(e.severity)))
+        .sort((a, b) => SEV_RANK[b.severity] - SEV_RANK[a.severity] || b.confidence - a.confidence),
+    [sources, severities]
   )
 
   return (
@@ -273,8 +378,8 @@ export function IncomingRisk() {
         <div className="flex flex-col">
           <h2 className="text-base font-semibold">Risk Incoming</h2>
           <p className="text-sm text-muted-foreground">
-            Public events across every source — each tagged with where it came from. Mark an event
-            to open a case per affected client.
+            Public events across every source. Click any tag to filter; mark an event to open a
+            case per affected client.
           </p>
         </div>
         <ToggleGroup
@@ -295,14 +400,50 @@ export function IncomingRisk() {
         </ToggleGroup>
       </div>
 
-      {view === "cards" ? (
+      {/* Clickable tag filters */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="mr-0.5 text-xs text-muted-foreground">Filter:</span>
+        {SOURCE_ORDER.map((s) => (
+          <SourceBadge key={s} source={s} onClick={() => toggleSource(s)} active={sources.has(s)} />
+        ))}
+        <span className="mx-1 h-4 w-px bg-border" />
+        {SEVERITIES.map((s) => (
+          <SeverityChip key={s} severity={s} onClick={() => toggleSeverity(s)} active={severities.has(s)} />
+        ))}
+        {filtersActive && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="ml-1 text-xs text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Clear ({events.length})
+          </button>
+        )}
+      </div>
+
+      {events.length === 0 ? (
+        <p className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
+          No events match the selected tags.
+        </p>
+      ) : view === "cards" ? (
         <div className="grid grid-cols-1 gap-3 @3xl/main:grid-cols-2">
           {events.map((e) => (
-            <EventCard key={e.id} event={e} cases={casesByEvent.get(e.id) ?? []} />
+            <EventCard
+              key={e.id}
+              event={e}
+              cases={casesByEvent.get(e.id) ?? []}
+              onToggleSource={toggleSource}
+              onToggleSeverity={toggleSeverity}
+            />
           ))}
         </div>
       ) : (
-        <EventTable events={events} casesByEvent={casesByEvent} />
+        <EventTable
+          events={events}
+          casesByEvent={casesByEvent}
+          onToggleSource={toggleSource}
+          onToggleSeverity={toggleSeverity}
+        />
       )}
     </div>
   )

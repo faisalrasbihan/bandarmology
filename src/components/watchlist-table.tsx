@@ -1,21 +1,11 @@
 "use client"
 
-import * as React from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { EllipsisVerticalIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Table,
   TableBody,
@@ -27,6 +17,7 @@ import {
 import { initials, RiskDrift } from "@/components/risk-badges"
 import type { ClientRecord } from "@/components/client-profile"
 import { formatMoney } from "@/lib/format"
+import { logAudit } from "@/lib/audit-log"
 
 const TODAY = new Date("2026-06-20")
 
@@ -92,7 +83,7 @@ export function WatchlistTable({ clients }: { clients: ClientRecord[] }) {
               <TableHead>Review</TableHead>
               <TableHead>Risk Drift</TableHead>
               <TableHead>Exposure</TableHead>
-              <TableHead className="w-8" />
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -151,39 +142,29 @@ export function WatchlistTable({ clients }: { clients: ClientRecord[] }) {
                     <TableCell className="font-medium tabular-nums">
                       {formatMoney(c.exposureUsd)}
                     </TableCell>
-                    <TableCell>
-                      <div onClick={(e) => e.stopPropagation()}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger
-                            render={
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="size-8 text-muted-foreground"
-                              />
-                            }
-                          >
-                            <EllipsisVerticalIcon />
-                            <span className="sr-only">Open menu</span>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-44">
-                            <DropdownMenuItem render={<Link href={`/clients/${c.id}`} />}>
-                              Open profile
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => toast.success(`Escalated ${c.client}`)}
-                            >
-                              Escalate
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              variant="destructive"
-                              onClick={() => toast(`Removed ${c.client} from watchlist`)}
-                            >
-                              Remove from watchlist
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                    <TableCell className="text-right">
+                      {/* A risk officer's only action here is to follow up — it's
+                          logged to the audit trail; it doesn't resolve the case. */}
+                      <div onClick={(e) => e.stopPropagation()} className="inline-flex">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            logAudit({
+                              action: "Followed up",
+                              entity: c.client,
+                              clientId: c.id,
+                              severity: c.severity,
+                              detail: c.watchlistMeta?.reason ?? "Watchlist review",
+                              source: "Watchlist",
+                            })
+                            toast.success(`Follow-up logged for ${c.client}`, {
+                              description: "Recorded in the Audit Log.",
+                            })
+                          }}
+                        >
+                          Follow up
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
