@@ -19,6 +19,7 @@ export type RiskSource =
   | "Corporate Registry & Ownership"
   | "Funding & Startup Intelligence"
   | "Website & Domain Monitoring"
+  | "Social Media"
 
 export type EventSeverity = "Critical" | "High" | "Medium" | "Low"
 
@@ -46,6 +47,7 @@ export const SOURCE_ORDER: RiskSource[] = [
   "Corporate Registry & Ownership",
   "Funding & Startup Intelligence",
   "Website & Domain Monitoring",
+  "Social Media",
 ]
 
 export const RISK_EVENTS: RiskEvent[] = [
@@ -147,6 +149,18 @@ export const RISK_EVENTS: RiskEvent[] = [
     confidence: 0.66,
     detected: "5h ago",
     affectedClientIds: [6], // Lindenhof Holdings AG
+  },
+  {
+    id: "evt-binance-social-rumor",
+    source: "Social Media",
+    provider: "X/Twitter · Reddit",
+    headline: "Unverified social posts allege accounting irregularities",
+    summary:
+      "Uncorroborated X and Reddit posts speculate about accounting irregularities and an undisclosed regulatory probe. No mainstream outlet has corroborated the claims yet — kept at low severity until a credible source picks it up.",
+    severity: "Low",
+    confidence: 0.3,
+    detected: "2h ago",
+    affectedClientIds: [1], // Binance
   },
   {
     id: "evt-orion-domain-spoof",
