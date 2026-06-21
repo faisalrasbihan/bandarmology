@@ -49,6 +49,7 @@ const SOURCE_META: Record<RiskSource, { label: string; cls: string }> = {
   "Corporate Registry & Ownership": { label: "Registry", cls: "border-violet-500/40 text-violet-600 dark:text-violet-400" },
   "Funding & Startup Intelligence": { label: "Funding", cls: "border-emerald-500/40 text-emerald-600 dark:text-emerald-500" },
   "Website & Domain Monitoring": { label: "Domain", cls: "border-amber-600/40 text-amber-600 dark:text-amber-500" },
+  "Social Media": { label: "Social", cls: "border-pink-500/40 text-pink-600 dark:text-pink-400" },
 }
 
 const SEV_RANK: Record<string, number> = { Critical: 4, High: 3, Medium: 2, Low: 1 }
