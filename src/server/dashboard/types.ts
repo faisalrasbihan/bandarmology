@@ -37,7 +37,9 @@ export interface ClientRecord {
   action: string;
   summary: string;
   riskBreakdown: { type: string; status: string; reason: string }[];
-  citations: { source: string; date: string; headline: string }[];
+  citations: { source: string; date: string; headline: string; url?: string }[];
+  /** Layer 1 public exposure graph, snapshotted so the client page needs no live DB call. */
+  exposureTags?: { tagType: string; tagValue: string; source: string; confidence: number }[];
   watchlist?: boolean;
   watchlistMeta?: {
     reason: string;

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowLeftIcon } from "lucide-react"
+import { ArrowLeftIcon, ExternalLinkIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -64,7 +64,8 @@ export interface ClientRecord {
   action: string
   summary: string
   riskBreakdown: { type: string; status: string; reason: string }[]
-  citations: { source: string; date: string; headline: string }[]
+  citations: { source: string; date: string; headline: string; url?: string }[]
+  exposureTags?: { tagType: string; tagValue: string; source: string; confidence: number }[]
   watchlist?: boolean
   watchlistMeta?: {
     reason: string
@@ -349,7 +350,7 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
         </Card>
       </div>
 
-      <ExposureTags entityName={client.client} />
+      <ExposureTags tags={client.exposureTags} />
 
       {/* Risk breakdown */}
       <Card>
@@ -409,7 +410,19 @@ export function ClientProfile({ client }: { client: ClientRecord }) {
             <ul className="flex flex-col gap-3 text-sm">
               {client.citations.map((c, i) => (
                 <li key={i} className="flex flex-col">
-                  <span>{c.headline}</span>
+                  {c.url ? (
+                    <a
+                      href={c.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                      {c.headline}
+                      <ExternalLinkIcon className="ms-1 inline size-3 align-baseline" />
+                    </a>
+                  ) : (
+                    <span>{c.headline}</span>
+                  )}
                   <span className="text-xs text-muted-foreground">
                     {c.source} · {c.date}
                   </span>
